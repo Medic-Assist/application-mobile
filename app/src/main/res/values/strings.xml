@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">medic-assist</string>
+    <string name="mes_rdv">Mes RDV</string>
+    <string name="nomrdv">nomRDV</string>
 </resources>
