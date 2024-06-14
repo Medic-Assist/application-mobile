@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title="@string/title_home" />
+    <item
+        android:id="@+id/navigation_suivi"
+        android:icon="@drawable/ic_suivi"
+        android:title="@string/title_suivi" />
+    <item
+        android:id="@+id/navigation_gps"
+        android:icon="@drawable/ic_gps"
+        android:title="@string/title_gps" />
+    <item
+        android:id="@+id/navigation_profil"
+        android:icon="@drawable/ic_profil"
+        android:title="@string/title_profil" />
+</menu>
