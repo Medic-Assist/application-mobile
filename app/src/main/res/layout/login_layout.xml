@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="Connexion"
-        android:textColor="#E1E1E6"
+        android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -32,7 +32,7 @@
         android:layout_below="@id/titleTextView"
         android:layout_centerHorizontal="true"
         android:text="Connectez-vous pour continuer"
-        android:textColor="#E1E1E6"
+        android:textColor="#000000"
         android:textSize="16sp" />
 
     <EditText
@@ -42,6 +42,7 @@
         android:layout_below="@id/subtitleTextView"
         android:layout_marginTop="30dp"
         android:hint="Pseudo ou email"
+        android:textColorHint="#979797"
         android:padding="12dp"></EditText>
 
     <EditText
@@ -51,6 +52,7 @@
         android:layout_below="@id/usernameEditText"
         android:layout_marginTop="16dp"
         android:hint="Mot de passe"
+        android:textColorHint="#979797"
         android:inputType="textPassword"
         android:padding="12dp"></EditText>
 
