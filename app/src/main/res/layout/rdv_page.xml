@@ -48,7 +48,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <SearchView
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -76,29 +76,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Example Button -->
-                <Button
-                    android:id="@+id/exampleButton"
+                <ListView
+                    android:id="@+id/list_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/blue"
-                    android:gravity="center"
-                    android:text="Example Button"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-                <Button
-                    android:id="@+id/exampleButton2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/blue"
-                    android:gravity="center"
-                    android:text="Example Button"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </ScrollView>
