@@ -1,5 +1,6 @@
 package com.cnam.medic_assist
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ale.rainbowsdk.RainbowSdk
 
 
 class LoginActivity() : AppCompatActivity() {
@@ -37,6 +39,20 @@ class LoginActivity() : AppCompatActivity() {
         editor.putString("username", "test")
         editor.putString("password", "test")
         editor.apply()
+    }
+
+
+    class RainbowApplication : Application() {
+
+        override fun onCreate() {
+            super.onCreate()
+            RainbowSdk().initialize(
+                applicationContext = this,
+                applicationId = "2357e3b0775611efbc25252c8c078f84",
+                applicationSecret = "MJ1yS7Hj34SDSnfHeDxEnsoQ6py1DDalFBOM3QVSvZOEFgFtiIZOLDPVTYE704Xz"
+
+            )
+        }
     }
 
     fun OnClickConnexion(view: View) {
