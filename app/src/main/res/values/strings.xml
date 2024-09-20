@@ -4,4 +4,9 @@
     <string name="nomrdv">nomRDV</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Medic Assist</string>
+    <string name="title_home">Home</string>
+    <string name="title_suivi">Suivi</string>
+    <string name="title_gps">GPS</string>
+    <string name="title_profil">Profil</string>
 </resources>
