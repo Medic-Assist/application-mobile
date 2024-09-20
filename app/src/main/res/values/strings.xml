@@ -7,7 +7,6 @@
     <string name="login_title_text">Connexion</string>
     <string name="mot_de_passe">Mot de passe</string>
     <string name="pseudo_ou_email">Pseudo ou email</string>
-    <string name="app_name">Medic Assist</string>
     <string name="app_name">medic-assist</string>
     <string name="mes_rdv">Mes RDV</string>
     <string name="nomrdv">nomRDV</string>
