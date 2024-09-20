@@ -11,9 +11,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button = findViewById<Button>(R.id.button_map)
-        button.setOnClickListener {
+        val buttonMap = findViewById<Button>(R.id.button_map)
+        val buttonDirections = findViewById<Button>(R.id.button_directions)
+
+        buttonMap.setOnClickListener {
             startActivity(Intent(this, MapActivity::class.java))
+        }
+
+        buttonDirections.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java).apply {
+                action = "GET_DIRECTIONS"
+            }
+            startActivity(intent)
         }
     }
 }

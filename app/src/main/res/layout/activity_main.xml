@@ -3,16 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <Button
         android:id="@+id/button_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Map"
         android:layout_gravity="center"
-        tools:ignore="MissingConstraints" />
+        android:text="Show Map"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="88dp" />
 
+    <Button
+        android:id="@+id/button_directions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="144dp"
+        android:text="Get Directions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_map" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
