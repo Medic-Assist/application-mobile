@@ -1,7 +1,3 @@
 <resources>
-    <string name="app_name">Medic Assist</string>
-    <string name="title_home">Home</string>
-    <string name="title_suivi">Suivi</string>
-    <string name="title_gps">GPS</string>
-    <string name="title_profil">Profil</string>
+    <string name="app_name">POC-MedicAssist-Notif</string>
 </resources>
