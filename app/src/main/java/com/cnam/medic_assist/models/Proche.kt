@@ -1,12 +1,12 @@
 package com.cnam.medic_assist.models
 
 class Proche (
+        idUser: Int? = null,
         prenom : String,
         nom : String,
         var adresse : String,
         var codePostal : Int,
-        var ville : String,
-        idUser: Int? = null
+        var ville : String
 
     ) : Utilisateur(idUser,prenom, nom,RoleUser.Proche)
 {
