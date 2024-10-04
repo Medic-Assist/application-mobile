@@ -9,3 +9,14 @@ class Proche (
         idUser: Int? = null
 
     ) : Utilisateur(idUser,prenom, nom,RoleUser.Proche)
+{
+        fun afficherDetailsProche() {
+                println("Proche: $prenom $nom")
+                println("Adresse: $adresse, $codePostal, $ville")
+        }
+        fun changerAdresse(nouvelleAdresse: String, nouveauCodePostal: Int, nouvelleVille: String) {
+                adresse = nouvelleAdresse
+                codePostal = nouveauCodePostal
+                ville = nouvelleVille
+        }
+}

@@ -12,3 +12,21 @@ class Patient (
     idUser: Int? = null
 
 ) : Utilisateur(idUser,prenom, nom,RoleUser.Patient)
+{
+    fun afficherDetailsPatient() {
+        println("Patient: $prenom $nom")
+        println("Adresse: $adresse_principale, $codePostal_principal, $ville_principale")
+    }
+
+    fun changerAdresse(nouvelleAdresse: String, nouveauCodePostal: Int, nouvelleVille: String) {
+        adresse_principale = nouvelleAdresse
+        codePostal_principal = nouveauCodePostal
+        ville_principale = nouvelleVille
+    }
+
+    fun ajouterAdresseTemporaire(adresseTmp: String, CPTmp: Int, villeTmp: String) {
+        adresse_temporaire = adresseTmp
+        codePostal_temporaire = CPTmp
+        ville_temporaire = villeTmp
+    }
+}

@@ -12,4 +12,14 @@ open class Utilisateur (
     var prenom : String,
     var nom : String,
     val role : RoleUser
-)
+){
+    fun afficherDetailsUtilisateur() {
+        println("Utilisateur: $prenom $nom ($role)")
+    }
+    fun changerNom(nouveauNom: String) {
+        nom = nouveauNom
+    }
+    fun changerPrenom(nouveauPrenom: String) {
+        prenom = nouveauPrenom
+    }
+}
