@@ -8,7 +8,7 @@ data class RendezVous(
     var intitule: String,
     val horaire : Time,
     var dateRDV: Date,
-    val iduser : Int,
+    val idUser : Int,
     val idCentreMedical: Int,
     var isADRPrincipale : Boolean
     )
