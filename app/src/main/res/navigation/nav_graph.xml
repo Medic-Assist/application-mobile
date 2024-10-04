@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/navigation/nav_graph.xml -->
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/profilFragment">
+
+    <!-- ProfilFragment -->
+    <fragment
+        android:id="@+id/profilFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.ProfilFragment"
+        android:label="Profil">
+
+        <!-- Actions vers les autres fragments -->
+        <action
+            android:id="@+id/action_profilFragment_to_mesInformationsFragment"
+            app:destination="@id/mesInformationsFragment" />
+
+        <action
+            android:id="@+id/action_profilFragment_to_mesProchesFragment"
+            app:destination="@id/mesProchesFragment" />
+
+        <action
+            android:id="@+id/action_profilFragment_to_monAdresseFragment"
+            app:destination="@id/monAdresseFragment" />
+
+        <action
+            android:id="@+id/action_profilFragment_to_moyenLocomotionFragment"
+            app:destination="@id/moyenLocomotionFragment" />
+    </fragment>
+
+    <!-- MesInformationsFragment -->
+    <fragment
+        android:id="@+id/mesInformationsFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.MesInformationsFragment"
+        android:label="Mes Informations" />
+
+    <!-- MesProchesFragment -->
+    <fragment
+        android:id="@+id/mesProchesFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.MesProchesFragment"
+        android:label="Mes Proches" />
+
+    <!-- MonAdresseFragment -->
+    <fragment
+        android:id="@+id/monAdresseFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.MonAdresseFragment"
+        android:label="Mon Adresse" />
+
+    <!-- MoyenLocomotionFragment -->
+    <fragment
+        android:id="@+id/moyenLocomotionFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.MoyenLocomotionFragment"
+        android:label="Moyen de Locomotion" />
+</navigation>
