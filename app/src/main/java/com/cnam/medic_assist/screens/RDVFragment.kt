@@ -5,21 +5,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
-import com.cnam.medic_assist.models.RendezVous
 import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.models.RendezVous
+import com.cnam.medic_assist.utils.ICalendarHelper
+import com.cnam.medic_assist.utils.CalendarHelper
 
 class RDVFragment : Fragment() {
 
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var calendarHelper: ICalendarHelper
+    private lateinit var rdvList: List<RendezVous>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,11 +27,14 @@ class RDVFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.rdv_page, container, false)
 
+        // Récupérer CalendarHelper
+        calendarHelper = CalendarHelper(requireContext())
+
         // Récupérer la ListView
         listView = view.findViewById(R.id.list_view)
 
         // Récupérer la liste des rendez-vous
-        val rdvList = Constants.rdvList
+        rdvList = Constants.rdvList
 
         // Créer une liste de chaînes avec l'intitulé et la date
         val rdvStrings = rdvList.map { "${it.intitule} - ${it.dateRDV}" }
@@ -40,7 +43,7 @@ class RDVFragment : Fragment() {
         adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1,
-            rdvStrings
+            rdvStrings.toMutableList()
         )
 
         // Assigner l'adaptateur à la ListView
@@ -86,12 +89,20 @@ class RDVFragment : Fragment() {
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
+        val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
         // Mettre à jour les TextViews avec les détails du RDV
         tvIntitule.text = rdv.intitule
         tvDate.text = rdv.dateRDV
         tvHeure.text = rdv.heureRDV
         tvAdresse.text = rdv.adresse
+
+        // Ajouter un listener pour le bouton "Ajouter au calendrier"
+        addToCalendarButton.setOnClickListener {
+            calendarHelper.addEventToCalendar(rdv)
+            dialog.dismiss() // Ferme le dialogue après l'action
+        }
+
 
         // Ajouter un listener pour fermer le dialog en cliquant sur la croix
         closeButton.setOnClickListener {
@@ -104,6 +115,7 @@ class RDVFragment : Fragment() {
         // Afficher le Dialog
         dialog.show()
     }
+
     companion object {
         fun newInstance(): RDVFragment {
             return RDVFragment()
