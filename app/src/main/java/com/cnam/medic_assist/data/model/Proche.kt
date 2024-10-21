@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.models
+package com.cnam.medic_assist.data.model
 
 class Proche (
         idUser: Int? = null,
@@ -8,7 +8,7 @@ class Proche (
         var codePostal : Int,
         var ville : String
 
-    ) : Utilisateur(idUser,prenom, nom,RoleUser.Proche)
+    ) : Utilisateur(idUser,prenom, nom, RoleUser.Proche)
 {
         fun afficherDetailsProche() {
                 println("Proche: $prenom $nom")

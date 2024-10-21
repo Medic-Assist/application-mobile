@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.models
+package com.cnam.medic_assist.data.model
 
 class PersonnelMed (
     prenom : String,
@@ -6,4 +6,4 @@ class PersonnelMed (
     var idCentreMed : Int,
     idUser: Int? = null
 
-) : Utilisateur(idUser,prenom, nom,RoleUser.PersonnelMed)
+) : Utilisateur(idUser,prenom, nom, RoleUser.PersonnelMed)

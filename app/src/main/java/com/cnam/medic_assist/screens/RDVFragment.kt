@@ -9,12 +9,11 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
-import com.cnam.medic_assist.models.RendezVous
-import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.data.model.RendezVous
+import com.cnam.medic_assist.data.Constants
 import java.text.SimpleDateFormat
 
 // Format pour la date et l'heure

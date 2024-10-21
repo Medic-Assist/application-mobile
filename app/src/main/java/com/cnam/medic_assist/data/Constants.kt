@@ -1,13 +1,11 @@
-package com.cnam.medic_assist.datas
+package com.cnam.medic_assist.data
 
-import com.cnam.medic_assist.models.CentreMedical
-import com.cnam.medic_assist.models.Patient
-import com.cnam.medic_assist.models.PersonnelMed
-import com.cnam.medic_assist.models.Proche
-import com.cnam.medic_assist.models.Proche_Patient
-import com.cnam.medic_assist.models.RendezVous
-import com.cnam.medic_assist.models.RoleUser
-import com.cnam.medic_assist.models.Utilisateur
+import com.cnam.medic_assist.data.model.CentreMedical
+import com.cnam.medic_assist.data.model.Patient
+import com.cnam.medic_assist.data.model.PersonnelMed
+import com.cnam.medic_assist.data.model.Proche
+import com.cnam.medic_assist.data.model.Proche_Patient
+import com.cnam.medic_assist.data.model.RendezVous
 import java.sql.Date
 import java.sql.Time
 import java.text.SimpleDateFormat

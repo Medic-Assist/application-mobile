@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.models
+package com.cnam.medic_assist.data.model
 
 class Patient (
     idUser: Int? = null,
@@ -12,7 +12,7 @@ class Patient (
     var ville_temporaire : String?=null,
 
 
-) : Utilisateur(idUser,prenom, nom,RoleUser.Patient)
+) : Utilisateur(idUser,prenom, nom, RoleUser.Patient)
 {
     fun afficherDetailsPatient() {
         println("Patient: $prenom $nom")
