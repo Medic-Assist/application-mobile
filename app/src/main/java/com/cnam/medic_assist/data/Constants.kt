@@ -59,7 +59,7 @@ object Constants {
         PersonnelMed("Luc", "Dubois",18, 7)   // Luc Dubois au Centre 7 (Sélestat)
     )
 
-    val rdvList = listOf(
+    /*val rdvList = listOf(
         // Rendez-vous pour Alice
         RendezVous(1, "Radio Hanche Droite", Time.valueOf("10:00:00"), Date.valueOf("2024-09-20"), 1, 7, true),
         RendezVous(2, "Osthéopathie", Time.valueOf("11:30:00"), Date.valueOf("2024-09-25"), 1, 3, true),
@@ -94,5 +94,5 @@ object Constants {
 
         // Rendez-vous pour Jack
         RendezVous(15, "Radio mâchoire", Time.valueOf("15:30:00"), Date.valueOf("2024-10-04"), 10, 7, true)
-    )
+    )*/
 }

@@ -34,8 +34,8 @@ interface ApiService {
     fun getUtilisateurRainbow(@Path("email") email: String): Call<List<Utilisateur>>
 
     //Renvoie la list de rendez-vous associé au patient donné
-    @GET("rendezvous/patients/{id}")
-    fun getRendezvousByUserId(@Path("id") id: Int): Call<List<RendezVous>>
+    @GET("rendezvous/patient/{idUser}")
+    fun getRendezvousByUserId(@Path("idUser") idUser: Int): Call<List<RendezVous>>
     // Mettre à jour un utilisateur
     @PUT("/rendezvous/{id}")
     fun updateRDV(@Path("id") id: Int, @Body rdv: RendezVous): Call<Void>
