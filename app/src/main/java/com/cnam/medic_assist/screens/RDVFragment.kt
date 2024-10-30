@@ -13,6 +13,11 @@ import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.models.RendezVous
 import com.cnam.medic_assist.utils.ICalendarHelper
 import com.cnam.medic_assist.utils.CalendarHelper
+import java.text.SimpleDateFormat
+
+// Format pour la date et l'heure
+val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+val timeFormat = SimpleDateFormat("HH:mm")
 
 class RDVFragment : Fragment() {
 
@@ -37,7 +42,7 @@ class RDVFragment : Fragment() {
         rdvList = Constants.rdvList
 
         // Créer une liste de chaînes avec l'intitulé et la date
-        val rdvStrings = rdvList.map { "${it.intitule} - ${it.dateRDV}" }
+        val rdvStrings = rdvList.map { "${it.intitule} - ${dateFormat.format(it.dateRDV)}" }
 
         // Utiliser un ArrayAdapter simple avec la liste des chaînes
         adapter = ArrayAdapter(
@@ -93,9 +98,10 @@ class RDVFragment : Fragment() {
 
         // Mettre à jour les TextViews avec les détails du RDV
         tvIntitule.text = rdv.intitule
-        tvDate.text = rdv.dateRDV
-        tvHeure.text = rdv.heureRDV
-        tvAdresse.text = rdv.adresse
+        tvDate.text = dateFormat.format(rdv.dateRDV)
+        tvHeure.text =  timeFormat.format(rdv.horaire)
+        //tvAdresse.text = rdv. -> mettre adresse utilisateur
+
 
         // Ajouter un listener pour le bouton "Ajouter au calendrier"
         addToCalendarButton.setOnClickListener {
