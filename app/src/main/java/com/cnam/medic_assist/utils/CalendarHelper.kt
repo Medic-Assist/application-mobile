@@ -31,12 +31,12 @@ class CalendarHelper(private val context: Context) : ICalendarHelper {
             VERSION:2.0
             PRODID:-//MedicAssistApp//EN
             BEGIN:VEVENT
-            UID:${rdv.id}@medicassistapp.com
+            UID:${rdv.idRDV}@medicassistapp.com
             DTSTAMP:${getFormattedDateTime(System.currentTimeMillis())}
-            DTSTART:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.heureRDV}"))}
-            DTEND:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.heureRDV}") + 60 * 60 * 1000)}
+            DTSTART:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.horaire}"))}
+            DTEND:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.horaire}") + 60 * 60 * 1000)}
             SUMMARY:${rdv.intitule}
-            LOCATION:${rdv.adresse}
+            LOCATION: HELLO
             END:VEVENT
             END:VCALENDAR
         """.trimIndent()
