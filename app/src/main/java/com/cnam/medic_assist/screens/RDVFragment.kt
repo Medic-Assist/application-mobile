@@ -1,5 +1,6 @@
 package com.cnam.medic_assist.screens
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +21,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.ParseException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+import java.util.TimeZone
 
 // Format pour la date et l'heure
 val dateFormat = SimpleDateFormat("dd/MM/yyyy")
@@ -31,12 +36,20 @@ class RDVFragment : Fragment() {
     private lateinit var adapter: ArrayAdapter<String>
     private var rdvList: List<RendezVous> = listOf()
 
+    // Formats d'entrée pour les parser en Date
+    private val horaireFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    private val daterdvFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+
+    // Formats de sortie pour afficher les dates au format souhaité
+    val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val outputTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.rdv_page, container, false)
-
+        daterdvFormat.timeZone = TimeZone.getTimeZone("UTC")
         // Récupérer la ListView
         listView = view.findViewById(R.id.list_view)
 
@@ -47,7 +60,8 @@ class RDVFragment : Fragment() {
                     rdvList = response.body()!!
 
         // Créer une liste de chaînes avec l'intitulé et la date
-        val rdvStrings = rdvList.map { "${it.intitule} - ${dateFormat.format(it.daterdv)}" }
+
+        val rdvStrings = rdvList.map { "${it.intitule} - ${outputDateFormat.format(daterdvFormat.parse(it.daterdv))}" }
 
                     // Initialiser l'ArrayAdapter avec les données reçues
                     adapter = ArrayAdapter(
@@ -106,12 +120,13 @@ class RDVFragment : Fragment() {
         val tvIntitule = dialog.findViewById<TextView>(R.id.dialog_intitule)
         val tvDate = dialog.findViewById<TextView>(R.id.dialog_date)
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
+        val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
 
         tvIntitule.text = rdv.intitule
-        tvDate.text = dateFormat.format(rdv.daterdv)
-        tvHeure.text =  timeFormat.format(rdv.horaire)
-        //tvAdresse.text = rdv. -> mettre adresse utilisateur
+        tvDate.text = outputDateFormat.format(daterdvFormat.parse(rdv.daterdv))
+        tvHeure.text = outputTimeFormat.format(horaireFormat.parse(rdv.horaire))
+        tvAdresse.text = "${rdv.nom} \n${rdv.adresse}\n${rdv.codepostal} ${rdv.ville}"
 
         closeButton.setOnClickListener {
             dialog.dismiss()

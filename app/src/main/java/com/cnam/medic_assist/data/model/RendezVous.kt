@@ -1,14 +1,19 @@
 package com.cnam.medic_assist.data.model
 
 import java.sql.Time
-import java.util.Date
+import java.sql.Date
 
 data class RendezVous(
     val idRDV: Int? = null,
     var intitule: String,
-    val horaire : Time,
-    var daterdv: Date,
+    var horaire : String,
+    var daterdv: String,
     val idUser : Int,
     val idCentreMedical: Int,
-    var isADRPrincipale : Boolean
+    var isADRPrincipale : Boolean,
+    //element venant de la jointure avec le centre médical (idCentreMedical)
+    val nom : String? = null, //nom du cntre medical
+    val adresse : String? = null,
+    val codepostal : Int? = null,
+    val ville : String? = null
     )
