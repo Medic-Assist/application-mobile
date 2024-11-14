@@ -16,4 +16,17 @@
     <string name="title_suivi">Suivi</string>
     <string name="title_gps">GPS</string>
     <string name="title_profil">Profil</string>
+    <string name="profil">Profil</string>
+    <string name="nom_utilisateur">Nom utilisateur</string>
+    <string name="mes_informations">Mes informations</string>
+    <string name="mes_proches">Mes proches</string>
+    <string name="mon_adresse">Mon adresse</string>
+    <string name="moyen_locomotion">Moyen de locomotion préféré</string>
+    <string name="nom">Nom</string>
+    <string name="prenom">Prénom</string>
+    <string name="date_naissance">Date de naissance</string>
+    <string name="sexe">Sexe</string>
+    <string name="email">Adresse e-mail</string>
+    <string name="telephone">Numéro de téléphone</string>
+    <string name="entrez_votre_nom">Entrez votre nom</string>
 </resources>
