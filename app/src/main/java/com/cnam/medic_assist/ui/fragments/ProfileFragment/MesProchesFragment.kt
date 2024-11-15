@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.ui.fragments
+package com.cnam.medic_assist.ui.fragments.ProfileFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

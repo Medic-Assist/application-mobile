@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.ui.fragments
+package com.cnam.medic_assist.ui.fragments.NavFragments
 
 import android.os.Bundle
 import android.util.Log
@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ale.infra.manager.room.CreateRoomBody
 import com.ale.infra.manager.room.IRainbowRoom
-import com.ale.infra.rest.listeners.RainbowError
 import com.ale.infra.rest.listeners.RainbowListener
 import com.ale.infra.rest.room.RoomRepository
 import com.ale.rainbowsdk.RainbowSdk

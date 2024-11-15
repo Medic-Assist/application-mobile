@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.ui.fragments
+package com.cnam.medic_assist.ui.fragments.ProfileFragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,16 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.cnam.medic_assist.R
 
-// paramètres
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [MonAdresseFragment.newInstance] factory method to
+ * Use the [MesInformationsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MonAdresseFragment : Fragment() {
+class MesInformationsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -34,7 +33,7 @@ class MonAdresseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_mon_adresse, container, false)
+        return inflater.inflate(R.layout.fragment_mes_informations, container, false)
     }
 
     // Pour faire fonctionner le bouton retour
@@ -47,17 +46,15 @@ class MonAdresseFragment : Fragment() {
         }
     }
 
-
     companion object {
         /**
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return Nouvelle instance de MonAdresseFragment.
+         * @return Nouvelle instance de MesInformationsFragment.
          */
-        // TODO: Renommer et changer les types
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            MonAdresseFragment().apply {
+            MesInformationsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
