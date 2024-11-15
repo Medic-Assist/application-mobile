@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.cnam.medic_assist.R
 
 private const val ARG_PARAM1 = "param1"
@@ -33,6 +34,16 @@ class MesInformationsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_mes_informations, container, false)
+    }
+
+    // Pour faire fonctionner le bouton retour
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val btnBackToProfile: Button = view.findViewById(R.id.btn_back_to_profile)
+        btnBackToProfile.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     companion object {
