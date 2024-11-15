@@ -7,6 +7,7 @@ import com.cnam.medic_assist.screens.RDVFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.cnam.medic_assist.R
 import androidx.fragment.app.Fragment
+import com.cnam.medic_assist.ui.fragments.BubbleFragment
 import com.cnam.medic_assist.ui.fragments.HomeFragment
 import com.cnam.medic_assist.ui.fragments.SuiviFragment
 import com.cnam.medic_assist.ui.fragments.GpsFragment
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private val suiviFragment = SuiviFragment()
     private val gpsFragment = GpsFragment()
     private val profilFragment = ProfilFragment()
+    private val bubbleFragment = BubbleFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_profil -> {
                     openFragment(profilFragment)
+                    true
+                }
+                R.id.navigation_bubble -> {
+                    openFragment(bubbleFragment)
                     true
                 }
                 else -> false
