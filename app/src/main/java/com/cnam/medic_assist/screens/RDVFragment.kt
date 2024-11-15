@@ -115,7 +115,7 @@ class RDVFragment : Fragment() {
         tvIntitule.text = rdv.intitule
         tvDate.text = "Date : "+formatageDate(rdv.daterdv)
         tvHeure.text = "Horaire : "+formatageTime(rdv.horaire)
-        tvAdresse.text = "${rdv.nom} \n${rdv.adresse}\n${rdv.codepostal} ${rdv.ville}"
+        tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
         closeButton.setOnClickListener {
             dialog.dismiss()

@@ -11,7 +11,8 @@ open class Utilisateur (
     val idUser: Int? = null, // Nullable et initialisé à null pour laisser Mysql générer l'idUnique
     var prenom : String,
     var nom : String,
-    val role : RoleUser
+    val role : RoleUser,
+    var numero_tel : String?= null
 ){
     fun afficherDetailsUtilisateur() {
         println("Utilisateur: $prenom $nom ($role)")

@@ -16,32 +16,32 @@ val dateFormat = SimpleDateFormat("yyyy-MM-dd")
 object Constants {
 
     val centresMedicaux = listOf(
-        CentreMedical(1, "Clinique Sainte-Anne", "182 Rue Philippe Thys", 67000, "Strasbourg"),
-        CentreMedical(2, "Centre Dentaire", "4 Rue Alphonse Matter", 88100, "Saint-Die-des-Vosges"),
-        CentreMedical(3, "Cabinet d'ostéopathie", "1 Rue du Pont Neuf", 67230, "Benfeld"),
-        CentreMedical(4, "Ophtalmo Jung Michel", "1 Place de Bergopre", 67130, "Schirmeck"),
-        CentreMedical(5, "Hôpital de Hautepierre", "1 Av. Molière", 67200, "Strasbourg"),
-        CentreMedical(6, "Dr Guillaume Récher", "9 Rte Marcel Proust", 67200, "Strasbourg"),
-        CentreMedical(7, "Radiologie Clemenceau Sélestat", "4A Rue Georges Clemenceau", 67600, "Sélestat")
+        CentreMedical(1, "Clinique Sainte-Anne", "182", "Rue Philippe Thys", 67000, "Strasbourg"),
+        CentreMedical(2, "Centre Dentaire", "4", "Rue Alphonse Matter", 88100, "Saint-Die-des-Vosges"),
+        CentreMedical(3, "Cabinet d'ostéopathie", "1", "Rue du Pont Neuf", 67230, "Benfeld"),
+        CentreMedical(4, "Ophtalmo Jung Michel", "1", "Place de Bergopre", 67130, "Schirmeck"),
+        CentreMedical(5, "Hôpital de Hautepierre", "1", "Av. Molière", 67200, "Strasbourg"),
+        CentreMedical(6, "Dr Guillaume Récher", "9", "Rte Marcel Proust", 67200, "Strasbourg"),
+        CentreMedical(7, "Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", 67600, "Sélestat")
     )
 
     val patients = listOf(
-        Patient(1,"Alice", "Dupont", "5 Rue des Tulipes", 67600, "Sélestat"),
-        Patient(2,"Bob", "Martin", "7 Rue Gambetta", 88100, "Saint-Dié-des-Vosges"),
-        Patient(3,"Claire", "Lemoine", "3 Place du Marché", 67130, "Schirmeck"),
-        Patient(4,"David", "Durand", "8 Rue des Jardins", 88480, "Étival-Clairefontaine"),
-        Patient(5,"Eve", "Moreau", "12 Rue de la Poste", 67120, "Molsheim"),
-        Patient(6,"Frank", "Petit", "9 Rue de la Gare", 67240, "Bischwiller"),
-        Patient(7,"Grace", "Kemberg", "14 Rue des Tilleuls", 67390, "Marckolsheim"),
-        Patient(8,"Hugo", "Blanc", "17 Rue de la Liberté", 67240, "Oberhoffen-sur-Moder"),
-        Patient(9,"Isabelle", "Verde", "22 Rue des Vosges", 67100, "Strasbourg"),
-        Patient(10,"Jack", "Rouge", "20 Rue de la Forêt", 67600, "Sélestat")
+        Patient(1,"Alice", "Dupont", "5", "Rue des Tulipes", 67600, "Sélestat"),
+        Patient(2,"Bob", "Martin", "7", "Rue Gambetta", 88100, "Saint-Dié-des-Vosges"),
+        Patient(3,"Claire", "Lemoine", "3", "Place du Marché", 67130, "Schirmeck"),
+        Patient(4,"David", "Durand", "8", "Rue des Jardins", 88480, "Étival-Clairefontaine"),
+        Patient(5,"Eve", "Moreau", "12", "Rue de la Poste", 67120, "Molsheim"),
+        Patient(6,"Frank", "Petit", "9", "Rue de la Gare", 67240, "Bischwiller"),
+        Patient(7,"Grace", "Kemberg", "14" ,"Rue des Tilleuls", 67390, "Marckolsheim"),
+        Patient(8,"Hugo", "Blanc", "17" ,"Rue de la Liberté", 67240, "Oberhoffen-sur-Moder"),
+        Patient(9,"Isabelle", "Verde", "22", "Rue des Vosges", 67100, "Strasbourg"),
+        Patient(10,"Jack", "Rouge", "20", "Rue de la Forêt", 67600, "Sélestat")
     )
 
     val proches = listOf(
-        Proche(11, "Louis", "Lemoine", "23 Rue des Champs", 67210, "Obernai"),
-        Proche(12, "Marie", "Durand", "10 Rue du Lac", 88470, "La Bourgonce"),
-        Proche(13, "Nina", "Moreau", "8 Rue de la Poste", 67380, "Lingolsheim")
+        Proche(11, "Louis", "Lemoine", "23", "Rue des Champs", 67210, "Obernai"),
+        Proche(12, "Marie", "Durand", "10", "Rue du Lac", 88470, "La Bourgonce"),
+        Proche(13, "Nina", "Moreau", "8", "Rue de la Poste", 67380, "Lingolsheim")
     )
     val prochePatientRelations = listOf(
         Proche_Patient(3, 11),  // Louis proche de Claire
