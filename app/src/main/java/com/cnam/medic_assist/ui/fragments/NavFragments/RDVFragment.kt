@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
@@ -16,6 +17,8 @@ import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.utils.CalendarHelper
+import com.cnam.medic_assist.utils.ICalendarHelper
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -28,6 +31,13 @@ class RDVFragment : Fragment() {
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private var rdvList: List<RendezVous> = listOf()
+    private lateinit var calendarHelper: ICalendarHelper
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        calendarHelper = CalendarHelper(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,6 +136,7 @@ class RDVFragment : Fragment() {
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
+        val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
         tvIntitule.text = rdv.intitule
         tvDate.text = "Date : "+formatageDate(rdv.daterdv)
@@ -135,6 +146,12 @@ class RDVFragment : Fragment() {
         closeButton.setOnClickListener {
             dialog.dismiss()
         }
+
+        addToCalendarButton.setOnClickListener {
+            calendarHelper.addEventToCalendar(rdv)
+            dialog.dismiss()
+        }
+
         dialog.setCanceledOnTouchOutside(true)
         dialog.show()
     }
