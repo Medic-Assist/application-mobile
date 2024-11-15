@@ -50,7 +50,6 @@ class BubbleFragment : Fragment() {
         RainbowSdk.instance().bubbles().createBubble(body, object : RainbowListener<IRainbowRoom, RoomRepository.CreateRoomError> {
             override fun onSuccess(bubble: IRainbowRoom) {
                 Log.d("RainbowSDK", "Bulle créée avec succès : ${bubble.name}")
-                Toast.makeText(requireContext(), "Bulle créée : ${bubble.name}", Toast.LENGTH_SHORT).show()
             }
         })
     }
