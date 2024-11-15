@@ -1,77 +1,118 @@
 package com.cnam.medic_assist
 
-import android.content.Intent
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val buttonMap = findViewById<Button>(R.id.button_map)
-        buttonMap.setOnClickListener {
-            startActivity(Intent(this, MapActivity::class.java))
-        }
-
-        val buttonDirections = findViewById<Button>(R.id.button_directions)
-        buttonDirections.setOnClickListener {
-            val intent = Intent(this, MapActivity::class.java)
-            intent.action = "GET_DIRECTIONS"
-            // Définir la destination à la cathédrale de Strasbourg
-            intent.putExtra("DESTINATION", "Cathédrale de Strasbourg")
-            startActivity(intent)
-        }
+        // Initialiser le client de localisation
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         val buttonSearch = findViewById<Button>(R.id.button_search)
-        buttonSearch.setOnClickListener {
-            val destination = findViewById<EditText>(R.id.edit_text_destination).text.toString()
-            if (destination.isNotBlank()) {
-                val intent = Intent(this, MapActivity::class.java)
-                intent.action = "GET_DIRECTIONS"
-                intent.putExtra("DESTINATION", destination)
-                startActivity(intent)
-            }
-        }
-
         val textResult = findViewById<TextView>(R.id.text_result)
 
         buttonSearch.setOnClickListener {
             val destination = findViewById<EditText>(R.id.edit_text_destination).text.toString()
-            if (destination.isNotBlank()) {
-                val startCoordinates = "7.788539675444039,48.812850103549344" // Coordonnées de départ (exemple)
-                val endCoordinates = "7.684643371015784,48.59018005009095" // Coordonnées d'arrivée (à modifier selon le lieu)
 
-                RetrofitClient.instance.getRoute(
-                    start = startCoordinates,
-                    end = endCoordinates
-                ).enqueue(object : Callback<RouteResponse> {
-                    override fun onResponse(call: Call<RouteResponse>, response: Response<RouteResponse>) {
-                        if (response.isSuccessful) {
-                            val result = response.body()
-                            val durationInMinutes = (result?.duration ?: 0.0) / 60
-                            textResult.text = "Temps estimé : %.2f minutes\nLieu : $destination".format(durationInMinutes)
-                        } else {
-                            textResult.text = "Erreur lors de la récupération du trajet."
+            if (destination.isNotBlank()) {
+                // Vérifier si la permission de localisation est accordée
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    // Obtenir la localisation de l'utilisateur
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                        location?.let {
+                            val startCoordinates = "${it.longitude},${it.latitude}"
+
+                            // Utiliser Geocoder pour obtenir les coordonnées de l'adresse de destination
+                            val geocoder = Geocoder(this, Locale.getDefault())
+                            val addressList = geocoder.getFromLocationName(destination, 1)
+
+                            if (addressList != null) {
+                                if (addressList.isNotEmpty()) {
+                                    val address = addressList?.get(0)
+                                    val endCoordinates = "${address?.longitude},${address?.latitude}"
+
+                                    // Effectuer la requête API pour obtenir le trajet
+                                    RetrofitClient.instance.getRoute(
+                                        start = startCoordinates,
+                                        end = endCoordinates
+                                    ).enqueue(object : Callback<RouteResponse> {
+                                        override fun onResponse(
+                                            call: Call<RouteResponse>,
+                                            response: Response<RouteResponse>
+                                        ) {
+                                            if (response.isSuccessful) {
+                                                val result = response.body()
+                                                val durationInMinutes = (result?.duration ?: 0.0) / 60
+                                                textResult.text =
+                                                    "Temps estimé : %.2f minutes\nLieu : $destination".format(
+                                                        durationInMinutes
+                                                    )
+                                            } else {
+                                                textResult.text = "Erreur lors de la récupération du trajet."
+                                            }
+                                        }
+
+                                        override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
+                                            textResult.text = "Erreur réseau : ${t.message}"
+                                        }
+                                    })
+                                } else {
+                                    textResult.text = "Adresse non trouvée."
+                                }
+                            }
                         }
                     }
-
-                    override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
-                        textResult.text = "Erreur réseau : ${t.message}"
-                    }
-                })
+                } else {
+                    // Demander la permission d'accès à la localisation
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        LOCATION_PERMISSION_REQUEST_CODE
+                    )
+                }
             } else {
                 textResult.text = "Veuillez entrer une destination."
             }
         }
+    }
 
+    // Gérer la réponse de la demande de permission de localisation
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission accordée", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Permission refusée", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
