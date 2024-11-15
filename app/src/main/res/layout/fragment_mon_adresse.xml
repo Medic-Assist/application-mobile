@@ -1,14 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     tools:context=".ui.fragments.MonAdresseFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="16dp">
 
+        <!-- Bouton Retour -->
+        <Button
+            android:id="@+id/btn_back_to_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retour"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/black"
+            android:layout_gravity="start" />
+
+        <!-- Input Numéro (de rue) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Numéro"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le numéro"
+            android:backgroundTint="@color/black" />
+
+        <!-- Input Rue -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rue"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_rue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez la rue"
+            android:backgroundTint="@color/black" />
+
+        <!-- Input Code Postal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Code Postal"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_code_postal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le code postal"
+            android:inputType="number"
+            android:backgroundTint="@color/black" />
+
+        <!-- Input Pays -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pays"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_pays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le pays"
+            android:backgroundTint="@color/black" />
+
+        <!-- Espacement -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+        <!-- Bouton Modifier -->
+        <Button
+            android:id="@+id/btn_modifier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Modifier"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp" />
+
+        <!-- Bouton Enregistrer -->
+        <Button
+            android:id="@+id/btn_enregistrer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enregistrer"
+            android:backgroundTint="@color/blue"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
 </FrameLayout>
