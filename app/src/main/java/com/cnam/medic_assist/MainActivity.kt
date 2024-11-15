@@ -7,7 +7,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.ui.fragments.BubbleFragment
 import com.cnam.medic_assist.ui.fragments.HomeFragment
-import com.cnam.medic_assist.ui.fragments.SuiviFragment
 import com.cnam.medic_assist.ui.fragments.GpsFragment
 import com.cnam.medic_assist.ui.fragments.ProfilFragment
 
