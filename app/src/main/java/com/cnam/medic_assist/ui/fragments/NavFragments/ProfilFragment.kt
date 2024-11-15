@@ -1,13 +1,16 @@
-package com.cnam.medic_assist.ui.fragments
+package com.cnam.medic_assist.ui.fragments.NavFragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.cnam.medic_assist.R
+import com.cnam.medic_assist.ui.fragments.ProfileFragment.MesInformationsFragment
+import com.cnam.medic_assist.ui.fragments.ProfileFragment.MesProchesFragment
+import com.cnam.medic_assist.ui.fragments.ProfileFragment.MonAdresseFragment
+import com.cnam.medic_assist.ui.fragments.ProfileFragment.MoyenLocomotionFragment
 
 class ProfilFragment : Fragment() {
 

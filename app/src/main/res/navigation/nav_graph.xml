@@ -7,7 +7,7 @@
     <!-- ProfilFragment -->
     <fragment
         android:id="@+id/profilFragment"
-        android:name="com.cnam.medic_assist.ui.fragments.ProfilFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.NavFragments.ProfilFragment"
         android:label="Profil">
 
         <!-- Actions vers les autres fragments -->
@@ -31,24 +31,24 @@
     <!-- MesInformationsFragment -->
     <fragment
         android:id="@+id/mesInformationsFragment"
-        android:name="com.cnam.medic_assist.ui.fragments.MesInformationsFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.ProfileFragment.MesInformationsFragment"
         android:label="Mes Informations" />
 
     <!-- MesProchesFragment -->
     <fragment
         android:id="@+id/mesProchesFragment"
-        android:name="com.cnam.medic_assist.ui.fragments.MesProchesFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.ProfileFragment.MesProchesFragment"
         android:label="Mes Proches" />
 
     <!-- MonAdresseFragment -->
     <fragment
         android:id="@+id/monAdresseFragment"
-        android:name="com.cnam.medic_assist.ui.fragments.MonAdresseFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.ProfileFragment.MonAdresseFragment"
         android:label="Mon Adresse" />
 
     <!-- MoyenLocomotionFragment -->
     <fragment
         android:id="@+id/moyenLocomotionFragment"
-        android:name="com.cnam.medic_assist.ui.fragments.MoyenLocomotionFragment"
+        android:name="com.cnam.medic_assist.ui.fragments.ProfileFragment.MoyenLocomotionFragment"
         android:label="Moyen de Locomotion" />
 </navigation>
