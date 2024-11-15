@@ -1,0 +1,191 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.MesInformationsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@color/white"
+            android:clipToPadding="false"
+            android:elevation="2dp"
+            android:layout_margin="16dp">
+
+            <!-- Bouton Retour -->
+            <Button
+                android:id="@+id/btn_back_to_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retour"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:layout_gravity="start"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Champ Nom -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nom"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextNom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Entrez votre nom"
+                android:enabled="false"
+                android:padding="12dp"
+                android:backgroundTint="#808080" />
+
+            <!-- Champ Prénom -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Prénom"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextPrenom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Entrez votre prénom"
+                android:enabled="false"
+                android:padding="12dp"
+                android:backgroundTint="#808080" />
+
+            <!-- Champ Date de Naissance -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date de naissance"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextDateNaissance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="dd/mm/yyyy"
+                android:enabled="false"
+                android:padding="12dp"
+                android:backgroundTint="#808080"
+                android:inputType="date" />
+
+            <!-- Champ Sexe -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sexe"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextSexe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sexe"
+                android:enabled="false"
+                android:padding="12dp"
+                android:backgroundTint="#808080" />
+
+            <!-- Champ Adresse E-mail -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Adresse e-mail"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Entrez votre e-mail"
+                android:enabled="false"
+                android:padding="12dp"
+                android:backgroundTint="#808080"
+                android:inputType="textEmailAddress" />
+
+            <!-- Champ Numéro de Téléphone -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Numéro de téléphone"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- Code Pays -->
+                <EditText
+                    android:id="@+id/editTextIndicatif"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="+33"
+                    android:enabled="false"
+                    android:padding="12dp"
+                    android:backgroundTint="#808080"
+                    android:inputType="phone" />
+
+                <!-- Numéro de Téléphone -->
+                <EditText
+                    android:id="@+id/editTextTelephone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:hint="Numéro de téléphone"
+                    android:enabled="false"
+                    android:padding="12dp"
+                    android:backgroundTint="#808080"
+                    android:inputType="phone" />
+            </LinearLayout>
+
+            <!-- Bouton Modifier -->
+            <Button
+                android:id="@+id/btn_modifier"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Modifier"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp" />
+
+            <!-- Bouton Enregistrer -->
+            <Button
+                android:id="@+id/btn_enregistrer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enregistrer"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

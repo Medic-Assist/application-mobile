@@ -56,4 +56,14 @@
         android:layout_height="wrap_content"
         android:text="Adresse du RDV"
         android:textSize="16sp" />
+
+    <!-- Bouton pour ajouter le rendez-vous au calendrier -->
+    <Button
+        android:id="@+id/add_to_calendar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter au calendrier"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
