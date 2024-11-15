@@ -33,21 +33,30 @@
         android:layout_marginEnd="24dp"/>
 
     <Button
-        android:id="@+id/button_search"
+        android:id="@+id/button_searchMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
+        android:text="Search Carte"
         android:layout_below="@id/edit_text_destination"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/button_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_text_destination"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="91dp"
+        android:text="Search" />
 
     <TextView
         android:id="@+id/text_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Result will appear here"
         android:layout_below="@id/button_search"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp" />
+        android:layout_marginTop="82dp"
+        android:layout_marginEnd="24dp"
+        android:text="Result will appear here" />
 </RelativeLayout>
