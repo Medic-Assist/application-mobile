@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ale.infra.manager.room.CreateRoomBody
 import com.ale.infra.manager.room.IRainbowRoom
-import com.ale.infra.rest.listeners.RainbowError
 import com.ale.infra.rest.listeners.RainbowListener
 import com.ale.infra.rest.room.RoomRepository
 import com.ale.rainbowsdk.RainbowSdk
@@ -55,9 +55,26 @@ class BubbleFragment : Fragment() {
     }
 
     private fun listBubbles() {
-        // Obtenez toutes les bulles via le SDK
+        // Obtenir toutes les bulles via le SDK
         val bubbles = RainbowSdk.instance().bubbles().getAllBubbles()
+        val recyclerView: RecyclerView = requireView().findViewById(R.id.bubblesRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.visibility = View.VISIBLE
 
+        // Adapter for displaying the bubbles
+        val adapter = BubblesAdapter(bubbles) { bubble ->
+            openBubbleChat(bubble)
+        }
+        recyclerView.adapter = adapter
+    }
+
+    private fun openBubbleChat(bubble: IRainbowRoom) {
+        // Ouvrir la bulle choisi
+        val chatFragment = BubbleChatFragment.newInstance(bubble.id)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, chatFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
 }

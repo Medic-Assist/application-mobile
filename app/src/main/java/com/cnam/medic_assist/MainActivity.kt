@@ -2,7 +2,6 @@ package com.cnam.medic_assist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ale.rainbowsdk.RainbowSdk
 import com.cnam.medic_assist.screens.RDVFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.cnam.medic_assist.R

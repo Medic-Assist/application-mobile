@@ -17,4 +17,6 @@
     <string name="title_gps">GPS</string>
     <string name="title_profil">Profil</string>
     <string name="title_bubble">Bulle</string>
+    <string name="hint">Type a message</string>
+    <string name="send">Send</string>
 </resources>
