@@ -1,10 +1,10 @@
-package com.cnam.medic_assist.data.network
+package com.cnam.medic_assist.datas.network
 
-import com.cnam.medic_assist.data.model.CentreMedical
-import com.cnam.medic_assist.data.model.Patient
-import com.cnam.medic_assist.data.model.Proche
-import com.cnam.medic_assist.data.model.RendezVous
-import com.cnam.medic_assist.data.model.Utilisateur
+import com.cnam.medic_assist.datas.models.CentreMedical
+import com.cnam.medic_assist.datas.models.Patient
+import com.cnam.medic_assist.datas.models.Proche
+import com.cnam.medic_assist.datas.models.RendezVous
+import com.cnam.medic_assist.datas.models.Utilisateur
 import retrofit2.Call
 import retrofit2.http.*
 

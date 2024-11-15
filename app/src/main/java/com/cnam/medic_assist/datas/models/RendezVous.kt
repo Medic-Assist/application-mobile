@@ -1,7 +1,4 @@
-package com.cnam.medic_assist.data.model
-
-import java.sql.Time
-import java.sql.Date
+package com.cnam.medic_assist.datas.models
 
 data class RendezVous(
     val idRDV: Int? = null,

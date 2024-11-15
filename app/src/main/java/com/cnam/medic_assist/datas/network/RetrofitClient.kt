@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.data.network
+package com.cnam.medic_assist.datas.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

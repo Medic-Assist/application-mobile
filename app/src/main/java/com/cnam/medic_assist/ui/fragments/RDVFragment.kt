@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.screens
+package com.cnam.medic_assist.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
@@ -13,8 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
-import com.cnam.medic_assist.data.model.RendezVous
-import com.cnam.medic_assist.data.network.RetrofitClient
+import com.cnam.medic_assist.datas.models.RendezVous
+import com.cnam.medic_assist.datas.network.RetrofitClient
 import java.text.SimpleDateFormat
 import retrofit2.Call
 import retrofit2.Callback

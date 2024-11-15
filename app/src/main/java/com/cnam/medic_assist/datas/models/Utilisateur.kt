@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.data.model
+package com.cnam.medic_assist.datas.models
 
 
 enum class RoleUser {
