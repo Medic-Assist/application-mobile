@@ -3,24 +3,22 @@ package com.cnam.medic_assist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
-import android.view.View
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ale.infra.rest.listeners.RainbowError
+import com.ale.rainbowsdk.Connection
+import com.ale.rainbowsdk.RainbowSdk
 
+class LoginActivity : AppCompatActivity() {
 
-class LoginActivity() : AppCompatActivity() {
-    private val PREFS_NAME = "LoginPrefs"
     private lateinit var editTextNewUsername: EditText
     private lateinit var editTextNewPassword: EditText
     private lateinit var btnRegister: Button
-
-    constructor(parcel: Parcel) : this() {
-
-    }
+    private val sandboxHost = "openrainbow.com"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,44 +28,51 @@ class LoginActivity() : AppCompatActivity() {
         editTextNewPassword = findViewById(R.id.passwordEditText)
         btnRegister = findViewById(R.id.loginButton)
 
-        val sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
-        val editor = sharedPreferences.edit()
-
-        editor.putString("username", "test")
-        editor.putString("password", "test")
-        editor.apply()
+        btnRegister.setOnClickListener { onClickConnexion() }
     }
 
-    fun OnClickConnexion(view: View) {
-        if(editTextNewPassword.text != null && editTextNewUsername != null){
-            val inputUsername = editTextNewUsername.text.toString()
-            val inputPassword = editTextNewPassword.text.toString()
+    private fun onClickConnexion() {
+        val inputUsername = editTextNewUsername.text.toString()
+        val inputPassword = editTextNewPassword.text.toString()
 
-            login(inputUsername, inputPassword)
+        if (inputUsername.isNotBlank() && inputPassword.isNotBlank()) {
+            loginWithRainbow(inputUsername, inputPassword)
+        } else {
+            showAlertDialog("Connection Failed", "Username or password was not filled")
         }
-        else{
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Connection Failed")
-            builder.setMessage("Username or password was not filled")
-            builder.show()
-        }
-
     }
 
-    fun login(inputUsername :String, inputPassword :String ){
-        val sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val trueUsername = sharedPreferences.getString("username", null)
-        val truePassword = sharedPreferences.getString("password", null)
-
-        if (inputUsername == trueUsername && inputPassword == truePassword) {
-            val i = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(i)
+    private fun loginWithRainbow(username: String, password: String) {
+        // Vérification de l'état de connexion
+        if (RainbowSdk.instance().connection().state != Connection.ConnectionState.DISCONNECTED) {
+            Log.d("RainbowSDK", "Connexion déjà établie ou en cours.")
+            return
         }
-        else{
+
+        RainbowSdk.instance().connection().signIn(
+            login = username,
+            password = password,
+            host = "sandbox.openrainbow.com", // Ou "openrainbow.com" pour la production
+            listener = object : Connection.ISignInListener {
+                override fun onSignInSucceeded() {
+                    Log.d("RainbowSDK", "Connexion réussie pour l'utilisateur : $username")
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                }
+
+                override fun onSignInFailed(errorCode: Connection.ErrorCode, error: RainbowError<Unit>) {
+                    Log.e("RainbowSDK", "Échec de la connexion : Code erreur - ${errorCode.name}, Détails - ${error.errorMsg}")
+                    showAlertDialog("Login Failed", "Error Code: ${errorCode.name} - Details: ${error.errorMsg}")
+                }
+            }
+        )
+    }
+
+    private fun showAlertDialog(title: String, message: String) {
+        runOnUiThread {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Fail")
-            builder.setMessage("password or username false")
+            builder.setTitle(title)
+            builder.setMessage(message)
             builder.show()
         }
     }
