@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.ale.rainbowsdk.RainbowSdk
 import com.ale.rainbowsdk.Connection
+import com.cnam.medic_assist.environments.Env
 
 class RainbowApplication : Application() {
 
@@ -12,8 +13,8 @@ class RainbowApplication : Application() {
         Log.d("RainbowSDK", "Initialisation du SDK Rainbow...")
         RainbowSdk.instance().initialize(
             applicationContext = this,
-            applicationId = "a21246a0946111efa94a41c51a51acb0",
-            applicationSecret = "hH0KBTb3gltywRmA2FwXfBzNTJXfzdEwHeXbCND9yG5IqSfvZ5TcO4X4jUywN2kC"
+            applicationId = Env.APPLICATION_ID,
+            applicationSecret = Env.APPLICATION_SECRET
         )
         // Vérifiez l'état de la connexion après l'initialisation
         if (RainbowSdk.instance().connection().state == Connection.ConnectionState.DISCONNECTED) {

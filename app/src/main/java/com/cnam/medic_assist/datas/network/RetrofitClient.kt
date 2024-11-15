@@ -1,10 +1,11 @@
 package com.cnam.medic_assist.datas.network
 
+import com.cnam.medic_assist.environments.Env
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.1.196:3000/api/" //mettre ici son adresse IPV4
+    private const val BASE_URL = Env.BASE_URL
 
     val instance: ApiService by lazy {
         val retrofit = Retrofit.Builder()
