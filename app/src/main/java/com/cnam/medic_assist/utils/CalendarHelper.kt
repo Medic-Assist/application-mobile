@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import com.cnam.medic_assist.models.RendezVous
+import com.cnam.medic_assist.datas.models.RendezVous
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -33,8 +33,8 @@ class CalendarHelper(private val context: Context) : ICalendarHelper {
             BEGIN:VEVENT
             UID:${rdv.idRDV}@medicassistapp.com
             DTSTAMP:${getFormattedDateTime(System.currentTimeMillis())}
-            DTSTART:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.horaire}"))}
-            DTEND:${getFormattedDateTime(parseDateTime("${rdv.dateRDV} ${rdv.horaire}") + 60 * 60 * 1000)}
+            DTSTART:${getFormattedDateTime(parseDateTime("${rdv.daterdv} ${rdv.horaire}"))}
+            DTEND:${getFormattedDateTime(parseDateTime("${rdv.daterdv} ${rdv.horaire}") + 60 * 60 * 1000)}
             SUMMARY:${rdv.intitule}
             LOCATION: HELLO
             END:VEVENT

@@ -3,7 +3,6 @@ package com.cnam.medic_assist
 import android.os.Bundle
 import com.cnam.medic_assist.ui.fragments.RDVFragment
 import androidx.appcompat.app.AppCompatActivity
-import com.cnam.medic_assist.ui.fragments.RDVFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.ui.fragments.BubbleFragment
