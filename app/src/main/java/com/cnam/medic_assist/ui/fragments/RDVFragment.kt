@@ -1,4 +1,4 @@
-package com.cnam.medic_assist.screens
+package com.cnam.medic_assist.ui.fragments
 
 import android.app.Dialog
 import android.os.Bundle
