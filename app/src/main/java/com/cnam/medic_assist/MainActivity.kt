@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, RDVFragment.newInstance())
+            .replace(R.id.fragment_container, HomeFragment.newInstance("test", "test"))
             .commit()
 
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
