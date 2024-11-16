@@ -1,4 +1,4 @@
-package com.cnam.medic_assist
+package com.cnam.medic_assist.datas.network
 
 import retrofit2.Call
 import retrofit2.http.GET

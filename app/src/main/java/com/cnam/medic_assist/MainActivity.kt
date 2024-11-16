@@ -18,11 +18,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
-import android.os.Bundle
 import com.cnam.medic_assist.ui.fragments.NavFragments.RDVFragment
-import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.fragment.app.Fragment
+import com.cnam.medic_assist.datas.network.MapsRetrofitClient
+import com.cnam.medic_assist.datas.network.RouteResponse
 import com.cnam.medic_assist.ui.fragments.NavFragments.BubbleFragment
 import com.cnam.medic_assist.ui.fragments.NavFragments.HomeFragment
 import com.cnam.medic_assist.ui.fragments.NavFragments.GpsFragment
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                                     val endCoordinates = "${address?.longitude},${address?.latitude}"
 
                                     // Effectuer la requête API pour obtenir le trajet
-                                    RetrofitClient.instance.getRoute(
+                                    MapsRetrofitClient.instance.getRoute(
                                         start = startCoordinates,
                                         end = endCoordinates
                                     ).enqueue(object : Callback<RouteResponse> {
