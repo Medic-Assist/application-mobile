@@ -1,0 +1,126 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.NavFragments.ProfilFragment">
+
+    <!-- Conteneur principal qui sera remplacé par les sous-fragments -->
+    <LinearLayout
+        android:id="@+id/main_profile_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Image de profil circulaire -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_default_profile"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_shape" />
+
+        <!-- Nom d'utilisateur en gras -->
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nom d'utilisateur"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal" />
+
+        <!-- Espacement -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+        <!-- Séparateur -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <!-- "Mes informations" -->
+        <TextView
+            android:id="@+id/mes_informations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mes informations"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Séparateur -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <!-- "Mes proches" -->
+        <TextView
+            android:id="@+id/mes_proches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mes proches"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Séparateur -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <!-- "Mon adresse" -->
+        <TextView
+            android:id="@+id/mon_adresse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mon adresse"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Séparateur -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <!-- "Moyen de locomotion préféré" -->
+        <TextView
+            android:id="@+id/moyen_locomotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Moyen de locomotion préféré"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Séparateur final -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+    </LinearLayout>
+
+</FrameLayout>
