@@ -2,15 +2,11 @@ package com.cnam.medic_assist.ui.fragments.NavFragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
@@ -19,12 +15,11 @@ import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RDVFragment : Fragment() {
 
@@ -35,7 +30,6 @@ class RDVFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         calendarHelper = CalendarHelper(requireContext())
     }
 
@@ -45,14 +39,12 @@ class RDVFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.rdv_page, container, false)
 
-        // Récupérer la ListView
+        // Initialiser la ListView et son adaptateur
         listView = view.findViewById(R.id.list_view)
-
-        // Initialiser l'adaptateur avec une liste mutable vide
         adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1,
-            mutableListOf() // Liste mutable
+            mutableListOf()
         )
         listView.adapter = adapter
 
@@ -62,7 +54,7 @@ class RDVFragment : Fragment() {
             showRdvDetailsDialog(rdv)
         }
 
-        // Setup SearchView
+        // Configurer la SearchView
         val searchView: SearchView = view.findViewById(R.id.searchView)
         setupSearchView(searchView)
 
@@ -72,7 +64,7 @@ class RDVFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Charger les données lors de l'affichage du fragment
+        // Charger les données au démarrage
         if (rdvList.isEmpty()) {
             fetchData()
         } else {
@@ -83,29 +75,29 @@ class RDVFragment : Fragment() {
     private fun fetchData() {
         RetrofitClient.instance.getRendezvousByUserId(1).enqueue(object : Callback<List<RendezVous>> {
             override fun onResponse(call: Call<List<RendezVous>>, response: Response<List<RendezVous>>) {
-                if (response.isSuccessful && response.body() != null && response.body()!!.isNotEmpty()) {
-                    // Charger les données de l'API
-                    rdvList = response.body()!!
-                    reloadData()
-
-                    Toast.makeText(requireContext(), "Nombre de rendez-vous : ${rdvList.size}", Toast.LENGTH_SHORT).show()
-                } else {
-                    // Si aucune donnée n'est retournée, charger les données constantes
-                    loadDefaultRdvData()
+                if (isAdded) {
+                    if (response.isSuccessful && response.body() != null) {
+                        rdvList = response.body()!!
+                        reloadData()
+                        Toast.makeText(requireContext(), "Nombre de rendez-vous : ${rdvList.size}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        loadDefaultRdvData()
+                    }
                 }
             }
 
             override fun onFailure(call: Call<List<RendezVous>>, t: Throwable) {
-                // En cas d'échec de la requête, charger les données constantes
-                Toast.makeText(requireContext(), "Erreur : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                }
                 loadDefaultRdvData()
             }
         })
     }
 
     private fun reloadData() {
+        if (!isAdded) return // Ne pas mettre à jour si le fragment n'est pas attaché
         val rdvStrings = rdvList.map { "${it.intitule} - ${formatageDate(it.daterdv)}" }
-
         adapter.clear()
         adapter.addAll(rdvStrings)
         adapter.notifyDataSetChanged()
@@ -139,16 +131,15 @@ class RDVFragment : Fragment() {
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
         tvIntitule.text = rdv.intitule
-        tvDate.text = "Date : "+formatageDate(rdv.daterdv)
-        tvHeure.text = "Horaire : "+formatageTime(rdv.horaire)
+        tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
+        tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
-        closeButton.setOnClickListener {
-            dialog.dismiss()
-        }
+        closeButton.setOnClickListener { dialog.dismiss() }
 
         addToCalendarButton.setOnClickListener {
             calendarHelper.addEventToCalendar(rdv)
+            Toast.makeText(requireContext(), "Rendez-vous ajouté au calendrier.", Toast.LENGTH_SHORT).show()
             dialog.dismiss()
         }
 
@@ -159,7 +150,7 @@ class RDVFragment : Fragment() {
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
-            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // Format simple sans heure
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         )
         val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
@@ -168,23 +159,36 @@ class RDVFragment : Fragment() {
                 val parsedDate = format.parse(date)
                 return outputDateFormat.format(parsedDate)
             } catch (e: Exception) {
-                // Ignorer l'erreur et passer au format suivant
+                Log.w("RDVFragment", "Erreur de formatage de la date : $date")
             }
         }
 
-        return date // Retourner la date brute si aucun format ne correspond
+        return "Date invalide"
     }
 
     private fun formatageTime(time: String): String {
-        val horaireFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        val outputTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return outputTimeFormat.format(horaireFormat.parse(time))
+        return try {
+            val horaireFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val outputTimeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            outputTimeFormat.format(horaireFormat.parse(time))
+        } catch (e: Exception) {
+            Log.w("RDVFragment", "Erreur de formatage de l'heure : $time")
+            "Heure invalide"
+        }
     }
 
     private fun loadDefaultRdvData() {
-        rdvList = Constants.rdvList
-        reloadData()
-        Toast.makeText(requireContext(), "Données par défaut chargées", Toast.LENGTH_SHORT).show()
+        if (Constants.rdvList.isNotEmpty()) {
+            rdvList = Constants.rdvList
+            reloadData()
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Données par défaut chargées", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Aucune donnée par défaut disponible.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {
