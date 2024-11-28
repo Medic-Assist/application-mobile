@@ -12,7 +12,8 @@ open class Utilisateur (
     var prenom : String,
     var nom : String,
     val role : RoleUser,
-    var numero_tel : String?= null
+    var numero_tel : String?= null,
+    var email: String?= null
 ){
     fun afficherDetailsUtilisateur() {
         println("Utilisateur: $prenom $nom ($role)")

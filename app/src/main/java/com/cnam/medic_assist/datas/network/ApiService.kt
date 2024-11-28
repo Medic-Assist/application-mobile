@@ -4,6 +4,7 @@ import com.cnam.medic_assist.datas.models.CentreMedical
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
 import com.cnam.medic_assist.datas.models.RendezVous
+import com.cnam.medic_assist.datas.models.UserRainbow
 import com.cnam.medic_assist.datas.models.Utilisateur
 import retrofit2.Call
 import retrofit2.http.*
@@ -85,4 +86,12 @@ interface ApiService {
     // Liste des centres médicaux
     @GET("centres")
     fun getCentresMedicaux(): Call<List<CentreMedical>>
+
+    // Get user by email
+    @GET("/utilisateurs/email/{email}")
+    fun getUserByEmail(@Path("email") email: String): Call<Utilisateur>
+    // Ajouter un mapping UserRainbow
+    @POST("/user_rainbow")
+    fun addUserRainbow(@Body userRainbow: UserRainbow): Call<Void>
+    }
 }
