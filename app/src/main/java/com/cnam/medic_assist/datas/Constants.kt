@@ -93,6 +93,9 @@ object Constants {
         RendezVous(14, "RDV Sage femme", "11:00:00", "2024-10-03", 9, 5, true),
 
         // Rendez-vous pour Jack
-        RendezVous(15, "Radio mâchoire", "15:30:00", "2024-10-04", 10, 7, true)
+        RendezVous(15, "Radio mâchoire", "15:30:00", "2024-10-04", 10, 7, true) ,
+
+        RendezVous(15, "TEST NOTIF", "21:30:00", "2024-11-27", 10, 7, true),
+        RendezVous(16, "TEST NOTIF !!!!!!!!!!", "14:35:00", "2024-11-29", 10, 7, true)
     )
 }
