@@ -113,11 +113,23 @@ class GpsFragment : Fragment() {
                             ) {
                                 if (response.isSuccessful) {
                                     val result = response.body()
-                                    val durationInMinutes = (result?.duration ?: 0.0) / 60
-                                    textResult.text =
-                                        "Temps estimé : %.2f minutes\nLieu : $destination".format(
-                                            durationInMinutes
-                                        )
+                                    val duration = result?.duration ?: "00:00:00"
+
+                                    // Split the duration (hh:mm:ss)
+                                    val parts = duration.split(":")
+                                    val hours = parts[0]
+                                    val minutes = parts[1]
+
+                                    // Check if there are hours and display accordingly
+                                    val displayText = if (hours == "00") {
+                                        // No hours, display only minutes
+                                        "Temps estimé : $minutes minutes\nLieu : $destination"
+                                    } else {
+                                        // Show hours and minutes
+                                        "Temps estimé : $hours heures $minutes minutes\nLieu : $destination"
+                                    }
+
+                                    textResult.text = displayText
                                 } else {
                                     textResult.text = "Erreur lors de la récupération du trajet."
                                 }
