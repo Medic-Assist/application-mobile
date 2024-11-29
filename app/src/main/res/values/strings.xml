@@ -39,4 +39,5 @@
     <string name="telephone">Numéro de téléphone</string>
     <string name="entrez_votre_nom">Entrez votre nom</string>
     <string name="title_bubble">Bulle</string>
+    <string name="time_estimation">Estimation du temps de trajet</string>
 </resources>

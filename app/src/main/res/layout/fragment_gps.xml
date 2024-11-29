@@ -31,7 +31,6 @@
             android:text="Recherchez un itinéraire pour vous rendre à vos rendez-vous."
             android:textSize="14sp"
             android:textColor="@color/white" />
-
     </LinearLayout>
 
     <!-- Bouton Retour -->
@@ -101,16 +100,35 @@
         android:layout_margin="16dp"
         android:background="@drawable/rounded_background" />
 
-    <!-- Résultats -->
-    <TextView
-        android:id="@+id/text_result"
+    <!-- Estimation du temps de trajet -->
+    <LinearLayout
+        android:id="@+id/card_time_estimation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_below="@id/map_container"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Résultat"
-        android:textSize="14sp"
-        android:textColor="@color/black" />
+        android:layout_margin="16dp"
+        android:background="@drawable/rounded_background"
+        android:elevation="4dp"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/title_travel_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temps estimé du trajet"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/text_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temps estimé : -- minutes"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 </RelativeLayout>
