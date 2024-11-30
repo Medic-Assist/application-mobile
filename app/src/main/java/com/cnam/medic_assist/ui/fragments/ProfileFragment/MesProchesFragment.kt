@@ -6,20 +6,47 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cnam.medic_assist.R
+import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.datas.models.Patient
+import com.cnam.medic_assist.datas.models.Proche
+import com.cnam.medic_assist.datas.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MesProchesFragment : Fragment() {
-
+    private var proches = mutableListOf<Proche>()
+    private lateinit var adapter: ProcheAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // étendre la mise en page pour ce fragment (mes proches)
-        return inflater.inflate(R.layout.fragment_mes_proches, container, false)
+        return inflater.inflate(R.layout.fragment_proches, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fetchData()
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView_proches)
+        val btnAddProche: Button = view.findViewById(R.id.btn_add_proche)
+
+        adapter = ProcheAdapter(proches) { proche ->
+            showProcheFormDialog(proche) // Modifier un proche
+        }
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+
+        btnAddProche.setOnClickListener {
+            showProcheFormDialog(null) // Ajouter un proche
+        }
 
         val btnBackToProfile: Button = view.findViewById(R.id.btn_back_to_profile)
         btnBackToProfile.setOnClickListener {
@@ -27,15 +54,70 @@ class MesProchesFragment : Fragment() {
             parentFragmentManager.popBackStack()
         }
 
-        val btnModifier: Button = view.findViewById(R.id.btn_modifier)
-        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
+        //val btnModifier: Button = view.findViewById(R.id.btn_modifier)
+        //val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
 
-        btnModifier.setOnClickListener {
-            // TODO : logique de modification
-        }
+//        btnModifier.setOnClickListener {
+//            // TODO : logique de modification
+//        }
+//
+//        btnEnregistrer.setOnClickListener {
+//            // TODO : logique pour enregister les modifs
+//        }
+    }
 
-        btnEnregistrer.setOnClickListener {
-            // TODO : logique pour enregister les modifs
+    private fun fetchData() {
+        RetrofitClient.instance.getProchesByPatientId(1).enqueue(object :
+            Callback<List<Proche>> {
+            override fun onResponse(call: Call<List<Proche>>, response: Response<List<Proche>>) {
+                if (isAdded) {
+                    if (response.isSuccessful && response.body() != null) {
+                        proches.clear() // Vider la liste actuelle
+                        proches.addAll(response.body()!!) // Ajouter les nouveaux proches
+                        adapter.notifyDataSetChanged() // Mettre à jour la RecyclerView
+                        Toast.makeText(requireContext(), "Chargement des informations réussi.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
+
+                        loadDefaultProcheData()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Proche>>, t: Throwable) {
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                }
+                loadDefaultProcheData()
+            }
+        })
+    }
+
+    private fun loadDefaultProcheData() {
+        if (Constants.proches.get(1) != null) {
+            proches.clear()
+            proches.addAll(Constants.proches)
+            adapter.notifyDataSetChanged() // Mise à jour de la RecyclerView
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Données par défaut chargées", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            if (isAdded) {
+                Toast.makeText(requireContext(), "Aucune donnée par défaut disponible.", Toast.LENGTH_SHORT).show()
+            }
         }
+    }
+
+    private fun showProcheFormDialog(proche: Proche?) {
+        val dialog = ProcheFormDialog(proche) { newProche ->
+            if (proche == null) {
+                proches.add(newProche) // Ajouter un proche
+            } else {
+                val index = proches.indexOf(proche)
+                proches[index] = newProche // Mettre à jour le proche
+            }
+            adapter.notifyDataSetChanged() // Rafraîchir la liste
+        }
+        dialog.show(parentFragmentManager, "ProcheFormDialog")
     }
 }

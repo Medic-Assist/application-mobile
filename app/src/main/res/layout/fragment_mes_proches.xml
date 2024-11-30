@@ -11,21 +11,21 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <!-- Bouton Retour -->
-        <Button
-            android:id="@+id/btn_back_to_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Retour"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/black"
-            android:layout_gravity="start" />
+<!--        &lt;!&ndash; Bouton Retour &ndash;&gt;-->
+<!--        <Button-->
+<!--            android:id="@+id/btn_back_to_profile"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Retour"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:backgroundTint="@color/black"-->
+<!--            android:layout_gravity="start" />-->
 
         <!-- Titre Principal -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Choix d'un proche"
+            android:text="Modification/Visualisation d'un proche"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -115,26 +115,26 @@
             android:gravity="center"
             android:weightSum="2">
 
-            <!-- Bouton Modifier -->
-            <Button
-                android:id="@+id/btn_modifier"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Modifier"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/black"
-                android:layout_marginEnd="8dp" />
+<!--            &lt;!&ndash; Bouton Modifier &ndash;&gt;-->
+<!--            <Button-->
+<!--                android:id="@+id/btn_modifier"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="Modifier"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:backgroundTint="@color/black"-->
+<!--                android:layout_marginEnd="8dp" />-->
 
-            <!-- Bouton Enregistrer -->
-            <Button
-                android:id="@+id/btn_enregistrer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Enregistrer"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/black" />
+<!--            &lt;!&ndash; Bouton Enregistrer &ndash;&gt;-->
+<!--            <Button-->
+<!--                android:id="@+id/btn_enregistrer"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="Enregistrer"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:backgroundTint="@color/black" />-->
         </LinearLayout>
 
     </LinearLayout>
