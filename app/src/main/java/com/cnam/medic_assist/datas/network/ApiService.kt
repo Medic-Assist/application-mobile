@@ -11,63 +11,63 @@ import retrofit2.http.*
 interface ApiService {
     /** Requêtes pour les utilisateurs **/
     // Obtenir tous les utilisateurs
-    @GET("/utilisateurs")
+    @GET("utilisateurs")
     fun getAllUsers(): Call<List<Utilisateur>>
 
     // Ajouter un utilisateur
-    @POST("/utilisateurs")
+    @POST("utilisateurs")
     fun addUser(@Body user: Utilisateur): Call<Utilisateur>
 
     // Obtenir un utilisateur par ID
-    @GET("/utilisateurs/{id}")
+    @GET("utilisateurs/{id}")
     fun getUserById(@Path("id") id: Int): Call<Utilisateur>
 
     // Mettre à jour le nom et prénom d'un utilisateur
-    @PUT("/utilisateurs/nom/{id}")
+    @PUT("utilisateurs/nom/{id}")
     fun updateUserName(@Path("id") id: Int, @Body updatedData: Map<String, String>): Call<Void>
 
     // Ajouter une adresse temporaire au patient
-    @PUT("/utilisateurs/adresseTMP/{id}")
+    @PUT("utilisateurs/adresseTMP/{id}")
     fun updatePatientTemporaryAddress(@Path("id") id: Int, @Body addressData: Map<String, String>): Call<Void>
 
     // Supprimer un utilisateur
-    @DELETE("/utilisateurs/{id}")
+    @DELETE("utilisateurs/{id}")
     fun deleteUser(@Path("id") id: Int): Call<Void>
 
     // Obtenir un patient par ID
-    @GET("/utilisateurs/patient/{id}")
+    @GET("utilisateurs/patient/{id}")
     fun getPatientById(@Path("id") id: Int): Call<Patient>
 
     // Ajouter un patient
-    @POST("/utilisateurs/patient")
+    @POST("utilisateurs/patient")
     fun addPatient(@Body patient: Patient): Call<Patient>
 
     // Obtenir un proche par ID
-    @GET("/utilisateurs/proche/{id}")
+    @GET("utilisateurs/proche/{id}")
     fun getProcheById(@Path("id") id: Int): Call<Proche>
 
     // Ajouter un proche
-    @POST("/utilisateurs/proche")
+    @POST("utilisateurs/proche")
     fun addProche(@Body proche: Proche): Call<Proche>
 
     // Ajouter une relation Proche-Patient
-    @POST("/utilisateurs/proche_patient")
+    @POST("utilisateurs/proche_patient")
     fun addProchePatientRelation(@Body relationData: Map<String, Int>): Call<Void>
 
     // Obtenir le personnel médical par ID
-    @GET("/utilisateurs/personnelMed/{id}")
+    @GET("utilisateurs/personnelMed/{id}")
     fun getPersonnelMedById(@Path("id") id: Int): Call<Utilisateur>
 
     // Ajouter un personnel médical
-    @POST("/utilisateurs/personnelMed")
+    @POST("utilisateurs/personnelMed")
     fun addPersonnelMed(@Body personnelMedData: Map<String, Int>): Call<Void>
 
     // Obtenir les proches d'un patient par ID
-    @GET("/utilisateurs/proches_patient/{id}")
+    @GET("utilisateurs/proches_patient/{id}")
     fun getProchesByPatientId(@Path("id") id: Int): Call<List<Proche>>
 
     // Obtenir les patients surveillés par un proche par ID
-    @GET("/utilisateurs/patients_proche/{id}")
+    @GET("utilisateurs/patients_proche/{id}")
     fun getPatientsByProcheId(@Path("id") id: Int): Call<List<Patient>>
 
 
@@ -77,7 +77,7 @@ interface ApiService {
     fun getRendezvousByUserId(@Path("idUser") idUser: Int): Call<List<RendezVous>>
 
     // Mettre à jour un rendez-vous
-    @PUT("/rendezvous/{id}")
+    @PUT("rendezvous/{id}")
     fun updateRDV(@Path("id") id: Int, @Body rdv: RendezVous): Call<Void>
 
 

@@ -6,27 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import com.cnam.medic_assist.R
+import com.cnam.medic_assist.datas.models.Patient
 
-// paramètres
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PATIENT = "arg_patient"
 
 /**
  * A simple [Fragment] subclass.
  * Use the [MonAdresseFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MonAdresseFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class MonAdresseFragment(patient : Patient) : Fragment() {
+    private lateinit var data: Patient
+    private lateinit var tvNumero: EditText
+    private lateinit var tvRue: EditText
+    private lateinit var tvCP: EditText
+    private lateinit var tvVille: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            data = it.getParcelable(ARG_PATIENT)!!
         }
     }
 
@@ -41,26 +42,33 @@ class MonAdresseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialisation des vues
+        tvNumero = view.findViewById(R.id.input_numero)
+        tvRue = view.findViewById(R.id.input_rue)
+        tvCP = view.findViewById(R.id.input_code_postal)
+        tvVille = view.findViewById(R.id.input_ville)
+
+        showData()
+
         val btnBackToProfile: Button = view.findViewById(R.id.btn_back_to_profile)
         btnBackToProfile.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
 
+    private fun showData() {
+        tvNumero.setText(data.numero_rue_principal)
+        tvRue.setText(data.rue_principale)
+        tvCP.setText("${data.codepostal_principal}")
+        tvVille.setText(data.ville_principale)
+    }
 
     companion object {
-        /**
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return Nouvelle instance de MonAdresseFragment.
-         */
-        // TODO: Renommer et changer les types
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MonAdresseFragment().apply {
+        fun newInstance(patient: Patient) =
+            MonAdresseFragment(patient).apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelable(ARG_PATIENT, patient)
                 }
             }
     }

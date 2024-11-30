@@ -126,6 +126,7 @@ class RDVFragment : Fragment() {
         val tvIntitule = dialog.findViewById<TextView>(R.id.dialog_intitule)
         val tvDate = dialog.findViewById<TextView>(R.id.dialog_date)
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
+        val tvTitreAdresse = dialog.findViewById<TextView>(R.id.titre_adresse)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
@@ -134,6 +135,14 @@ class RDVFragment : Fragment() {
         tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
+
+        if(tvAdresse.text == ""){
+            tvTitreAdresse.text = "";
+        }else{
+            tvTitreAdresse.text = "Centre Médical :";
+        }
+
+
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -146,7 +155,6 @@ class RDVFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.show()
     }
-
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
@@ -165,6 +173,7 @@ class RDVFragment : Fragment() {
 
         return "Date invalide"
     }
+
 
     private fun formatageTime(time: String): String {
         return try {

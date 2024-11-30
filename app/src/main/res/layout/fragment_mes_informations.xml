@@ -64,6 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre prénom"
+                android:text="TEST"
                 android:enabled="false"
                 android:padding="12dp"
                 android:backgroundTint="#808080" />
@@ -88,24 +89,6 @@
                 android:backgroundTint="#808080"
                 android:inputType="date" />
 
-            <!-- Champ Sexe -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sexe"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
-
-            <EditText
-                android:id="@+id/editTextSexe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Sexe"
-                android:enabled="false"
-                android:padding="12dp"
-                android:backgroundTint="#808080" />
 
             <!-- Champ Adresse E-mail -->
             <TextView
