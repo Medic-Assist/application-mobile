@@ -1,6 +1,7 @@
 package com.cnam.medic_assist.datas
 
 import com.cnam.medic_assist.datas.models.CentreMedical
+import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.PersonnelMed
 import com.cnam.medic_assist.datas.models.Proche
@@ -94,5 +95,11 @@ object Constants {
 
         // Rendez-vous pour Jack
         RendezVous(15, "Radio mâchoire", "15:30:00", "2024-10-04", 10, 7, true)
+    )
+
+    val modes_transports = listOf(ModeTransport("Voiture"),
+            ModeTransport("Taxi"),
+            ModeTransport("Transports en commun"),
+
     )
 }

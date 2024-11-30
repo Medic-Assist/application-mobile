@@ -1,6 +1,7 @@
 package com.cnam.medic_assist.datas.network
 
 import com.cnam.medic_assist.datas.models.CentreMedical
+import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
 import com.cnam.medic_assist.datas.models.RendezVous
@@ -70,6 +71,9 @@ interface ApiService {
     @GET("utilisateurs/patients_proche/{id}")
     fun getPatientsByProcheId(@Path("id") id: Int): Call<List<Patient>>
 
+    // Liste des modes de transports
+    @GET("utilisateurs/modes_transports")
+    fun getModesTransports(): Call<List<ModeTransport>>
 
     /** Requêtes pour les rendez-vous **/
     // Liste des rendez-vous associés à un patient donné

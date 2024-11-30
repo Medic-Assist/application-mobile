@@ -61,7 +61,11 @@ class ProfilFragment : Fragment() {
         }
 
         moyenLocomotion.setOnClickListener {
-            openProfileSubFragment(MoyenLocomotionFragment())
+            if (::patient.isInitialized) {
+                openProfileSubFragment(MoyenLocomotionFragment.newInstance(patient))
+            } else {
+                Toast.makeText(requireContext(), "Patient non chargé, veuillez réessayer", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
