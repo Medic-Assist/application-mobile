@@ -15,7 +15,7 @@ class Patient (
     var adresse_temporaire : String?=null,
     var codePostal_temporaire : Int?=null,
     var ville_temporaire : String?=null,
-    var modeTransport : String?="Voiture"
+    var modetransport : String?="Voiture"
 
 
     ) : Utilisateur(idUser,prenom, nom, RoleUser.Patient), Parcelable

@@ -20,8 +20,16 @@ import retrofit2.Response
 
 private const val ARG_PATIENT = "arg_patient"
 class MoyenLocomotionFragment (patient : Patient): Fragment() {
+    private lateinit var data: Patient
     private var modes : List<ModeTransport> = listOf(ModeTransport("Chargement..."))
     private lateinit var spinnerModesLocomotion: Spinner
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            data = it.getParcelable(ARG_PATIENT)!!
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,8 +71,12 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
                 if (isAdded) {
                     if (response.isSuccessful && response.body() != null) {
                         modes = response.body()!!
-                        updateSpinner(modes)
-                        Toast.makeText(requireContext(), "Chargement des informations réussi.", Toast.LENGTH_SHORT).show()
+                        var defaultTransportMode = data.modetransport
+
+                        if(defaultTransportMode == null){
+                            defaultTransportMode = modes.get(1).toString()
+                        }
+                        updateSpinner(modes, defaultTransportMode)
                     } else {
                         Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
                         modes = Constants.modes_transports
@@ -81,7 +93,7 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
         })
     }
 
-    private fun updateSpinner(modes: List<ModeTransport>) {
+    private fun updateSpinner(modes: List<ModeTransport>, defaultTransportMode: String) {
         // Convertir les objets ModeTransport en une liste de chaînes
         val modeNames = modes.map { it.transport_mode }
 
@@ -89,7 +101,15 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, modeNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerModesLocomotion.adapter = adapter
+
+        // Trouver l'index de la valeur par défaut
+        val defaultIndex = modeNames.indexOf(defaultTransportMode)
+        if (defaultIndex != -1) {
+            // Sélectionner la valeur par défaut si elle existe dans la liste
+            spinnerModesLocomotion.setSelection(defaultIndex)
+        }
     }
+
 
 
     companion object {
