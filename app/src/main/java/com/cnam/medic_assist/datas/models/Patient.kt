@@ -3,7 +3,7 @@ package com.cnam.medic_assist.datas.models
 import android.os.Parcelable
 
 class Patient (
-    idUser: Int? = null,
+    iduser: Int? = null,
     prenom : String,
     nom : String,
     var mail : String?=null,
@@ -18,7 +18,7 @@ class Patient (
     var modetransport : String?="Voiture"
 
 
-    ) : Utilisateur(idUser,prenom, nom, RoleUser.Patient), Parcelable
+    ) : Utilisateur(iduser,prenom, nom, RoleUser.Patient), Parcelable
 {
     fun ajouterAdresseTemporaire(adresseTmp: String, CPTmp: Int, villeTmp: String) {
         adresse_temporaire = adresseTmp

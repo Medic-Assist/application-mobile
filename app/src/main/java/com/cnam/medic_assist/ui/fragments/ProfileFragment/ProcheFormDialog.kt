@@ -9,6 +9,9 @@ import androidx.fragment.app.DialogFragment
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.Proche
 
+/**
+ * Creer un formulaire de modification des informations d'un proche
+ */
 class ProcheFormDialog(
     private val proche: Proche?,
     private val onSave: (Proche) -> Unit
@@ -23,13 +26,13 @@ class ProcheFormDialog(
         val inputNom: EditText = view.findViewById(R.id.input_nom)
         val inputPrenom: EditText = view.findViewById(R.id.input_prenom)
         val inputTelephone: EditText = view.findViewById(R.id.input_telephone)
-        //val inputEmail: EditText = view.findViewById(R.id.input_email)
+        val inputEmail: EditText = view.findViewById(R.id.input_email)
 
         proche?.let {
             inputNom.setText(it.nom)
             inputPrenom.setText(it.prenom)
             inputTelephone.setText(it.numero_tel)
-            //inputEmail.setText(it.email)
+            inputEmail.setText(it.mail)
         }
 
         builder.setView(view)
@@ -38,11 +41,10 @@ class ProcheFormDialog(
                 val newProche = Proche(
                     nom = inputNom.text.toString(),
                     prenom = inputPrenom.text.toString(),
-                    numero_tel = inputTelephone.text.toString()
+                    numero_tel = inputTelephone.text.toString(),
+                    mail = inputEmail.text.toString()
                 )
-//                ,
-//                telephone = inputTelephone.text.toString(),
-//                email = inputEmail.text.toString()
+
                 onSave(newProche) // Retourner les données au parent
             }
             .setNegativeButton("Annuler") { dialog, _ ->

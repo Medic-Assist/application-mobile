@@ -13,14 +13,27 @@ import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
+import com.cnam.medic_assist.datas.models.RoleUser
+import com.cnam.medic_assist.datas.models.Utilisateur
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MesProchesFragment : Fragment() {
+private const val ARG_PATIENT = "arg_patient"
+
+class MesProchesFragment(patient : Patient) : Fragment() {
+    private lateinit var patient: Patient
     private var proches = mutableListOf<Proche>()
     private lateinit var adapter: ProcheAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            patient = it.getParcelable(ARG_PATIENT)!!
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,31 +79,129 @@ class MesProchesFragment : Fragment() {
 //        }
     }
 
-    private fun fetchData() {
-        RetrofitClient.instance.getProchesByPatientId(1).enqueue(object :
-            Callback<List<Proche>> {
-            override fun onResponse(call: Call<List<Proche>>, response: Response<List<Proche>>) {
+    private fun showProcheFormDialog(proche: Proche?) {
+        val dialog = ProcheFormDialog(proche) { newProche ->
+            if (proche == null) {
+                createAndAddNewProche(newProche)
+                //proches.add(newProche) // Ajouter un proche
+            } else {
+                val index = proches.indexOf(proche)
+                proches[index] = newProche // Mettre à jour le proche
+            }
+            adapter.notifyDataSetChanged() // Rafraîchir la liste
+        }
+        dialog.show(parentFragmentManager, "ProcheFormDialog")
+    }
+
+    private fun createAndAddNewProche(proche: Proche){
+        addUtilisateur(proche)
+    }
+    private fun addUtilisateur(proche: Proche) {
+        val utilisateur = Utilisateur(
+            prenom = proche.prenom,
+            nom = proche.nom,
+            numero_tel = proche.numero_tel,
+            role = RoleUser.Proche
+        )
+        RetrofitClient.instance.addUser(utilisateur).enqueue(object : Callback<Utilisateur> {
+            override fun onResponse(call: Call<Utilisateur>, response: Response<Utilisateur>) {
                 if (isAdded) {
                     if (response.isSuccessful && response.body() != null) {
-                        proches.clear() // Vider la liste actuelle
-                        proches.addAll(response.body()!!) // Ajouter les nouveaux proches
-                        adapter.notifyDataSetChanged() // Mettre à jour la RecyclerView
-                        Toast.makeText(requireContext(), "Chargement des informations réussi.", Toast.LENGTH_SHORT).show()
+                        proche.iduser = response.body()!!.iduser
+                        addProche(proche)
+                        //Toast.makeText(requireContext(), "Ajout du nouvel utilisateur réussi.", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
-
-                        loadDefaultProcheData()
                     }
                 }
             }
 
-            override fun onFailure(call: Call<List<Proche>>, t: Throwable) {
+            override fun onFailure(call: Call<Utilisateur>, t: Throwable) {
                 if (isAdded) {
-                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Ajout de l'utilisateur échoué.", Toast.LENGTH_SHORT).show()
                 }
-                loadDefaultProcheData()
             }
         })
+    }
+
+    private fun addProche(proche: Proche) {
+        if(proche.iduser != null && proche.mail != null){
+            RetrofitClient.instance.addProche(proche).enqueue(object :
+                Callback<Proche> {
+                override fun onResponse(call: Call<Proche>, response: Response<Proche>) {
+                    if (isAdded) {
+                        if (response.isSuccessful && response.body() != null) {
+                            addProchePatient(proche)
+                            Toast.makeText(requireContext(), "Ajout du nouveau proche réussi.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<Proche>, t: Throwable) {
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            })
+        }else{
+            Toast.makeText(requireContext(), "Informations manquantes.", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+
+    private fun addProchePatient(proche: Proche) {
+        val relationData = mapOf(
+            "idPatient" to patient.iduser,
+            "idProche" to proche.iduser
+        )
+        RetrofitClient.instance.addProchePatientRelation(relationData).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (isAdded) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Ajout d'une nouvelle relation proche/patient réussi.", Toast.LENGTH_SHORT).show()
+                        fetchData()
+                    } else {
+                        Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                if (isAdded) {
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Ajout de l'utilisateur échoué.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
+    private fun fetchData() {
+        if(patient.iduser != null){
+            RetrofitClient.instance.getProchesByPatientId(patient.iduser!!).enqueue(object :
+                Callback<List<Proche>> {
+                override fun onResponse(call: Call<List<Proche>>, response: Response<List<Proche>>) {
+                    if (isAdded) {
+                        if (response.isSuccessful && response.body() != null) {
+                            proches.clear() // Vider la liste actuelle
+                            proches.addAll(response.body()!!) // Ajouter les nouveaux proches
+                            adapter.notifyDataSetChanged() // Mettre à jour la RecyclerView
+                            Toast.makeText(requireContext(), "Chargement des informations réussi.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
+
+                            loadDefaultProcheData()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<List<Proche>>, t: Throwable) {
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Chargement des données par défaut.", Toast.LENGTH_SHORT).show()
+                    }
+                    loadDefaultProcheData()
+                }
+            })
+        }
     }
 
     private fun loadDefaultProcheData() {
@@ -108,16 +219,13 @@ class MesProchesFragment : Fragment() {
         }
     }
 
-    private fun showProcheFormDialog(proche: Proche?) {
-        val dialog = ProcheFormDialog(proche) { newProche ->
-            if (proche == null) {
-                proches.add(newProche) // Ajouter un proche
-            } else {
-                val index = proches.indexOf(proche)
-                proches[index] = newProche // Mettre à jour le proche
+    companion object {
+        @JvmStatic
+        fun newInstance(patient: Patient) =
+            MesProchesFragment(patient).apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_PATIENT, patient)
+                }
             }
-            adapter.notifyDataSetChanged() // Rafraîchir la liste
-        }
-        dialog.show(parentFragmentManager, "ProcheFormDialog")
     }
 }

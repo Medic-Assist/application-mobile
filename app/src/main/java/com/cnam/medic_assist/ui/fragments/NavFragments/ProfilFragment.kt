@@ -49,7 +49,11 @@ class ProfilFragment : Fragment() {
         }
 
         mesProches.setOnClickListener {
-            openProfileSubFragment(MesProchesFragment())
+            if (::patient.isInitialized) {
+                openProfileSubFragment(MesProchesFragment.newInstance(patient))
+            } else {
+                Toast.makeText(requireContext(), "Patient non chargé, veuillez réessayer", Toast.LENGTH_SHORT).show()
+            }
         }
 
         monAdresse.setOnClickListener {

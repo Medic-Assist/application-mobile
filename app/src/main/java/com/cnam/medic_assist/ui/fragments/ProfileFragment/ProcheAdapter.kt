@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.Proche
 
+/**
+ * Permet l'affiche des infos des proches dans la liste
+ */
 class ProcheAdapter(
     private val proches: MutableList<Proche>,
     private val onItemClick: (Proche) -> Unit

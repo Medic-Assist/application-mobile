@@ -40,9 +40,9 @@ object Constants {
     )
 
     val proches = listOf(
-        Proche(11, "Louis", "Lemoine","0123456789" ,"23", "Rue des Champs", 67210, "Obernai"),
-        Proche(12, "Marie", "Durand","0123456789" ,"10", "Rue du Lac", 88470, "La Bourgonce"),
-        Proche(13, "Nina", "Moreau","0123456789" ,"8", "Rue de la Poste", 67380, "Lingolsheim")
+        Proche(11, "Louis", "Lemoine","0123456789" ,"louis.lemoine@mail.com"),
+        Proche(12, "Marie", "Durand","0123456789" ,"marie.durand@mail.com"),
+        Proche(13, "Nina", "Moreau","0123456789" ,"nina.moreau@mail.com")
     )
     val prochePatientRelations = listOf(
         Proche_Patient(3, 11),  // Louis proche de Claire

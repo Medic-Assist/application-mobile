@@ -37,6 +37,14 @@
             android:padding="16dp">
 
             <!-- Titre Principal -->
+            <Button
+                android:id="@+id/btn_add_proche"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="Ajouter un proche"
+                android:textColor="@color/white" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,13 +62,6 @@
                 android:layout_weight="1" />
 
             <!-- Bouton pour ajouter un proche -->
-            <Button
-                android:id="@+id/btn_add_proche"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/black"
-                android:text="Ajouter un proche"
-                android:textColor="@color/white" />
         </LinearLayout>
         </ScrollView>
     </LinearLayout>

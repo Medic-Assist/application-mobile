@@ -53,7 +53,7 @@ interface ApiService {
 
     // Ajouter une relation Proche-Patient
     @POST("utilisateurs/proche_patient")
-    fun addProchePatientRelation(@Body relationData: Map<String, Int>): Call<Void>
+    fun addProchePatientRelation(@Body relationData: Map<String, Int?>): Call<Void>
 
     // Obtenir le personnel médical par ID
     @GET("utilisateurs/personnelMed/{id}")
