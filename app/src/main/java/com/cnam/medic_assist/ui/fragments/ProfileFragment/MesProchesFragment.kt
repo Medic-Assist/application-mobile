@@ -80,16 +80,21 @@ class MesProchesFragment(patient : Patient) : Fragment() {
     }
 
     private fun showProcheFormDialog(proche: Proche?) {
-        val dialog = ProcheFormDialog(proche) { newProche ->
-            if (proche == null) {
-                createAndAddNewProche(newProche)
-                //proches.add(newProche) // Ajouter un proche
-            } else {
-                val index = proches.indexOf(proche)
-                proches[index] = newProche // Mettre à jour le proche
+        val dialog = ProcheFormDialog(
+            proche,
+            onProcheSaved = { newProche ->
+                if (proche == null) {
+                    createAndAddNewProche(newProche)
+                } else {
+                    val index = proches.indexOf(proche)
+                    proches[index] = newProche // Mettre à jour le proche
+                    adapter.notifyDataSetChanged()
+                }
+            },
+            onProcheDeleted = { idUser ->
+                deleteProche(idUser)
             }
-            adapter.notifyDataSetChanged() // Rafraîchir la liste
-        }
+        )
         dialog.show(parentFragmentManager, "ProcheFormDialog")
     }
 
@@ -175,6 +180,25 @@ class MesProchesFragment(patient : Patient) : Fragment() {
             }
         })
     }
+
+    private fun deleteProche(idUser: Int) {
+        RetrofitClient.instance.deleteProche(idUser).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    proches.removeAll { it.iduser == idUser }
+                    adapter.notifyDataSetChanged()
+                    Toast.makeText(requireContext(), "Proche supprimé avec succès.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Erreur : ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(requireContext(), "Erreur réseau : ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun fetchData() {
         if(patient.iduser != null){
             RetrofitClient.instance.getProchesByPatientId(patient.iduser!!).enqueue(object :

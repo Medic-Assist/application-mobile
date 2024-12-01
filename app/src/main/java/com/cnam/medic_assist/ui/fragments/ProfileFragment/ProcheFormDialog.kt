@@ -3,6 +3,8 @@ package com.cnam.medic_assist.ui.fragments.ProfileFragment
 import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.DialogFragment
@@ -14,7 +16,8 @@ import com.cnam.medic_assist.datas.models.Proche
  */
 class ProcheFormDialog(
     private val proche: Proche?,
-    private val onSave: (Proche) -> Unit
+    private val onProcheSaved: (Proche) -> Unit,
+    private val onProcheDeleted: ((Int) -> Unit)? = null
 ) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -27,12 +30,20 @@ class ProcheFormDialog(
         val inputPrenom: EditText = view.findViewById(R.id.input_prenom)
         val inputTelephone: EditText = view.findViewById(R.id.input_telephone)
         val inputEmail: EditText = view.findViewById(R.id.input_email)
+        val btnDelete: Button = view.findViewById(R.id.btn_supprimer)
 
-        proche?.let {
-            inputNom.setText(it.nom)
-            inputPrenom.setText(it.prenom)
-            inputTelephone.setText(it.numero_tel)
-            inputEmail.setText(it.mail)
+        proche?.let {currentProche ->
+            inputNom.setText(currentProche.nom)
+            inputPrenom.setText(currentProche.prenom)
+            inputTelephone.setText(currentProche.numero_tel)
+            inputEmail.setText(currentProche.mail)
+
+            // Afficher le bouton "Supprimer"
+            btnDelete.visibility = View.VISIBLE
+            btnDelete.setOnClickListener {
+                onProcheDeleted?.invoke(currentProche.iduser!!)
+                dismiss()
+            }
         }
 
         builder.setView(view)
@@ -45,7 +56,7 @@ class ProcheFormDialog(
                     mail = inputEmail.text.toString()
                 )
 
-                onSave(newProche) // Retourner les données au parent
+                onProcheSaved(newProche) // Retourner les données au parent
             }
             .setNegativeButton("Annuler") { dialog, _ ->
                 dialog.cancel()

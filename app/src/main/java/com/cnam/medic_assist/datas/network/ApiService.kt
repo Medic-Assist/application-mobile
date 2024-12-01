@@ -75,6 +75,9 @@ interface ApiService {
     @GET("utilisateurs/modes_transports")
     fun getModesTransports(): Call<List<ModeTransport>>
 
+    @DELETE("utilisateurs/proche/{id}")
+    fun deleteProche(@Path("id") id: Int): Call<Void>
+
     /** Requêtes pour les rendez-vous **/
     // Liste des rendez-vous associés à un patient donné
     @GET("rendezvous/patient/{idUser}")
