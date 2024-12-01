@@ -73,7 +73,7 @@ class ProfilFragment : Fragment() {
         }
     }
 
-    private fun fetchData() {
+    public fun fetchData() {
         RetrofitClient.instance.getPatientById(1).enqueue(object :
             Callback<Patient> {
             override fun onResponse(call: Call<Patient>, response: Response<Patient>) {

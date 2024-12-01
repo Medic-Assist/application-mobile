@@ -86,9 +86,8 @@ class MesProchesFragment(patient : Patient) : Fragment() {
                 if (proche == null) {
                     createAndAddNewProche(newProche)
                 } else {
-                    val index = proches.indexOf(proche)
-                    proches[index] = newProche // Mettre à jour le proche
-                    adapter.notifyDataSetChanged()
+                    newProche.iduser = proche.iduser
+                    updateProche(newProche)
                 }
             },
             onProcheDeleted = { idUser ->
@@ -96,6 +95,23 @@ class MesProchesFragment(patient : Patient) : Fragment() {
             }
         )
         dialog.show(parentFragmentManager, "ProcheFormDialog")
+    }
+
+    fun updateProche(proche : Proche) {
+        RetrofitClient.instance.updateProche(proche.iduser!!, proche).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    fetchData()
+                    Toast.makeText(context, "Proche mis à jour.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Echec de la modification du proche: ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(context, "Erreur réseau: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun createAndAddNewProche(proche: Proche){

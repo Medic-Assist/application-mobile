@@ -78,6 +78,14 @@ interface ApiService {
     @DELETE("utilisateurs/proche/{id}")
     fun deleteProche(@Path("id") id: Int): Call<Void>
 
+    // Mettre à jour un proche
+    @PUT("utilisateurs/proche/{id}")
+    fun updateProche(@Path("id") id: Int, @Body updatedData: Proche): Call<Void>
+
+    // Mettre à jour un procpatienthe
+    @PUT("utilisateurs/patient/{id}")
+    fun updatePatient(@Path("id") id: Int, @Body updatedData: Patient): Call<Void>
+
     /** Requêtes pour les rendez-vous **/
     // Liste des rendez-vous associés à un patient donné
     @GET("rendezvous/patient/{idUser}")

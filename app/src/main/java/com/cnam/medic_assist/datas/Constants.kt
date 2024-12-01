@@ -27,16 +27,16 @@ object Constants {
     )
 
     val patients = listOf(
-        Patient(1,"Alice", "Dupont", "alice.dupont@mail.com","1962-02-23","5", "Rue des Tulipes", 67600, "Sélestat"),
-        Patient(2,"Bob", "Martin", "bob.martin@mail.com","1955-06-18","7", "Rue Gambetta", 88100, "Saint-Dié-des-Vosges"),
-        Patient(3,"Claire", "Lemoine","claire.lemoine@mail.com","1980-03-01", "3", "Place du Marché", 67130, "Schirmeck"),
-        Patient(4,"David", "Durand", "david.durand@mail.com","1949-10-05","8", "Rue des Jardins", 88480, "Étival-Clairefontaine"),
-        Patient(5,"Eve", "Moreau","eve.moreau@mail.com","1952-08-16", "12", "Rue de la Poste", 67120, "Molsheim"),
-        Patient(6,"Frank", "Petit", null,"1940-01-25","9", "Rue de la Gare", 67240, "Bischwiller"),
-        Patient(7,"Grace", "Kemberg", "grace.kemberg@mail.com","1990-05-05","14" ,"Rue des Tilleuls", 67390, "Marckolsheim"),
-        Patient(8,"Hugo", "Blanc", "hugo.blanc@mail.com","1973-11-19","17" ,"Rue de la Liberté", 67240, "Oberhoffen-sur-Moder"),
-        Patient(9,"Isabelle", "Verde", "isabelle.verde@mail.com","1951-09-20","22", "Rue des Vosges", 67100, "Strasbourg"),
-        Patient(10,"Jack", "Rouge", "jack.rouge@mail.com","1939-04-21","20", "Rue de la Forêt", 67600, "Sélestat")
+        Patient(1,"Alice", "Dupont", "alice.dupont@mail.com","1962-02-23","5", "Rue des Tulipes", "67600", "Sélestat"),
+        Patient(2,"Bob", "Martin", "bob.martin@mail.com","1955-06-18","7", "Rue Gambetta", "88100", "Saint-Dié-des-Vosges"),
+        Patient(3,"Claire", "Lemoine","claire.lemoine@mail.com","1980-03-01", "3", "Place du Marché", "67130", "Schirmeck"),
+        Patient(4,"David", "Durand", "david.durand@mail.com","1949-10-05","8", "Rue des Jardins", "88480", "Étival-Clairefontaine"),
+        Patient(5,"Eve", "Moreau","eve.moreau@mail.com","1952-08-16", "12", "Rue de la Poste", "67120", "Molsheim"),
+        Patient(6,"Frank", "Petit", null,"1940-01-25","9", "Rue de la Gare", "67240", "Bischwiller"),
+        Patient(7,"Grace", "Kemberg", "grace.kemberg@mail.com","1990-05-05","14" ,"Rue des Tilleuls", "67390", "Marckolsheim"),
+        Patient(8,"Hugo", "Blanc", "hugo.blanc@mail.com","1973-11-19","17" ,"Rue de la Liberté", "67240", "Oberhoffen-sur-Moder"),
+        Patient(9,"Isabelle", "Verde", "isabelle.verde@mail.com","1951-09-20","22", "Rue des Vosges", "67100", "Strasbourg"),
+        Patient(10,"Jack", "Rouge", "jack.rouge@mail.com","1939-04-21","20", "Rue de la Forêt", "67600", "Sélestat")
     )
 
     val proches = listOf(
