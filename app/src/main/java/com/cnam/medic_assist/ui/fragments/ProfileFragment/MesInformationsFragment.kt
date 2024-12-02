@@ -8,8 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.Patient
+import com.cnam.medic_assist.datas.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -60,6 +65,30 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
         btnBackToProfile.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
+        // Bouton Enregistrer
+        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
+        btnEnregistrer.setOnClickListener {
+            //Récuperation des info du fragment
+            val newPatient = data
+            newPatient.prenom = tvPrenom.text.toString()
+            newPatient.nom = tvNom.text.toString()
+            newPatient.date_naissance = reFormatageDate(tvAnniv.text.toString())
+            newPatient.mail = tvMail.text.toString()
+            val tel = tvNumTel.text.toString()
+
+            if ((tel.length == 0 || tel.length == 10) && tel.all { it.isDigit() }) {
+                newPatient.numero_tel = tel
+            } else {
+                Toast.makeText(
+                    context,
+                    "Le numéro de tel n'est pas conforme.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            updateInfos(newPatient)
+        }
     }
 
     private fun showData() {
@@ -70,12 +99,48 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
         tvAnniv.setText("${formatageDate(data.date_naissance)}")
     }
 
+    fun updateInfos(patient : Patient) {
+
+        RetrofitClient.instance.updatePatient(patient.iduser!!, patient).enqueue(object :
+            Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Patient mis à jour.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Echec de la modification du patient: ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(context, "Erreur réseau: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
             SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         )
         val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+        for (format in inputFormats) {
+            try {
+                val parsedDate = format.parse(date)
+                return outputDateFormat.format(parsedDate)
+            } catch (e: Exception) {
+                Log.w("RDVFragment", "Erreur de formatage de la date : $date")
+            }
+        }
+
+        return "Date invalide"
+    }
+
+    private fun reFormatageDate(date: String): String { //pour remetre en base
+
+        val inputFormats = listOf(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()),
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()))
+        val outputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
 
         for (format in inputFormats) {
             try {

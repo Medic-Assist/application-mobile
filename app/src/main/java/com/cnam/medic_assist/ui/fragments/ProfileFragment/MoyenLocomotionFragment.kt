@@ -60,7 +60,11 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
         btnEnregistrer.setOnClickListener {
             val selectedMode = spinnerModesLocomotion.selectedItem.toString()
             spinnerModesLocomotion.isEnabled = false
-            Toast.makeText(requireContext(), "Mode de locomotion enregistré : $selectedMode", Toast.LENGTH_SHORT).show()
+            //Récuperation des info du fragment
+            val newPatient = data
+            newPatient.prenom = selectedMode
+                
+            updatePatient(newPatient)
         }
     }
 
@@ -110,6 +114,23 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
         }
     }
 
+    fun updatePatient(patient : Patient) {
+
+        RetrofitClient.instance.updatePatient(patient.iduser!!, patient).enqueue(object :
+            Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "Patient mis à jour.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Echec de la modification du patient: ${response.message()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Toast.makeText(context, "Erreur réseau: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
 
     companion object {
