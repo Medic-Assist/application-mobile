@@ -224,7 +224,7 @@ class RDVFragment : Fragment() {
                         Toast.makeText(requireContext(), "Chargement de l'etat reussi.", Toast.LENGTH_SHORT).show()
                     } else {
                         etatRdv = ""
-                        Toast.makeText(requireContext(), "Aucun etat spécial enregistré pour ce RDV.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Aucun etat enregistré pour ce RDV.", Toast.LENGTH_SHORT).show()
 
                         showRdvDetailsDialog(rdv)
                     }
