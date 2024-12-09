@@ -63,7 +63,7 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
             //Récuperation des info du fragment
             val newPatient = data
             newPatient.prenom = selectedMode
-                
+
             updatePatient(newPatient)
         }
     }
@@ -82,7 +82,7 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
                         }
                         updateSpinner(modes, defaultTransportMode)
                     } else {
-                        Toast.makeText(requireContext(), "${response.message()}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Chargement des données reussi.", Toast.LENGTH_SHORT).show()
                         modes = Constants.modes_transports
                     }
                 }

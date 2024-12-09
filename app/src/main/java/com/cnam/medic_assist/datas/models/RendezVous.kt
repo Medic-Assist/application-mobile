@@ -1,7 +1,7 @@
 package com.cnam.medic_assist.datas.models
 
 data class RendezVous(
-    val idRDV: Int? = null,
+    var idrdv: Int? = null,
     var intitule: String,
     var horaire : String,
     var daterdv: String,

@@ -1,6 +1,7 @@
 package com.cnam.medic_assist.datas.network
 
 import com.cnam.medic_assist.datas.models.CentreMedical
+import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
@@ -95,6 +96,9 @@ interface ApiService {
     @PUT("rendezvous/{id}")
     fun updateRDV(@Path("id") id: Int, @Body rdv: RendezVous): Call<Void>
 
+    // Liste des rendez-vous associés à un patient donné
+    @GET("rendezvous/statusTrajet/{id}")
+    fun getStatusRDV(@Path("id") id: Int): Call<EtatRdv>
 
     /** Requêtes pour les centres médicaux **/
     // Liste des centres médicaux
