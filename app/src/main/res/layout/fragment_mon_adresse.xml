@@ -67,19 +67,19 @@
             android:inputType="number"
             android:backgroundTint="@color/black" />
 
-        <!-- Input Pays -->
+        <!-- Input Ville -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pays"
+            android:text="Ville"
             android:textColor="@color/black"
             android:paddingTop="16dp" />
 
         <EditText
-            android:id="@+id/input_pays"
+            android:id="@+id/input_ville"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Entrez le pays"
+            android:hint="Entrez la ville"
             android:backgroundTint="@color/black" />
 
         <!-- Espacement -->

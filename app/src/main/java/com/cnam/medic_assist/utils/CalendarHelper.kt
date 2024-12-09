@@ -10,7 +10,6 @@ import com.cnam.medic_assist.datas.models.RendezVous
 import java.io.File
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -50,7 +49,7 @@ class CalendarHelper(private val context: Context) : ICalendarHelper {
             VERSION:2.0
             PRODID:-//MedicAssistApp//EN
             BEGIN:VEVENT
-            UID:${rdv.idRDV}@medicassistapp.com
+            UID:${rdv.idrdv}@medicassistapp.com
             DTSTAMP:${getFormattedDateTime(System.currentTimeMillis())}
             DTSTART:${getFormattedDateTime(parseDateTime("${rdv.daterdv}T${rdv.horaire}"))}
             DTEND:${getFormattedDateTime(parseDateTime("${rdv.daterdv}T${rdv.horaire}") + 60 * 60 * 1000)}
