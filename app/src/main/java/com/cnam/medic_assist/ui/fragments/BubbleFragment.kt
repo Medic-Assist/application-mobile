@@ -18,18 +18,26 @@ import com.cnam.medic_assist.R
 
 class BubbleFragment : Fragment() {
 
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_bubble, container, false)
 
-        // Boutons pour créer et lister les bulles
+        // Bouton pour créer une bulle
         val createBubbleButton: Button = view.findViewById(R.id.createBubbleButton)
-        val listBubblesButton: Button = view.findViewById(R.id.listBubblesButton)
+        recyclerView = view.findViewById(R.id.bubblesRecyclerView)
 
+        // Configurer RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        // Lister les bulles automatiquement
+        listBubbles()
+
+        // Création de bulle avec mise à jour de la liste
         createBubbleButton.setOnClickListener { createBubble() }
-        listBubblesButton.setOnClickListener { listBubbles() }
 
         return view
     }
@@ -50,6 +58,9 @@ class BubbleFragment : Fragment() {
         RainbowSdk.instance().bubbles().createBubble(body, object : RainbowListener<IRainbowRoom, RoomRepository.CreateRoomError> {
             override fun onSuccess(bubble: IRainbowRoom) {
                 Log.d("RainbowSDK", "Bulle créée avec succès : ${bubble.name}")
+
+                // Recharger la liste après la création de la bulle
+                requireActivity().runOnUiThread { listBubbles() }
             }
         })
     }
@@ -57,11 +68,8 @@ class BubbleFragment : Fragment() {
     private fun listBubbles() {
         // Obtenir toutes les bulles via le SDK
         val bubbles = RainbowSdk.instance().bubbles().getAllBubbles()
-        val recyclerView: RecyclerView = requireView().findViewById(R.id.bubblesRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.visibility = View.VISIBLE
 
-        // Adapter for displaying the bubbles
+        // Adapter pour afficher les bulles
         val adapter = BubblesAdapter(bubbles) { bubble ->
             openBubbleChat(bubble)
         }
@@ -69,12 +77,11 @@ class BubbleFragment : Fragment() {
     }
 
     private fun openBubbleChat(bubble: IRainbowRoom) {
-        // Ouvrir la bulle choisi
+        // Ouvrir la bulle choisie
         val chatFragment = BubbleChatFragment.newInstance(bubble.id)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainer, chatFragment)
             .addToBackStack(null)
             .commit()
     }
-
 }

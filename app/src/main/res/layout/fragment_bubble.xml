@@ -8,8 +8,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:visibility="visible"
         android:orientation="vertical">
 
         <Button
@@ -18,25 +16,15 @@
             android:layout_height="wrap_content"
             android:text="Créer une bulle" />
 
-        <Button
-            android:id="@+id/listBubblesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lister les bulles"
-            tools:visibility="visible" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bubblesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/> <!-- Pour afficher les boulles -->
+            android:visibility="visible" /> <!-- Toujours visible -->
 
         <FrameLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
+            android:layout_height="match_parent" />
     </LinearLayout>
-
 </FrameLayout>
