@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import com.cnam.medic_assist.R
+import android.widget.Toast
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -41,10 +43,68 @@ class MesInformationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btnBackToProfile: Button = view.findViewById(R.id.btn_back_to_profile)
+        val btnModifier: Button = view.findViewById(R.id.btn_modifier)
+        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
+
+        val editTextFields = listOf(
+            view.findViewById<EditText>(R.id.editTextNom),
+            view.findViewById<EditText>(R.id.editTextPrenom),
+            view.findViewById<EditText>(R.id.editTextDateNaissance),
+            view.findViewById<EditText>(R.id.editTextSexe),
+            view.findViewById<EditText>(R.id.editTextEmail),
+            view.findViewById<EditText>(R.id.editTextIndicatif),
+            view.findViewById<EditText>(R.id.editTextTelephone)
+        )
+
+        // Initialisation : afficher uniquement le bouton "Modifier"
+        btnModifier.visibility = View.VISIBLE
+        btnEnregistrer.visibility = View.GONE
+
+        // Bouton Retour
         btnBackToProfile.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+
+        // Bouton Modifier
+        btnModifier.setOnClickListener {
+            editTextFields.forEach { it.isEnabled = true } // on active la modification des inputs
+
+            btnModifier.visibility = View.GONE
+            btnEnregistrer.visibility = View.VISIBLE
+        }
+
+        // Bouton enregistrer (quand on clique)
+        btnEnregistrer.setOnClickListener {
+            editTextFields.forEach { it.isEnabled = false }
+            btnModifier.isEnabled = true
+            btnEnregistrer.isEnabled = false
+
+            // Récupérer les valeurs des champs
+            val nom = editTextFields[0].text.toString()
+            val prenom = editTextFields[1].text.toString()
+            val dateNaissance = editTextFields[2].text.toString()
+            val sexe = editTextFields[3].text.toString()
+            val email = editTextFields[4].text.toString()
+            val indicatif = editTextFields[5].text.toString()
+            val telephone = editTextFields[6].text.toString()
+
+            // Vérifier les champs obligatoires
+            if (nom.isBlank() || prenom.isBlank() || email.isBlank()) {
+                Toast.makeText(requireContext(), "Veuillez remplir tous les champs obligatoires.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // TODO : enregistrement en base
+
+            // Après enregistrement, affichage d'un message de succès
+            Toast.makeText(
+                requireContext(),
+                "Données enregistrées avec succès !",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
+
 
     companion object {
         /**
