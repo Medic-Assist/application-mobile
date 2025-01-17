@@ -41,6 +41,7 @@
     > <!--android:usesCleartextTraffic="true" : ajout pour tester l'acces à la BDD-->
 
         <receiver android:name=".NotificationReceiver" />
+        <receiver android:name=".NotificationActionReceiver" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

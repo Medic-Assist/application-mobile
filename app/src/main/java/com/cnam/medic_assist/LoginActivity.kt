@@ -110,6 +110,7 @@ class LoginActivity : AppCompatActivity() {
                         timeInMillis = timeInMillis,
                         title = rendezVous.intitule
                     )
+
                 } else {
                     Log.d("NotificationTest", "Rendez-vous ignoré (passé) : ${rendezVous.intitule}")
                 }
@@ -119,23 +120,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun convertToMillis(date: String, time: String): Long {
-        return try {
-            val dateTimeString = "$date $time" // Combine la date et l'heure
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-            dateFormat.parse(dateTimeString)?.time ?: 0L // Retourne 0L en cas d'erreur
-        } catch (e: Exception) {
-            Log.e("Date Conversion", "Erreur lors de la conversion : ${e.message}")
-            0L
-        }
-    }
-
     private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
-        val adjustedTimeInMillis = timeInMillis - 3600000 // Soustraire 1 heure (3600000 ms)
-
         val intent = Intent(this, NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
             putExtra("notificationTitle", title)
+            putExtra("notificationType", "default") // Par défaut, type simple
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -148,15 +137,37 @@ class LoginActivity : AppCompatActivity() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            adjustedTimeInMillis,
+            timeInMillis,
             pendingIntent
         )
 
-        Log.d(
-            "NotificationTest",
-            "Notification planifiée : [ID: $appointmentId, Titre: $title, Temps (ms): $adjustedTimeInMillis, Date/Heure : ${java.util.Date(adjustedTimeInMillis)}]"
+        Log.d("Notification", "Notification planifiée : ID=$appointmentId, Heure=$timeInMillis")
+    }
+
+
+    private fun scheduleQuestionNotification() {
+        val notificationTime = System.currentTimeMillis() + 10_000 // 10 secondes après le lancement
+        val intent = Intent(this, NotificationReceiver::class.java).apply {
+            putExtra("appointmentId", 12345) // Identifiant unique
+            putExtra("notificationTitle", "Confirmation")
+            putExtra("notificationType", "question") // Spécifie le type
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            12345,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            notificationTime,
+            pendingIntent
         )
     }
+
 
     private fun requestExactAlarmPermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
