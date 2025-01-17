@@ -14,7 +14,9 @@
             android:id="@+id/createBubbleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Créer une bulle" />
+            android:backgroundTint="#42A5F5"
+            android:textColor="#FFFFFF"
+            android:text="TBD - Créer une bulle" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bubblesRecyclerView"

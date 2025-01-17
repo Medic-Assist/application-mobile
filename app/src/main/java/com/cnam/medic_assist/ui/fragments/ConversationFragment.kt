@@ -63,10 +63,10 @@ class ConversationFragment : Fragment() {
         val btnLate = view.findViewById<Button>(R.id.btnLate)
         val btnNotThere = view.findViewById<Button>(R.id.btnNotThere)
 
-        btnArrived.setOnClickListener { sendMessage("I've arrived") }
-        btnParking.setOnClickListener { sendMessage("I'm parking") }
-        btnLate.setOnClickListener { sendMessage("I'll be late") }
-        btnNotThere.setOnClickListener { sendMessage("I won't be there") }
+        btnArrived.setOnClickListener { sendMessage("Je suis là.") }
+        btnParking.setOnClickListener { sendMessage("Je me gare.") }
+        btnLate.setOnClickListener { sendMessage("Je suis en retard.") }
+        btnNotThere.setOnClickListener { sendMessage("Je ne peux pas venir à mon rendez-vous.") }
 
         return view
     }
