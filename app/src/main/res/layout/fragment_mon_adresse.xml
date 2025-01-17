@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Entrez le numéro"
+            android:enabled="false"
             android:backgroundTint="@color/black" />
 
         <!-- Input Rue -->
@@ -49,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Entrez la rue"
+            android:enabled="false"
             android:backgroundTint="@color/black" />
 
         <!-- Input Code Postal -->
@@ -65,6 +67,7 @@
             android:layout_height="wrap_content"
             android:hint="Entrez le code postal"
             android:inputType="number"
+            android:enabled="false"
             android:backgroundTint="@color/black" />
 
         <!-- Input Pays -->
@@ -80,6 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Entrez le pays"
+            android:enabled="false"
             android:backgroundTint="@color/black" />
 
         <!-- Espacement -->
@@ -87,7 +91,7 @@
             android:layout_width="match_parent"
             android:layout_height="24dp" />
 
-        <!-- Bouton Modifier -->
+        <!-- Boutons -->
         <Button
             android:id="@+id/btn_modifier"
             android:layout_width="match_parent"
@@ -95,9 +99,9 @@
             android:text="Modifier"
             android:backgroundTint="@color/black"
             android:textColor="@color/white"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:visibility="visible" />
 
-        <!-- Bouton Enregistrer -->
         <Button
             android:id="@+id/btn_enregistrer"
             android:layout_width="match_parent"
@@ -105,7 +109,7 @@
             android:text="Enregistrer"
             android:backgroundTint="@color/modern_blue"
             android:textColor="@color/white"
-            android:layout_marginTop="8dp" />
-
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>
