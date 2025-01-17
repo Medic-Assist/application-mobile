@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/fragment_proches.xml -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.ProfileFragment.MesProchesFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+    <!-- Bouton Retour -->
+    <Button
+        android:id="@+id/btn_back_to_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retour"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/black"
+        android:layout_gravity="start" />
+
+
+        <!-- Scrollable List of Buttons -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+
+            <!-- Titre Principal -->
+            <Button
+                android:id="@+id/btn_add_proche"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="Ajouter un proche"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mes Proches :"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:paddingTop="16dp" />
+
+            <!-- RecyclerView pour afficher les proches -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_proches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <!-- Bouton pour ajouter un proche -->
+        </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</FrameLayout>

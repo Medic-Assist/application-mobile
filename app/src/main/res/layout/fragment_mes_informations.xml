@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre nom"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080" />
 
@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre prénom"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080" />
 
@@ -113,29 +113,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="dd/mm/yyyy"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080"
                 android:inputType="date" />
 
-            <!-- Champ Sexe -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sexe"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
-
-            <EditText
-                android:id="@+id/editTextSexe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Sexe"
-                android:enabled="false"
-                android:padding="12dp"
-                android:backgroundTint="#808080" />
 
             <!-- Champ Adresse E-mail -->
             <TextView
@@ -152,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre e-mail"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080"
                 android:inputType="textEmailAddress" />
@@ -179,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="+33"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="12dp"
                     android:backgroundTint="#808080"
                     android:inputType="phone" />
@@ -191,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="Numéro de téléphone"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="12dp"
                     android:backgroundTint="#808080"
                     android:inputType="phone" />
