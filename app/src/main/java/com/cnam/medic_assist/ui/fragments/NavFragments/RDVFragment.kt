@@ -1,6 +1,9 @@
 package com.cnam.medic_assist.ui.fragments.NavFragments
 
+import android.Manifest
 import android.app.Dialog
+import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,21 +11,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.datas.network.MapsRetrofitClient
+import com.cnam.medic_assist.datas.network.RouteResponse
 import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Context
+
 
 class RDVFragment : Fragment() {
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
@@ -66,6 +78,7 @@ class RDVFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         // Charger les données au démarrage
         if (rdvList.isEmpty()) {
@@ -131,6 +144,7 @@ class RDVFragment : Fragment() {
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
         val tvTitreAdresse = dialog.findViewById<TextView>(R.id.titre_adresse)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
+        val tvTempsAdress = dialog.findViewById<TextView>(R.id.dialog_adresse_Temps)
         val tvTitreEtatRdv = dialog.findViewById<TextView>(R.id.titre_etatRdv)
         val tvEtatRdv = dialog.findViewById<TextView>(R.id.etatRdv)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
@@ -140,6 +154,8 @@ class RDVFragment : Fragment() {
         tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
+
+        searchRoute(tvAdresse.text.toString(),tvTempsAdress,rdv)
 
         if(tvAdresse.text == ""){
             tvTitreAdresse.text = "";
@@ -167,6 +183,99 @@ class RDVFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.show()
     }
+
+    private fun searchRoute(destination: String, textResult: TextView, rdv: RendezVous) {
+        // Obtenir SharedPreferences directement depuis le contexte du fragment
+        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val startCoordinates = "${it.longitude},${it.latitude}"
+                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                    val addressList = geocoder.getFromLocationName(destination, 1)
+
+                    if (addressList != null && addressList.isNotEmpty()) {
+                        val address = addressList[0]
+                        val endCoordinates = "${address.longitude},${address.latitude}"
+
+                        MapsRetrofitClient.instance.getRoute(
+                            start = startCoordinates,
+                            end = endCoordinates
+                        ).enqueue(object : Callback<RouteResponse> {
+                            override fun onResponse(
+                                call: Call<RouteResponse>,
+                                response: Response<RouteResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()
+                                    val duration = result?.duration ?: "00:00:00"
+
+                                    val parts = duration.split(":")
+                                    val hours = parts[0]
+                                    val minutes = parts[1]
+
+                                    val displayText = if (hours == "00") {
+                                        "Temps estimé : $minutes minutes"
+                                    } else {
+                                        "Temps estimé : $hours heures $minutes minutes"
+                                    }
+
+                                    textResult.text = displayText
+
+                                    // Enregistrer les résultats dans SharedPreferences
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", displayText)
+                                        apply()
+                                    }
+                                    Log.d("DEBUGNICO", "Temps de trajet enregistré pour ${rdv.intitule} (ID: ${rdv.idRDV}): $displayText")
+
+                                } else {
+                                    val errorMessage = "Erreur lors de la récupération du trajet."
+                                    textResult.text = errorMessage
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", errorMessage)
+                                        apply()
+                                    }
+                                    Log.d("DEBUGNICO", "Erreur lors de la récupération du trajet pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                                }
+                            }
+
+                            override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
+                                val errorMessage = "Erreur réseau : ${t.message}"
+                                textResult.text = errorMessage
+                                with(sharedPreferences.edit()) {
+                                    putString("tempsdetrajet", errorMessage)
+                                    apply()
+                                }
+                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                            }
+                        })
+                    } else {
+                        val errorMessage = "Adresse non trouvée."
+                        textResult.text = errorMessage
+                        with(sharedPreferences.edit()) {
+                            putString("tempsdetrajet", errorMessage)
+                            apply()
+                        }
+                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                    }
+                }
+            }
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
+
+
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),

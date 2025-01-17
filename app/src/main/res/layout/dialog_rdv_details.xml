@@ -72,6 +72,13 @@
         android:textSize="16sp" />
 
     <!-- Bouton pour ajouter le rendez-vous au calendrier -->
+    <TextView
+        android:id="@+id/dialog_adresse_Temps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Encours de calcul de Trajet..."
+        android:textSize="16sp" />
+
     <Button
         android:id="@+id/add_to_calendar_button"
         android:layout_width="wrap_content"
