@@ -28,6 +28,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Context
+
 
 class RDVFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -147,7 +149,7 @@ class RDVFragment : Fragment() {
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
-        searchRoute(tvAdresse.text.toString(),tvTempsAdress)
+        searchRoute(tvAdresse.text.toString(),tvTempsAdress,rdv)
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -161,7 +163,10 @@ class RDVFragment : Fragment() {
         dialog.show()
     }
 
-    private fun searchRoute(destination: String, textResult: TextView) {
+    private fun searchRoute(destination: String, textResult: TextView, rdv: RendezVous) {
+        // Obtenir SharedPreferences directement depuis le contexte du fragment
+        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -189,35 +194,54 @@ class RDVFragment : Fragment() {
                                     val result = response.body()
                                     val duration = result?.duration ?: "00:00:00"
 
-                                    // Split the duration (hh:mm:ss)
                                     val parts = duration.split(":")
                                     val hours = parts[0]
                                     val minutes = parts[1]
 
-                                    // Check if there are hours and display accordingly
                                     val displayText = if (hours == "00") {
-                                        // No hours, display only minutes
                                         "Temps estimé : $minutes minutes"
                                     } else {
-                                        // Show hours and minutes
                                         "Temps estimé : $hours heures $minutes minutes"
                                     }
 
                                     textResult.text = displayText
 
-                                    // ajouter dans la BDD
+                                    // Enregistrer les résultats dans SharedPreferences
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", displayText)
+                                        apply()
+                                    }
+                                    Log.d("DEBUGNICO", "Temps de trajet enregistré pour ${rdv.intitule} (ID: ${rdv.idRDV}): $displayText")
 
                                 } else {
-                                    textResult.text = "Erreur lors de la récupération du trajet."
+                                    val errorMessage = "Erreur lors de la récupération du trajet."
+                                    textResult.text = errorMessage
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", errorMessage)
+                                        apply()
+                                    }
+                                    Log.d("DEBUGNICO", "Erreur lors de la récupération du trajet pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
                                 }
                             }
 
                             override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
-                                textResult.text = "Erreur réseau : ${t.message}"
+                                val errorMessage = "Erreur réseau : ${t.message}"
+                                textResult.text = errorMessage
+                                with(sharedPreferences.edit()) {
+                                    putString("tempsdetrajet", errorMessage)
+                                    apply()
+                                }
+                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
                             }
                         })
                     } else {
-                        textResult.text = "Adresse non trouvée."
+                        val errorMessage = "Adresse non trouvée."
+                        textResult.text = errorMessage
+                        with(sharedPreferences.edit()) {
+                            putString("tempsdetrajet", errorMessage)
+                            apply()
+                        }
+                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
                     }
                 }
             }
