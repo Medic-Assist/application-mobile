@@ -82,8 +82,7 @@
             android:id="@+id/input_ville"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Entrez le pays"
-            android:enabled="false
+            android:enabled="false"
             android:hint="Entrez la ville"
             android:backgroundTint="@color/black" />
 

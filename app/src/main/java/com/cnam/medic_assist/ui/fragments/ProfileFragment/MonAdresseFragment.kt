@@ -76,42 +76,21 @@ class MonAdresseFragment(patient : Patient) : Fragment() {
         // Bouton Modifier
         btnModifier.setOnClickListener {
             inputs.forEach { it.isEnabled = true } // Déverrouiller les champs
+            btnModifier.isEnabled = false
+            btnEnregistrer.isEnabled = true
+
             btnModifier.visibility = View.GONE // Masquer "Modifier"
             btnEnregistrer.visibility = View.VISIBLE // Afficher "Enregistrer"
         }
 
         // Bouton Enregistrer
         btnEnregistrer.setOnClickListener {
-            val numero = tvNumero.text.toString()
-            val rue = tvRue.text.toString()
-            val codePostal = tvCP.text.toString()
-            val ville = tvVille.text.toString()
 
-            // Validation des champs
-            if (numero.isBlank() || rue.isBlank() || codePostal.isBlank() || ville.isBlank()) {
+            if (tvNumero.toString().isBlank() || tvRue.toString().isBlank() || tvCP.toString().isBlank() || tvVille.toString().isBlank()) {
                 // Afficher un message d'erreur à l'utilisateur
                 Toast.makeText(requireContext(), "Veuillez remplir tous les champs.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            // Sauvegarde des données (à implémenter selon votre logique)
-
-            // Verrouiller les champs
-            inputs.forEach { it.isEnabled = false }
-            btnModifier.visibility = View.VISIBLE // Réafficher "Modifier"
-            btnEnregistrer.visibility = View.GONE // Masquer "Enregistrer"
-        }
-    }
-
-        val btnModifier: Button = view.findViewById(R.id.btn_modifier)
-        btnModifier.setOnClickListener {
-            //TODO : rendre saisisable les input
-            Toast.makeText(requireContext(), "Vous pouvez maintenant modifier votre choix", Toast.LENGTH_SHORT).show()
-        }
-
-        // Bouton Enregistrer
-        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
-        btnEnregistrer.setOnClickListener {
             //Récuperation des info du fragment
             val newPatient = data
             newPatient.numero_rue_principal = tvNumero.text.toString()
@@ -127,6 +106,12 @@ class MonAdresseFragment(patient : Patient) : Fragment() {
             newPatient.ville_principale = tvVille.text.toString()
 
             updateAdresse(newPatient)
+            inputs.forEach { it.isEnabled = false }
+            btnModifier.isEnabled = true
+            btnEnregistrer.isEnabled = false
+
+            btnModifier.visibility = View.VISIBLE // Réafficher "Modifier"
+            btnEnregistrer.visibility = View.GONE // Masquer "Enregistrer"
         }
     }
 

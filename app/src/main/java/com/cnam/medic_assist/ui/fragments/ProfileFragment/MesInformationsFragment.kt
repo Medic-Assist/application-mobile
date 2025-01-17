@@ -61,8 +61,7 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
         tvAnniv = view.findViewById(R.id.editTextDateNaissance)
         tvMail = view.findViewById(R.id.editTextEmail)
         tvNumTel = view.findViewById(R.id.editTextTelephone)
-        tvIndicatif = view.findViewById(R.id.indicatif)
-        tvSexe = view.findViewById(R.id.sexe)
+
 
         showData()
 
@@ -70,15 +69,12 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
         val btnModifier: Button = view.findViewById(R.id.btn_modifier)
         val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
 
-        //val editTextFields = listOf(
-            //view.findViewById<EditText>(R.id.editTextNom),
-            //view.findViewById<EditText>(R.id.editTextPrenom),
-            //view.findViewById<EditText>(R.id.editTextDateNaissance),
-            //view.findViewById<EditText>(R.id.editTextSexe),
-            //view.findViewById<EditText>(R.id.editTextEmail),
-            //view.findViewById<EditText>(R.id.editTextIndicatif),
-          //  view.findViewById<EditText>(R.id.editTextTelephone)
-        //)
+        tvNom.isEnabled = false
+        tvPrenom.isEnabled = false
+        tvAnniv.isEnabled = false
+        tvMail.isEnabled = false
+        tvNumTel.isEnabled = false
+        tvMail.isEnabled = false
 
         // Initialisation : afficher uniquement le bouton "Modifier"
         btnModifier.visibility = View.VISIBLE
@@ -110,37 +106,18 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
             tvMail.isEnabled = false 
             tvNumTel.isEnabled = false
             tvMail.isEnabled = false
-            btnModifier.isEnabled = false
+            btnModifier.isEnabled = true
             btnEnregistrer.isEnabled = false
 
             // Récupérer les valeurs des champs
-            val nom = tvNom.text.toString()
-            val prenom = tvPr.text.toString()
-            val dateNaissance = tvAnniv.text.toString()
-            val sexe = tvSexe.text.toString()
-            val email = tvMail.text.toString()
-            val indicatif = tvIndicatif.text.toString()
-            val telephone = tvNumTel.text.toString()
-
             // Vérifier les champs obligatoires
-            if (nom.isBlank() || prenom.isBlank() || email.isBlank()) {
+            if (tvNom.toString().isBlank() || tvPrenom.toString().isBlank() || tvMail.toString().isBlank()) {
                 Toast.makeText(requireContext(), "Veuillez remplir tous les champs obligatoires.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // TODO : enregistrement en base
-
-            // Après enregistrement, affichage d'un message de succès
-            Toast.makeText(
-                requireContext(),
-                "Données enregistrées avec succès !",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        // Bouton Enregistrer
-        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
-        btnEnregistrer.setOnClickListener {
+            btnModifier.isEnabled = true
+            btnEnregistrer.isEnabled = false
             //Récuperation des info du fragment
             val newPatient = data
             newPatient.prenom = tvPrenom.text.toString()
@@ -160,6 +137,8 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
             }
 
             updateInfos(newPatient)
+            btnModifier.visibility = View.VISIBLE
+            btnEnregistrer.visibility = View.GONE
         }
     }
 

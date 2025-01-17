@@ -106,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
                 if (timeInMillis > System.currentTimeMillis()) {
                     Log.d("NotificationTest", "Planification de la notification pour : ${rendezVous.intitule} à $dateTimeString")
                     scheduleNotification(
-                        appointmentId = rendezVous.idRDV ?: 0,
+                        appointmentId = rendezVous.idrdv ?: 0,
                         timeInMillis = timeInMillis,
                         title = rendezVous.intitule
                     )
