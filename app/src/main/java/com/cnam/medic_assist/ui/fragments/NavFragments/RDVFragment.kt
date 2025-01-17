@@ -1,6 +1,9 @@
 package com.cnam.medic_assist.ui.fragments.NavFragments
 
+import android.Manifest
 import android.app.Dialog
+import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
+import com.cnam.medic_assist.datas.network.MapsRetrofitClient
+import com.cnam.medic_assist.datas.network.RouteResponse
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +30,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class RDVFragment : Fragment() {
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     private lateinit var listView: ListView
     private lateinit var adapter: ArrayAdapter<String>
@@ -63,6 +73,7 @@ class RDVFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         // Charger les données au démarrage
         if (rdvList.isEmpty()) {
@@ -127,6 +138,7 @@ class RDVFragment : Fragment() {
         val tvDate = dialog.findViewById<TextView>(R.id.dialog_date)
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
+        val tvTempsAdress = dialog.findViewById<TextView>(R.id.dialog_adresse_Temps)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
@@ -134,6 +146,8 @@ class RDVFragment : Fragment() {
         tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
+
+        searchRoute(tvAdresse.text.toString(),tvTempsAdress)
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -146,6 +160,75 @@ class RDVFragment : Fragment() {
         dialog.setCanceledOnTouchOutside(true)
         dialog.show()
     }
+
+    private fun searchRoute(destination: String, textResult: TextView) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    val startCoordinates = "${it.longitude},${it.latitude}"
+                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                    val addressList = geocoder.getFromLocationName(destination, 1)
+
+                    if (addressList != null && addressList.isNotEmpty()) {
+                        val address = addressList[0]
+                        val endCoordinates = "${address.longitude},${address.latitude}"
+
+                        MapsRetrofitClient.instance.getRoute(
+                            start = startCoordinates,
+                            end = endCoordinates
+                        ).enqueue(object : Callback<RouteResponse> {
+                            override fun onResponse(
+                                call: Call<RouteResponse>,
+                                response: Response<RouteResponse>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val result = response.body()
+                                    val duration = result?.duration ?: "00:00:00"
+
+                                    // Split the duration (hh:mm:ss)
+                                    val parts = duration.split(":")
+                                    val hours = parts[0]
+                                    val minutes = parts[1]
+
+                                    // Check if there are hours and display accordingly
+                                    val displayText = if (hours == "00") {
+                                        // No hours, display only minutes
+                                        "Temps estimé : $minutes minutes"
+                                    } else {
+                                        // Show hours and minutes
+                                        "Temps estimé : $hours heures $minutes minutes"
+                                    }
+
+                                    textResult.text = displayText
+
+                                    // ajouter dans la BDD
+
+                                } else {
+                                    textResult.text = "Erreur lors de la récupération du trajet."
+                                }
+                            }
+
+                            override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
+                                textResult.text = "Erreur réseau : ${t.message}"
+                            }
+                        })
+                    } else {
+                        textResult.text = "Adresse non trouvée."
+                    }
+                }
+            }
+        } else {
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
+    }
+
 
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
