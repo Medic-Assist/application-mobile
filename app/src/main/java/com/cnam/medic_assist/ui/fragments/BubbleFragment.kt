@@ -28,19 +28,19 @@ class BubbleFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_bubble, container, false)
 
-        val createBubbleButton: Button = view.findViewById(R.id.createBubbleButton)
+        //val createBubbleButton: Button = view.findViewById(R.id.createBubbleButton)
         recyclerView = view.findViewById(R.id.bubblesRecyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         listBubbles()
 
-        createBubbleButton.setOnClickListener { createBubble() }
+        //createBubbleButton.setOnClickListener { createBubble() }
 
         return view
     }
 
-    private fun createBubble() {
+    /*private fun createBubble() {
         val body = CreateRoomBody.Builder()
             .name("Nouvelle Bulle")
             .topic("Sujet de discussion")
@@ -58,7 +58,7 @@ class BubbleFragment : Fragment() {
                 requireActivity().runOnUiThread { listBubbles() }
             }
         })
-    }
+    }*/
 
     private fun listBubbles() {
         val bubbles = RainbowSdk.instance().bubbles().getAllBubbles().copyOfDataList
