@@ -1,63 +1,145 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.NavFragments.GpsFragment">
 
-    <Button
-        android:id="@+id/button_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Map"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"/>
-
-    <Button
-        android:id="@+id/button_directions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Directions"
-        android:layout_below="@id/button_map"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
-
-    <EditText
-        android:id="@+id/edit_text_destination"
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/header_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter destination"
-        android:inputType="text"
-        android:layout_below="@id/button_directions"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"/>
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
 
-    <Button
-        android:id="@+id/button_searchMap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search Carte"
-        android:layout_below="@id/edit_text_destination"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recherche d'itinéraire"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
 
-    <Button
-        android:id="@+id/button_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edit_text_destination"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="91dp"
-        android:text="Search" />
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recherchez un itinéraire pour vous rendre à vos rendez-vous."
+            android:textSize="14sp"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/text_result"
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scrollable_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_search"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="82dp"
-        android:layout_marginEnd="24dp"
-        android:text="Result will appear here" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/header_section"
+        android:layout_marginBottom="60dp"
+        android:fillViewport="true">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
+            <!-- Bouton Retour -->
+            <Button
+                android:id="@+id/btn_back_to_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retour"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:layout_margin="16dp" />
 
+            <!-- Destination Input -->
+            <EditText
+                android:id="@+id/edit_text_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Saisissez votre destination"
+                android:inputType="text"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@color/white"
+                android:padding="12dp" />
+
+            <!-- Boutons recherche Google Maps et calcul temps de trajet -->
+            <LinearLayout
+                android:id="@+id/button_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <Button
+                    android:id="@+id/button_searchMap"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ouvrir Google Maps"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="@color/modern_blue"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/button_search"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Temps de trajet"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/black"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <!-- Map Section -->
+            <FrameLayout
+                android:id="@+id/map_container"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_margin="16dp"
+                android:background="@drawable/rounded_background" />
+
+            <!-- Estimation du temps de trajet -->
+            <LinearLayout
+                android:id="@+id/card_time_estimation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="16dp"
+                android:background="@drawable/rounded_background"
+                android:elevation="4dp"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/title_travel_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Temps estimé du trajet"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/text_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Temps estimé : -- minutes"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -21,6 +21,7 @@ import com.cnam.medic_assist.datas.network.MapsRetrofitClient
 import com.cnam.medic_assist.datas.network.RouteResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.SupportMapFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,28 +42,41 @@ class GpsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialiser les éléments de l'interface utilisateur
-        val buttonMap = view.findViewById<Button>(R.id.button_map)
-        val buttonDirections = view.findViewById<Button>(R.id.button_directions)
+//        val buttonMap = view.findViewById<Button>(R.id.button_map)
+//        val buttonDirections = view.findViewById<Button>(R.id.button_directions)
         val buttonSearch = view.findViewById<Button>(R.id.button_search)
         val buttonSearchMap = view.findViewById<Button>(R.id.button_searchMap)
         val editTextDestination = view.findViewById<EditText>(R.id.edit_text_destination)
         val textResult = view.findViewById<TextView>(R.id.text_result)
 
-        // Initialiser le client de localisation
+        // Initialisation du client de localisation
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        // Bouton pour afficher la carte
-        buttonMap.setOnClickListener {
-            startActivity(Intent(requireContext(), MapActivity::class.java))
+        // On passe la carte au FrameLayout
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_container)
+                as? com.google.android.gms.maps.SupportMapFragment ?: SupportMapFragment.newInstance()
+        childFragmentManager.beginTransaction().replace(R.id.map_container, mapFragment).commit()
+        mapFragment.getMapAsync { googleMap ->
+            // Carte
+            googleMap.uiSettings.isZoomControlsEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = true
+            googleMap.setOnMapClickListener { latLng ->
+                Toast.makeText(requireContext(), "Lat: ${latLng.latitude}, Lng: ${latLng.longitude}", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // Bouton pour obtenir les directions vers une destination
-        buttonDirections.setOnClickListener {
-            val intent = Intent(requireContext(), MapActivity::class.java)
-            intent.action = "GET_DIRECTIONS"
-            intent.putExtra("DESTINATION", "Cathédrale de Strasbourg")
-            startActivity(intent)
-        }
+        // Bouton pour afficher la carte
+//        buttonMap.setOnClickListener {
+//            startActivity(Intent(requireContext(), MapActivity::class.java))
+//        }
+//
+//        // Bouton pour obtenir les directions vers une destination
+//        buttonDirections.setOnClickListener {
+//            val intent = Intent(requireContext(), MapActivity::class.java)
+//            intent.action = "GET_DIRECTIONS"
+//            intent.putExtra("DESTINATION", "Cathédrale de Strasbourg")
+//            startActivity(intent)
+//        }
 
         // Bouton pour chercher un itinéraire
         buttonSearchMap.setOnClickListener {
@@ -76,6 +90,7 @@ class GpsFragment : Fragment() {
                 textResult.text = "Veuillez entrer une destination."
             }
         }
+
         buttonSearch.setOnClickListener {
             val destination = editTextDestination.text.toString()
             if (destination.isNotBlank()) {
@@ -113,11 +128,23 @@ class GpsFragment : Fragment() {
                             ) {
                                 if (response.isSuccessful) {
                                     val result = response.body()
-                                    val durationInMinutes = (result?.duration ?: 0.0) / 60
-                                    textResult.text =
-                                        "Temps estimé : %.2f minutes\nLieu : $destination".format(
-                                            durationInMinutes
-                                        )
+                                    val duration = result?.duration ?: "00:00:00"
+
+                                    // Split the duration (hh:mm:ss)
+                                    val parts = duration.split(":")
+                                    val hours = parts[0]
+                                    val minutes = parts[1]
+
+                                    // Check if there are hours and display accordingly
+                                    val displayText = if (hours == "00") {
+                                        // No hours, display only minutes
+                                        "Temps estimé : $minutes minutes\nLieu : $destination"
+                                    } else {
+                                        // Show hours and minutes
+                                        "Temps estimé : $hours heures $minutes minutes\nLieu : $destination"
+                                    }
+
+                                    textResult.text = displayText
                                 } else {
                                     textResult.text = "Erreur lors de la récupération du trajet."
                                 }

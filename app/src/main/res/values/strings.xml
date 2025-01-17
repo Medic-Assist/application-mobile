@@ -11,6 +11,15 @@
     <string name="mes_rdv">Mes RDV</string>
     <string name="nomrdv">nomRDV</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- Home page -->
+    <string name="welcome">Bienvenue dans MedicAssist</string>
+    <string name="homepage_subtitle">Gérez facilement votre santé et vos services médicaux.</string>
+    <string name="title_doctors">Mes professionnels de santé</string>
+    <string name="patient_journey">Parcours patient</string>
+    <string name="title_route_planning">Organisation des trajets</string>
+
+    <!-- Others -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_home">Home</string>
     <string name="title_suivi">Suivi</string>
@@ -30,4 +39,5 @@
     <string name="telephone">Numéro de téléphone</string>
     <string name="entrez_votre_nom">Entrez votre nom</string>
     <string name="title_bubble">Bulle</string>
+    <string name="time_estimation">Estimation du temps de trajet</string>
 </resources>

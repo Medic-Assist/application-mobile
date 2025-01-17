@@ -18,6 +18,10 @@
     <uses-permission android:name="android.permission.INTERNET" /> <!--ajout pour tester l'acces à la BDD-->
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -35,6 +39,8 @@
         tools:targetApi="31"
         android:usesCleartextTraffic="true"
     > <!--android:usesCleartextTraffic="true" : ajout pour tester l'acces à la BDD-->
+
+        <receiver android:name=".NotificationReceiver" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

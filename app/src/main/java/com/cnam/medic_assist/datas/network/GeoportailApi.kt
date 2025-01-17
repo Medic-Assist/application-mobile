@@ -5,9 +5,42 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 data class RouteResponse(
-    val duration: Double, // Temps en secondes
-    val distance: Double // Distance en kilomètres
+    val geometry: Geometry,
+    val distance: Double,
+    val duration: String,
+    val portions: List<Portion>
 )
+
+data class Geometry(
+    val coordinates: List<List<Double>>,  // Liste des [longitude, latitude]
+    val type: String
+)
+
+data class Portion(
+    val start: String,
+    val end: String,
+    val distance: Double,
+    val duration: String,
+    val steps: List<Step>
+)
+
+data class Step(
+    val geometry: Geometry,
+    val attributes: Attributes,
+    val distance: Double,
+    val duration: String,
+    val instruction: Instruction
+)
+
+data class Attributes(
+    val name: Map<String, String>  // "nom_1_gauche", "nom_1_droite", etc.
+)
+
+data class Instruction(
+    val type: String,  // "depart", "turn", etc.
+    val modifier: String?  // "left", "right", "straight", etc.
+)
+
 
 interface GeoportailApi {
     @GET("itineraire")

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
+
 private const val ARG_PATIENT = "arg_patient"
 
 /**
@@ -33,6 +34,8 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
     private lateinit var tvPrenom: EditText
     private lateinit var tvAnniv: EditText
     private lateinit var tvMail: EditText
+    private lateinit var tvSexe: EditText
+    private lateinit var tvIndicatif: EditText
     private lateinit var tvNumTel: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,16 +62,62 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
         tvMail = view.findViewById(R.id.editTextEmail)
         tvNumTel = view.findViewById(R.id.editTextTelephone)
 
+
         showData()
 
         val btnBackToProfile: Button = view.findViewById(R.id.btn_back_to_profile)
+        val btnModifier: Button = view.findViewById(R.id.btn_modifier)
+        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
+
+        tvNom.isEnabled = false
+        tvPrenom.isEnabled = false
+        tvAnniv.isEnabled = false
+        tvMail.isEnabled = false
+        tvNumTel.isEnabled = false
+        tvMail.isEnabled = false
+
+        // Initialisation : afficher uniquement le bouton "Modifier"
+        btnModifier.visibility = View.VISIBLE
+        btnEnregistrer.visibility = View.GONE
+
+        // Bouton Retour
         btnBackToProfile.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Bouton Enregistrer
-        val btnEnregistrer: Button = view.findViewById(R.id.btn_enregistrer)
+
+        // Bouton Modifier
+        btnModifier.setOnClickListener {
+            tvNom.isEnabled = true
+            tvPrenom.isEnabled = true
+            tvAnniv.isEnabled = true
+            tvMail.isEnabled = true 
+            tvNumTel.isEnabled = true
+            tvMail.isEnabled = true
+            btnModifier.visibility = View.GONE
+            btnEnregistrer.visibility = View.VISIBLE
+        }
+
+        // Bouton enregistrer (quand on clique)
         btnEnregistrer.setOnClickListener {
+            tvNom.isEnabled = false
+            tvPrenom.isEnabled = false
+            tvAnniv.isEnabled = false
+            tvMail.isEnabled = false 
+            tvNumTel.isEnabled = false
+            tvMail.isEnabled = false
+            btnModifier.isEnabled = true
+            btnEnregistrer.isEnabled = false
+
+            // Récupérer les valeurs des champs
+            // Vérifier les champs obligatoires
+            if (tvNom.toString().isBlank() || tvPrenom.toString().isBlank() || tvMail.toString().isBlank()) {
+                Toast.makeText(requireContext(), "Veuillez remplir tous les champs obligatoires.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            btnModifier.isEnabled = true
+            btnEnregistrer.isEnabled = false
             //Récuperation des info du fragment
             val newPatient = data
             newPatient.prenom = tvPrenom.text.toString()
@@ -88,6 +137,8 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
             }
 
             updateInfos(newPatient)
+            btnModifier.visibility = View.VISIBLE
+            btnEnregistrer.visibility = View.GONE
         }
     }
 
@@ -153,6 +204,7 @@ class MesInformationsFragment(patient: Patient) : Fragment() {
 
         return "Date invalide"
     }
+
 
     companion object {
         @JvmStatic
