@@ -9,12 +9,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="@android:color/black" />
-    <TextView
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+    <!--<TextView
         android:id="@+id/texttext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:text="helloooooo"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black" /> -->
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
@@ -55,6 +56,17 @@ class ConversationFragment : Fragment() {
                 sendMessage(message)
             }
         }
+
+        // Common messages
+        val btnArrived = view.findViewById<Button>(R.id.btnArrived)
+        val btnParking = view.findViewById<Button>(R.id.btnParking)
+        val btnLate = view.findViewById<Button>(R.id.btnLate)
+        val btnNotThere = view.findViewById<Button>(R.id.btnNotThere)
+
+        btnArrived.setOnClickListener { sendMessage("I've arrived") }
+        btnParking.setOnClickListener { sendMessage("I'm parking") }
+        btnLate.setOnClickListener { sendMessage("I'll be late") }
+        btnNotThere.setOnClickListener { sendMessage("I won't be there") }
 
         return view
     }
