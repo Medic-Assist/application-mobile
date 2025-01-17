@@ -62,7 +62,7 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
             spinnerModesLocomotion.isEnabled = false
             //Récuperation des info du fragment
             val newPatient = data
-            newPatient.prenom = selectedMode
+            newPatient.modetransport = selectedMode
 
             updatePatient(newPatient)
         }
@@ -80,9 +80,11 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
                         if(defaultTransportMode == null){
                             defaultTransportMode = modes.get(1).toString()
                         }
+
                         updateSpinner(modes, defaultTransportMode)
-                    } else {
                         Toast.makeText(requireContext(), "Chargement des données reussi.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Chargement des données par défault.", Toast.LENGTH_SHORT).show()
                         modes = Constants.modes_transports
                     }
                 }
@@ -121,6 +123,7 @@ class MoyenLocomotionFragment (patient : Patient): Fragment() {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     Toast.makeText(context, "Patient mis à jour.", Toast.LENGTH_SHORT).show()
+                    fetchData()
                 } else {
                     Toast.makeText(context, "Echec de la modification du patient: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
