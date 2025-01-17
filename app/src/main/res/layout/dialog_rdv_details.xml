@@ -57,6 +57,20 @@
         android:text="Adresse du RDV"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/titre_etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="16sp" />
+    <!-- Adresse du rendez-vous -->
+    <TextView
+        android:id="@+id/etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
     <!-- Bouton pour ajouter le rendez-vous au calendrier -->
     <TextView
         android:id="@+id/dialog_adresse_Temps"

@@ -19,6 +19,7 @@ import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.network.MapsRetrofitClient
 import com.cnam.medic_assist.datas.network.RouteResponse
+import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,6 +40,7 @@ class RDVFragment : Fragment() {
     private lateinit var adapter: ArrayAdapter<String>
     private var rdvList: List<RendezVous> = listOf()
     private lateinit var calendarHelper: ICalendarHelper
+    private var etatRdv : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +65,8 @@ class RDVFragment : Fragment() {
         // Gérer les clics pour afficher les détails du rendez-vous
         listView.setOnItemClickListener { _, _, position, _ ->
             val rdv = rdvList[position]
-            showRdvDetailsDialog(rdv)
+            //showRdvDetailsDialog(rdv)
+            loadStatusRdv(rdv)
         }
 
         // Configurer la SearchView
@@ -139,8 +142,11 @@ class RDVFragment : Fragment() {
         val tvIntitule = dialog.findViewById<TextView>(R.id.dialog_intitule)
         val tvDate = dialog.findViewById<TextView>(R.id.dialog_date)
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
+        val tvTitreAdresse = dialog.findViewById<TextView>(R.id.titre_adresse)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val tvTempsAdress = dialog.findViewById<TextView>(R.id.dialog_adresse_Temps)
+        val tvTitreEtatRdv = dialog.findViewById<TextView>(R.id.titre_etatRdv)
+        val tvEtatRdv = dialog.findViewById<TextView>(R.id.etatRdv)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
@@ -150,6 +156,21 @@ class RDVFragment : Fragment() {
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
         searchRoute(tvAdresse.text.toString(),tvTempsAdress,rdv)
+
+        if(tvAdresse.text == ""){
+            tvTitreAdresse.text = "";
+        }else{
+            tvTitreAdresse.text = "Centre Médical :";
+        }
+
+        tvEtatRdv.text = etatRdv
+
+        if(tvEtatRdv.text == ""){
+            tvTitreEtatRdv.text = "";
+        }else{
+            tvTitreEtatRdv.text = "Etat du RDV :";
+        }
+
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -254,6 +275,7 @@ class RDVFragment : Fragment() {
     }
 
 
+
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
@@ -272,6 +294,7 @@ class RDVFragment : Fragment() {
 
         return "Date invalide"
     }
+
 
     private fun formatageTime(time: String): String {
         return try {
@@ -296,6 +319,35 @@ class RDVFragment : Fragment() {
                 Toast.makeText(requireContext(), "Aucune donnée par défaut disponible.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun loadStatusRdv(rdv : RendezVous) {
+
+        RetrofitClient.instance.getStatusRDV(rdv.idrdv!!).enqueue(object :
+            Callback<EtatRdv> {
+            override fun onResponse(call: Call<EtatRdv>, response: Response<EtatRdv>) {
+                if (isAdded) {
+                    if (response.isSuccessful) {
+                        etatRdv = response.body()!!.intitule
+                        showRdvDetailsDialog(rdv)
+                        Toast.makeText(requireContext(), "Chargement de l'etat reussi.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        etatRdv = ""
+                        Toast.makeText(requireContext(), "Aucun etat enregistré pour ce RDV.", Toast.LENGTH_SHORT).show()
+
+                        showRdvDetailsDialog(rdv)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<EtatRdv>, t: Throwable) {
+                if (isAdded) {
+                    showRdvDetailsDialog(rdv)
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Aucun etat chargé..", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        })
     }
 
     companion object {
