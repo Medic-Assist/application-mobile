@@ -40,4 +40,6 @@
     <string name="entrez_votre_nom">Entrez votre nom</string>
     <string name="title_bubble">Bulle</string>
     <string name="time_estimation">Estimation du temps de trajet</string>
+    <string name="hint">Type a message</string>
+    <string name="send">Send</string>
 </resources>

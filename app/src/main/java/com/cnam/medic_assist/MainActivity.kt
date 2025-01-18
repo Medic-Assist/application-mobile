@@ -13,8 +13,8 @@ import com.cnam.medic_assist.ui.fragments.NavFragments.ProfilFragment
 class MainActivity : AppCompatActivity() {
 
     private val homeFragment = HomeFragment()
-    private val rdvFragment = RDVFragment()
     private val gpsFragment = GpsFragment()
+    private val rdvFragment = RDVFragment()
     private val profilFragment = ProfilFragment()
     private val bubbleFragment = BubbleFragment()
 
@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private fun openFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 }

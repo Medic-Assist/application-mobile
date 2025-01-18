@@ -1,6 +1,7 @@
 package com.cnam.medic_assist.datas
 
 import com.cnam.medic_assist.datas.models.CentreMedical
+import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.PersonnelMed
 import com.cnam.medic_assist.datas.models.Proche
@@ -26,22 +27,22 @@ object Constants {
     )
 
     val patients = listOf(
-        Patient(1,"Alice", "Dupont", "5", "Rue des Tulipes", 67600, "Sélestat"),
-        Patient(2,"Bob", "Martin", "7", "Rue Gambetta", 88100, "Saint-Dié-des-Vosges"),
-        Patient(3,"Claire", "Lemoine", "3", "Place du Marché", 67130, "Schirmeck"),
-        Patient(4,"David", "Durand", "8", "Rue des Jardins", 88480, "Étival-Clairefontaine"),
-        Patient(5,"Eve", "Moreau", "12", "Rue de la Poste", 67120, "Molsheim"),
-        Patient(6,"Frank", "Petit", "9", "Rue de la Gare", 67240, "Bischwiller"),
-        Patient(7,"Grace", "Kemberg", "14" ,"Rue des Tilleuls", 67390, "Marckolsheim"),
-        Patient(8,"Hugo", "Blanc", "17" ,"Rue de la Liberté", 67240, "Oberhoffen-sur-Moder"),
-        Patient(9,"Isabelle", "Verde", "22", "Rue des Vosges", 67100, "Strasbourg"),
-        Patient(10,"Jack", "Rouge", "20", "Rue de la Forêt", 67600, "Sélestat")
+        Patient(1,"Alice", "Dupont", "alice.dupont@mail.com","1962-02-23","5", "Rue des Tulipes", "67600", "Sélestat"),
+        Patient(2,"Bob", "Martin", "bob.martin@mail.com","1955-06-18","7", "Rue Gambetta", "88100", "Saint-Dié-des-Vosges"),
+        Patient(3,"Claire", "Lemoine","claire.lemoine@mail.com","1980-03-01", "3", "Place du Marché", "67130", "Schirmeck"),
+        Patient(4,"David", "Durand", "david.durand@mail.com","1949-10-05","8", "Rue des Jardins", "88480", "Étival-Clairefontaine"),
+        Patient(5,"Eve", "Moreau","eve.moreau@mail.com","1952-08-16", "12", "Rue de la Poste", "67120", "Molsheim"),
+        Patient(6,"Frank", "Petit", null,"1940-01-25","9", "Rue de la Gare", "67240", "Bischwiller"),
+        Patient(7,"Grace", "Kemberg", "grace.kemberg@mail.com","1990-05-05","14" ,"Rue des Tilleuls", "67390", "Marckolsheim"),
+        Patient(8,"Hugo", "Blanc", "hugo.blanc@mail.com","1973-11-19","17" ,"Rue de la Liberté", "67240", "Oberhoffen-sur-Moder"),
+        Patient(9,"Isabelle", "Verde", "isabelle.verde@mail.com","1951-09-20","22", "Rue des Vosges", "67100", "Strasbourg"),
+        Patient(10,"Jack", "Rouge", "jack.rouge@mail.com","1939-04-21","20", "Rue de la Forêt", "67600", "Sélestat")
     )
 
     val proches = listOf(
-        Proche(11, "Louis", "Lemoine", "23", "Rue des Champs", 67210, "Obernai"),
-        Proche(12, "Marie", "Durand", "10", "Rue du Lac", 88470, "La Bourgonce"),
-        Proche(13, "Nina", "Moreau", "8", "Rue de la Poste", 67380, "Lingolsheim")
+        Proche(11, "Louis", "Lemoine","0123456789" ,"louis.lemoine@mail.com"),
+        Proche(12, "Marie", "Durand","0123456789" ,"marie.durand@mail.com"),
+        Proche(13, "Nina", "Moreau","0123456789" ,"nina.moreau@mail.com")
     )
     val prochePatientRelations = listOf(
         Proche_Patient(3, 11),  // Louis proche de Claire
@@ -61,7 +62,7 @@ object Constants {
 
     val rdvList = listOf(
         // Rendez-vous pour Alice
-        RendezVous(1, "Radio Hanche Droite", "10:00:00", "2024-09-20", 1, 7, true),
+        RendezVous(1, "Radio Hanche Droite", "10:00:00", "2024-09-20", 1, 7, true,"Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", "67600", "Sélestat"),
         RendezVous(2, "Osthéopathie", "11:30:00", "2024-09-25", 1, 3, true),
 
         // Rendez-vous pour Bob
@@ -97,5 +98,11 @@ object Constants {
 
         RendezVous(15, "TEST NOTIF", "21:30:00", "2024-11-27", 10, 7, true),
         RendezVous(16, "TEST NOTIF !!!!!!!!!!", "14:35:00", "2024-11-29", 10, 7, true)
+    )
+
+    val modes_transports = listOf(ModeTransport("Voiture"),
+            ModeTransport("Taxi"),
+            ModeTransport("Transports en commun"),
+
     )
 }
