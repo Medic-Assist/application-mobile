@@ -6,8 +6,48 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messagesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="304dp"
         android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="8dp">
+
+    <Button
+        android:id="@+id/btnArrived"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#42A5F5"
+        android:textColor="#FFFFFF"
+        android:text="Arrivage" />
+
+    <Button
+        android:id="@+id/btnParking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#42A5F5"
+        android:textColor="#FFFFFF"
+        android:text="Parking" />
+
+    <Button
+        android:id="@+id/btnLate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#42A5F5"
+        android:textColor="#FFFFFF"
+        android:text="Retard" />
+
+    <Button
+        android:id="@+id/btnNotThere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#42A5F5"
+        android:textColor="#FFFFFF"
+        android:text="Annulation" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,12 +59,16 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="Écrire un message" />
+            android:hint="Écrivez votre message" />
 
         <ImageButton
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_send_foreground" />
+            android:layout_marginBottom="60dp"
+            android:src="@drawable/ic_send_foreground"
+            android:scaleX="0.5"
+            android:scaleY="0.5"/>
     </LinearLayout>
+
 </LinearLayout>
