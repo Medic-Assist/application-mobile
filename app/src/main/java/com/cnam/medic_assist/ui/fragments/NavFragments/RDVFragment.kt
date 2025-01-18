@@ -232,7 +232,6 @@ class RDVFragment : Fragment() {
                                         putString("tempsdetrajet", displayText)
                                         apply()
                                     }
-                                    Log.d("DEBUGNICO", "Temps de trajet enregistré pour ${rdv.intitule} (ID: ${rdv.idRDV}): $displayText")
 
                                 } else {
                                     val errorMessage = "Erreur lors de la récupération du trajet."
@@ -241,7 +240,6 @@ class RDVFragment : Fragment() {
                                         putString("tempsdetrajet", errorMessage)
                                         apply()
                                     }
-                                    Log.d("DEBUGNICO", "Erreur lors de la récupération du trajet pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
                                 }
                             }
 
@@ -252,7 +250,7 @@ class RDVFragment : Fragment() {
                                     putString("tempsdetrajet", errorMessage)
                                     apply()
                                 }
-                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idrdv}): $errorMessage")
                             }
                         })
                     } else {
@@ -262,7 +260,7 @@ class RDVFragment : Fragment() {
                             putString("tempsdetrajet", errorMessage)
                             apply()
                         }
-                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idrdv}): $errorMessage")
                     }
                 }
             }
