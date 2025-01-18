@@ -42,6 +42,13 @@
         android:textSize="16sp"
         android:layout_marginBottom="8dp" />
 
+    <TextView
+        android:id="@+id/titre_adresse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Centre Médical :"
+        android:textStyle="bold"
+        android:textSize="16sp" />
     <!-- Adresse du rendez-vous -->
     <TextView
         android:id="@+id/dialog_adresse"
@@ -49,4 +56,35 @@
         android:layout_height="wrap_content"
         android:text="Adresse du RDV"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/titre_etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="16sp" />
+    <!-- Adresse du rendez-vous -->
+    <TextView
+        android:id="@+id/etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <!-- Bouton pour ajouter le rendez-vous au calendrier -->
+    <TextView
+        android:id="@+id/dialog_adresse_Temps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Encours de calcul de Trajet..."
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/add_to_calendar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter au calendrier"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

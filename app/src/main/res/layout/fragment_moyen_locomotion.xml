@@ -1,0 +1,92 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.ProfileFragment.MoyenLocomotionFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <!-- Bouton Retour -->
+        <Button
+            android:id="@+id/btn_back_to_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retour"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/black"
+            android:layout_gravity="start" />
+
+        <!-- Titre principal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choisir un mode de locomotion préféré"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <!-- Sous-titre -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choisissez dans la liste"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingBottom="16dp" />
+
+        <!-- Liste déroulante -->
+        <Spinner
+            android:id="@+id/spinner_modes_locomotion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:backgroundTint="@color/black" />
+
+        <!-- Espacement -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+        <!-- Boutons Modifier et Enregistrer -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="2">
+
+            <!-- Bouton Modifier -->
+            <Button
+                android:id="@+id/btn_modifier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Modifier"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Bouton Enregistrer -->
+            <Button
+                android:id="@+id/btn_enregistrer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Enregistrer"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/modern_blue" />
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>
+
+<!-- TO DO pour plus tard
+    mettre les champs en disabled
+    Il faudra appuyer sur "Modifier" pour activer les champs
+-->

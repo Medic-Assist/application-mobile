@@ -74,4 +74,7 @@ outTmp/
 /kotlin-native/dist
 kotlin-ide/
 .kotlin/
-.teamcity/
+.teamcity/app/src/main/java/com/cnam/medic_assist/environments/env.kt
+
+# Ignorer le Env.kt
+app/src/main/java/com/cnam/medic_assist/environments/Env.kt
