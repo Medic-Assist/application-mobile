@@ -36,5 +36,5 @@ class MessagesAdapter(private var messages: List<IMMessage>) :
             messageTextView.text = message.messageContent
         }
     }
-
 }
+
