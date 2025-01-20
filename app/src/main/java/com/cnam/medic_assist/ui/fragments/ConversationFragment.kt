@@ -5,14 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ale.infra.contact.IRainbowContact
+import com.ale.infra.list.IItemListChangeListener
 import com.ale.infra.manager.IMMessage
 import com.ale.infra.manager.room.Room
 import com.ale.infra.proxy.conversation.IRainbowConversation
@@ -29,6 +30,14 @@ class ConversationFragment : Fragment() {
     private lateinit var inputMessage: EditText
     private lateinit var sendButton: ImageButton
     private var isLoadingMessages = false
+
+    // Listener pour détecter les changements dans la liste des messages
+    private val messagesChangeListener = IItemListChangeListener {
+        requireActivity().runOnUiThread {
+            adapter.updateMessages(conversation.messages.copyOfDataList)
+            recyclerView.scrollToPosition(adapter.itemCount - 1)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,23 +65,7 @@ class ConversationFragment : Fragment() {
             }
         }
 
-        setupCommonMessages(view)
-
-        RainbowSdk.instance().im().registerListener(imListener)
-
         return view
-    }
-
-    private fun setupCommonMessages(view: View) {
-        view.findViewById<Button>(R.id.btnArrived).setOnClickListener { sendMessage("Je suis là.") }
-        view.findViewById<Button>(R.id.btnParking).setOnClickListener { sendMessage("Je me gare.") }
-        view.findViewById<Button>(R.id.btnLate).setOnClickListener { sendMessage("Je suis en retard.") }
-        view.findViewById<Button>(R.id.btnNotThere).setOnClickListener { sendMessage("Je ne peux pas venir à mon rendez-vous.") }
-    }
-
-    private fun getBubbleById(bubbleId: String): Room? {
-        val bubbles = RainbowSdk.instance().bubbles().getAllBubbles().copyOfDataList
-        return bubbles.firstOrNull { it.id == bubbleId }
     }
 
     private fun openConversation(bubbleId: String) {
@@ -81,6 +74,10 @@ class ConversationFragment : Fragment() {
             val conversation = RainbowSdk.instance().im().getConversationFromRoom(bubble)
             if (conversation != null) {
                 this.conversation = conversation
+
+                // Enregistrer le listener pour détecter les changements de messages
+                conversation.messages.registerChangeListener(messagesChangeListener)
+
                 loadMessages()
             } else {
                 showToast("Impossible d'ouvrir la conversation.")
@@ -110,6 +107,11 @@ class ConversationFragment : Fragment() {
         }
     }
 
+    private fun getBubbleById(bubbleId: String): Room? {
+        val bubbles = RainbowSdk.instance().bubbles().getAllBubbles().copyOfDataList
+        return bubbles.firstOrNull { it.id == bubbleId }
+    }
+
     private fun showToast(message: String) {
         requireActivity().runOnUiThread {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -119,11 +121,9 @@ class ConversationFragment : Fragment() {
     private val imListener = object : Im.IRainbowImListener {
         override fun onImReceived(conversation: IRainbowConversation, message: IMMessage?) {
             if (::conversation.isInitialized && this@ConversationFragment.conversation.id == conversation.id) {
-                message?.let {
-                    requireActivity().runOnUiThread {
-                        adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
-                        recyclerView.scrollToPosition(adapter.itemCount - 1)
-                    }
+                requireActivity().runOnUiThread {
+                    adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
+                    recyclerView.scrollToPosition(adapter.itemCount - 1)
                 }
             }
         }
@@ -142,11 +142,15 @@ class ConversationFragment : Fragment() {
             isTyping: Boolean,
             roomJid: String?
         ) {
-            super.onTypingStateChanged(contact, isTyping, roomJid)
             if (::conversation.isInitialized && conversation.room?.jid == roomJid) {
                 requireActivity().runOnUiThread {
-                    val typingText = if (isTyping) "${contact.firstName} est en train d'écrire..." else ""
-                    // Affichez `typingText` dans une TextView ou un autre composant pour informer l'utilisateur
+                    val isTypingTextView = view?.findViewById<TextView>(R.id.isTypingTextView)
+                    if (isTyping) {
+                        isTypingTextView?.text = "${contact.firstName} est en train d'écrire..."
+                        isTypingTextView?.visibility = View.VISIBLE
+                    } else {
+                        isTypingTextView?.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -162,7 +166,7 @@ class ConversationFragment : Fragment() {
                 }
             }
         }
-        // Méthode appelée lorsqu'on récupère plus de messages pour une conversation
+
         override fun onMoreMessagesListUpdated(
             status: Int,
             conversation: IRainbowConversation?,
@@ -176,9 +180,21 @@ class ConversationFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        RainbowSdk.instance().im().registerListener(imListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        RainbowSdk.instance().im().unregisterListener(imListener)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        RainbowSdk.instance().im().unregisterListener(imListener)
+        if (::conversation.isInitialized) {
+            conversation.messages.unregisterChangeListener(messagesChangeListener)
+        }
     }
 
     companion object {
