@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ale.infra.rest.listeners.RainbowError
@@ -16,6 +15,8 @@ import com.ale.rainbowsdk.Connection
 import com.ale.rainbowsdk.RainbowSdk
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.models.RendezVous
+import com.cnam.medic_assist.datas.models.Utilisateur
+import com.cnam.medic_assist.datas.models.UtilisateurRequete
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -59,7 +60,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithRainbow(username: String, password: String) {
-        // Vérification de l'état de connexion
         if (RainbowSdk.instance().connection().state != Connection.ConnectionState.DISCONNECTED) {
             Log.d("RainbowSDK", "Connexion déjà établie ou en cours.")
             return
@@ -68,12 +68,11 @@ class LoginActivity : AppCompatActivity() {
         RainbowSdk.instance().connection().signIn(
             login = username,
             password = password,
-            host = "sandbox.openrainbow.com", // Ou "openrainbow.com" pour la production
+            host = "sandbox.openrainbow.com", // Utilisez "openrainbow.com" pour la production
             listener = object : Connection.ISignInListener {
                 override fun onSignInSucceeded() {
-                    Log.d("RainbowSDK", "Connexion réussie pour l'utilisateur : $username")
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    finish()
+                    Log.d("RainbowSDK", "Connexion Rainbow réussie pour l'utilisateur : $username")
+                    sendUserDataToServer(username)
                 }
 
                 override fun onSignInFailed(errorCode: Connection.ErrorCode, error: RainbowError<Unit>) {
@@ -84,11 +83,62 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
+    private fun sendUserDataToServer(email: String) {
+        val userData = UtilisateurRequete(
+            email = email,
+            nom = "Nom par défaut",
+            prenom = "Prénom par défaut"
+        )
+
+        Log.d("RequestBody", "Envoyé : $userData")
+
+        RetrofitClient.instance.callUser(userData).enqueue(object : Callback<Utilisateur> {
+            override fun onResponse(call: Call<Utilisateur>, response: Response<Utilisateur>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val user = response.body()!!
+                    // fetch fetchUserAppointments
+                    //fetchUserAppointments(user.iduser!!) // Récupère les rendez-vous
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                    Log.d("SendUserData", "Utilisateur envoyé avec succès : ${user.prenom} ${user.nom}")
+                } else {
+                    Log.e("SendUserData", "Erreur serveur : ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Utilisateur>, t: Throwable) {
+                Log.e("SendUserData", "Échec de la requête : ${t.message}")
+            }
+        })
+    }
+
+    private fun fetchUserAppointments(userId: Int) {
+        RetrofitClient.instance.getRendezvousByUserId(userId).enqueue(object : Callback<List<RendezVous>> {
+            override fun onResponse(call: Call<List<RendezVous>>, response: Response<List<RendezVous>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    Constants.rdvList = response.body()!!
+                    Log.d("FetchAppointments", "Rendez-vous récupérés : ${Constants.rdvList.size}")
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    Log.e("FetchAppointments", "Erreur lors de la récupération des rendez-vous.")
+                    showAlertDialog("Data Error", "Impossible de récupérer les rendez-vous.")
+                }
+            }
+
+            override fun onFailure(call: Call<List<RendezVous>>, t: Throwable) {
+                Log.e("FetchAppointments", "Échec de la requête : ${t.message}")
+                showAlertDialog("Network Error", "Erreur de connexion au serveur.")
+            }
+        })
+    }
+
     private fun showAlertDialog(title: String, message: String) {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle(title)
             builder.setMessage(message)
+            builder.setPositiveButton("OK", null)
             builder.show()
         }
     }

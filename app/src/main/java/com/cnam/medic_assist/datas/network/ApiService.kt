@@ -7,6 +7,7 @@ import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.models.Utilisateur
+import com.cnam.medic_assist.datas.models.UtilisateurRequete
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -15,6 +16,9 @@ interface ApiService {
     // Obtenir tous les utilisateurs
     @GET("utilisateurs")
     fun getAllUsers(): Call<List<Utilisateur>>
+
+    @POST("utilisateurs/call-utilisateurs")
+    fun callUser(@Body user: UtilisateurRequete): Call<Utilisateur>
 
     // Ajouter un utilisateur
     @POST("utilisateurs")
