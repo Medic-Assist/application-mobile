@@ -71,8 +71,13 @@ class LoginActivity : AppCompatActivity() {
             host = "sandbox.openrainbow.com", // Utilisez "openrainbow.com" pour la production
             listener = object : Connection.ISignInListener {
                 override fun onSignInSucceeded() {
+                    val user = RainbowSdk().user().getConnectedUser()
                     Log.d("RainbowSDK", "Connexion Rainbow réussie pour l'utilisateur : $username")
-                    sendUserDataToServer(username)
+                        user.firstName?.let { user.lastName?.let { it1 ->
+                            sendUserDataToServer(username, it,
+                                it1
+                            )
+                        } }
                 }
 
                 override fun onSignInFailed(errorCode: Connection.ErrorCode, error: RainbowError<Unit>) {
@@ -83,11 +88,11 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
-    private fun sendUserDataToServer(email: String) {
+    private fun sendUserDataToServer(email: String, firstname: String, lastname: String) {
         val userData = UtilisateurRequete(
             email = email,
-            nom = "Nom par défaut",
-            prenom = "Prénom par défaut"
+            nom = lastname,
+            prenom = firstname
         )
 
         Log.d("RequestBody", "Envoyé : $userData")
@@ -96,8 +101,13 @@ class LoginActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Utilisateur>, response: Response<Utilisateur>) {
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
-                    // fetch fetchUserAppointments
-                    //fetchUserAppointments(user.iduser!!) // Récupère les rendez-vous
+                    // enregistrer email en cache
+                    val sharedPref = getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        user.iduser?.let { putInt("id", it) }
+                        apply()
+                    }
+                    Log.d("SendUserData", "Email enregistré en cache : $email")
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                     Log.d("SendUserData", "Utilisateur envoyé avec succès : ${user.prenom} ${user.nom}")

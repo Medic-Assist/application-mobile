@@ -89,7 +89,15 @@ class RDVFragment : Fragment() {
     }
 
     private fun fetchData() {
-        RetrofitClient.instance.getRendezvousByUserId(1).enqueue(object : Callback<List<RendezVous>> {
+        // recuperer l'id en cache
+        val sharedPref = requireContext().getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+        val id = sharedPref.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
+        if (id != null) {
+            Log.d("UserCache", "Email récupéré depuis le cache : $id")
+        } else {
+            Log.d("UserCache", "Aucune valeur trouvée dans le cache.")
+        }
+        RetrofitClient.instance.getRendezvousByUserId(id).enqueue(object : Callback<List<RendezVous>> {
             override fun onResponse(call: Call<List<RendezVous>>, response: Response<List<RendezVous>>) {
                 if (isAdded) {
                     if (response.isSuccessful && response.body() != null) {
