@@ -280,15 +280,16 @@ class RDVFragment : Fragment() {
                     val rdvMillis = dateFormat.parse(dateTimeString)?.time ?: return@forEach
 
                     // Extraire le temps de trajet en minutes
-                    val travelMinutes = travelTime.split(" ")[2].toIntOrNull() ?: 0
+                    val travelMinutes = travelTime.filter { it.isDigit() }.toIntOrNull() ?: 0
+                    val travelMillis = travelMinutes * 60 * 1000 // Conversion en millisecondes
 
                     // Calcul des horaires
-                    val reminderTime = rdvMillis - (travelMinutes * 60 * 1000) - (60 * 60 * 1000) // RDV - Temps de trajet - 1h
-                    val departureTime = rdvMillis - (travelMinutes * 60 * 1000) // RDV - Temps de trajet
+                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000) // RDV - Temps de trajet - 1h
+                    val departureTime = rdvMillis - travelMillis // RDV - Temps de trajet
 
                     Log.d("scheduleNotifications", "Planification des notifications pour le rendez-vous ID: $idRdv.")
-                    Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)}")
-                    Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)}")
+                    Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)} (Rendez-vous - Temps trajet - 1h)")
+                    Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)} (Rendez-vous - Temps trajet)")
 
                     // Notification simple (rappel)
                     scheduleNotification(
@@ -312,6 +313,8 @@ class RDVFragment : Fragment() {
             }
         }
     }
+
+
 
 
 
