@@ -1,10 +1,15 @@
 package com.cnam.medic_assist.ui.fragments.NavFragments
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.Dialog
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +18,7 @@ import android.widget.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.cnam.medic_assist.NotificationReceiver
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
@@ -28,8 +34,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.Context
-
 
 class RDVFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -51,7 +55,6 @@ class RDVFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.rdv_page, container, false)
 
-        // Initialiser la ListView et son adaptateur
         listView = view.findViewById(R.id.list_view)
         adapter = ArrayAdapter(
             requireContext(),
@@ -60,13 +63,11 @@ class RDVFragment : Fragment() {
         )
         listView.adapter = adapter
 
-        // Gérer les clics pour afficher les détails du rendez-vous
         listView.setOnItemClickListener { _, _, position, _ ->
             val rdv = rdvList[position]
             showRdvDetailsDialog(rdv)
         }
 
-        // Configurer la SearchView
         val searchView: SearchView = view.findViewById(R.id.searchView)
         setupSearchView(searchView)
 
@@ -77,12 +78,12 @@ class RDVFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        // Charger les données au démarrage
         if (rdvList.isEmpty()) {
             fetchData()
         } else {
             reloadData()
         }
+
     }
 
     private fun fetchData() {
@@ -109,7 +110,7 @@ class RDVFragment : Fragment() {
     }
 
     private fun reloadData() {
-        if (!isAdded) return // Ne pas mettre à jour si le fragment n'est pas attaché
+        if (!isAdded) return
         val rdvStrings = rdvList.map { "${it.intitule} - ${formatageDate(it.daterdv)}" }
         adapter.clear()
         adapter.addAll(rdvStrings)
@@ -149,7 +150,7 @@ class RDVFragment : Fragment() {
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
-        searchRoute(tvAdresse.text.toString(),tvTempsAdress,rdv)
+        searchRoute(tvAdresse.text.toString(), tvTempsAdress, rdv)
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -164,8 +165,7 @@ class RDVFragment : Fragment() {
     }
 
     private fun searchRoute(destination: String, textResult: TextView, rdv: RendezVous) {
-        // Obtenir SharedPreferences directement depuis le contexte du fragment
-        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+        Log.d("searchRoute", "Recherche de l'itinéraire pour la destination : $destination")
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -175,12 +175,15 @@ class RDVFragment : Fragment() {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 location?.let {
                     val startCoordinates = "${it.longitude},${it.latitude}"
+                    Log.d("searchRoute", "Coordonnées de départ : $startCoordinates")
+
                     val geocoder = Geocoder(requireContext(), Locale.getDefault())
                     val addressList = geocoder.getFromLocationName(destination, 1)
 
                     if (addressList != null && addressList.isNotEmpty()) {
                         val address = addressList[0]
                         val endCoordinates = "${address.longitude},${address.latitude}"
+                        Log.d("searchRoute", "Coordonnées de destination : $endCoordinates")
 
                         MapsRetrofitClient.instance.getRoute(
                             start = startCoordinates,
@@ -193,6 +196,7 @@ class RDVFragment : Fragment() {
                                 if (response.isSuccessful) {
                                     val result = response.body()
                                     val duration = result?.duration ?: "00:00:00"
+                                    Log.d("searchRoute", "Durée estimée du trajet : $duration")
 
                                     val parts = duration.split(":")
                                     val hours = parts[0]
@@ -205,47 +209,26 @@ class RDVFragment : Fragment() {
                                     }
 
                                     textResult.text = displayText
-
-                                    // Enregistrer les résultats dans SharedPreferences
-                                    with(sharedPreferences.edit()) {
-                                        putString("tempsdetrajet", displayText)
-                                        apply()
-                                    }
-                                    Log.d("DEBUGNICO", "Temps de trajet enregistré pour ${rdv.intitule} (ID: ${rdv.idRDV}): $displayText")
-
+                                    saveRdvToPreferences(rdv, displayText)
                                 } else {
-                                    val errorMessage = "Erreur lors de la récupération du trajet."
-                                    textResult.text = errorMessage
-                                    with(sharedPreferences.edit()) {
-                                        putString("tempsdetrajet", errorMessage)
-                                        apply()
-                                    }
-                                    Log.d("DEBUGNICO", "Erreur lors de la récupération du trajet pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                                    Log.e("searchRoute", "Erreur API Maps : ${response.errorBody()?.string()}")
+                                    textResult.text = "Erreur lors de la récupération du trajet."
                                 }
                             }
 
                             override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
-                                val errorMessage = "Erreur réseau : ${t.message}"
-                                textResult.text = errorMessage
-                                with(sharedPreferences.edit()) {
-                                    putString("tempsdetrajet", errorMessage)
-                                    apply()
-                                }
-                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                                Log.e("searchRoute", "Erreur réseau lors de la récupération du trajet : ${t.message}")
+                                textResult.text = "Erreur réseau : ${t.message}"
                             }
                         })
                     } else {
-                        val errorMessage = "Adresse non trouvée."
-                        textResult.text = errorMessage
-                        with(sharedPreferences.edit()) {
-                            putString("tempsdetrajet", errorMessage)
-                            apply()
-                        }
-                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idRDV}): $errorMessage")
+                        Log.w("searchRoute", "Adresse de destination introuvable.")
+                        textResult.text = "Adresse non trouvée."
                     }
                 }
             }
         } else {
+            Log.w("searchRoute", "Permission de localisation non accordée.")
             requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
@@ -253,6 +236,147 @@ class RDVFragment : Fragment() {
         }
     }
 
+    private fun saveRdvToPreferences(rdv: RendezVous, travelTime: String) {
+        if (rdv.daterdv.isNotEmpty() && rdv.horaire.isNotEmpty() && rdv.idCentreMedical != null && travelTime.isNotEmpty()) {
+            val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+            val key = rdv.idRDV.toString()
+            val newData = "${rdv.idRDV}|${rdv.idCentreMedical}|$travelTime|${rdv.nom}|${rdv.intitule}|${rdv.daterdv}|${rdv.horaire}"
+
+            val existingData = sharedPreferences.getString(key, null)
+            if (existingData != null && existingData == newData) {
+                Log.d("saveRdvToPreferences", "Données existantes identiques pour le rendez-vous ID: $key. Aucune mise à jour nécessaire.")
+            } else {
+                with(sharedPreferences.edit()) {
+                    putString(key, newData)
+                    apply()
+                }
+                Log.d("saveRdvToPreferences", "Données mises à jour pour le rendez-vous ID: $key : $newData")
+                scheduleNotificationsFromSavedData()
+            }
+        } else {
+            Log.w("saveRdvToPreferences", "Données incomplètes pour le rendez-vous ID: ${rdv.idRDV}")
+        }
+    }
+
+    private fun scheduleNotificationsFromSavedData() {
+        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+        val allEntries = sharedPreferences.all
+
+        Log.d("scheduleNotifications", "Démarrage de la planification des notifications.")
+
+        allEntries.forEach { (key, value) ->
+            val data = (value as String).split("|")
+            if (data.size == 7) {
+                try {
+                    val idRdv = data[0].toInt()
+                    val travelTime = data[2]
+                    val rdvName = data[4]
+                    val rdvDate = data[5]
+                    val rdvTime = data[6]
+
+                    // Convertir les dates et heures en millisecondes
+                    val dateTimeString = "$rdvDate $rdvTime"
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+                    val rdvMillis = dateFormat.parse(dateTimeString)?.time ?: return@forEach
+
+                    // Extraire le temps de trajet en minutes
+                    val travelMinutes = travelTime.split(" ")[2].toIntOrNull() ?: 0
+
+                    // Calcul des horaires
+                    val reminderTime = rdvMillis - (travelMinutes * 60 * 1000) - (60 * 60 * 1000) // RDV - Temps de trajet - 1h
+                    val departureTime = rdvMillis - (travelMinutes * 60 * 1000) // RDV - Temps de trajet
+
+                    Log.d("scheduleNotifications", "Planification des notifications pour le rendez-vous ID: $idRdv.")
+                    Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)}")
+                    Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)}")
+
+                    // Notification simple (rappel)
+                    scheduleNotification(
+                        idRdv * 10,
+                        reminderTime,
+                        "Rappel : Rendez-vous ($rdvName)\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
+                    )
+
+                    // Notification avec actions (oui/non)
+                    scheduleNotificationWithAction(
+                        idRdv * 10 + 1,
+                        departureTime,
+                        "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
+                    )
+
+                } catch (e: Exception) {
+                    Log.e("scheduleNotifications", "Erreur lors de la planification pour la clé $key : ${e.message}")
+                }
+            } else {
+                Log.w("scheduleNotifications", "Données mal formatées pour la clé $key : $value")
+            }
+        }
+    }
+
+
+
+    private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                Log.w("AlarmPermission", "Permission SCHEDULE_EXACT_ALARM non accordée.")
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                startActivity(intent)
+                return
+            }
+        }
+
+        val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
+            putExtra("appointmentId", appointmentId)
+            putExtra("notificationTitle", title)
+            putExtra("notificationType", "default") // Type "default"
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            appointmentId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        try {
+            Log.d("NotificationDebug", "Planification Notification simple : ID=$appointmentId, Heure=${Date(timeInMillis)}")
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                timeInMillis,
+                pendingIntent
+            )
+        } catch (e: SecurityException) {
+            Log.e("AlarmPermission", "Erreur : ${e.message}")
+        }
+    }
+
+    private fun scheduleNotificationWithAction(appointmentId: Int, timeInMillis: Long, title: String) {
+        val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
+            putExtra("appointmentId", appointmentId)
+            putExtra("notificationTitle", title)
+            putExtra("notificationType", "action") // Type "action"
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            appointmentId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        try {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                timeInMillis,
+                pendingIntent
+            )
+            Log.d("Notification", "Notification avec actions planifiée : ID=$appointmentId, Titre=$title, Heure=${Date(timeInMillis)}")
+        } catch (e: SecurityException) {
+            Log.e("AlarmPermission", "Erreur : ${e.message}")
+        }
+    }
 
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(

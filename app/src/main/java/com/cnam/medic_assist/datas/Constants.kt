@@ -61,7 +61,7 @@ object Constants {
 
     val rdvList = listOf(
         // Rendez-vous pour Alice
-        RendezVous(1, "Radio Hanche Droite", "10:00:00", "2024-09-20", 1, 7, true,"Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", 67600, "Sélestat"),
+        RendezVous(1, "Radio Hanche Droite", "13:15:00", "2025-02-28", 1, 7, true,"Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", 67600, "Sélestat"),
         RendezVous(2, "Osthéopathie", "11:30:00", "2024-09-25", 1, 3, true),
 
         // Rendez-vous pour Bob

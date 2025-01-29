@@ -42,9 +42,6 @@ class LoginActivity : AppCompatActivity() {
 
         // Vérifiez la permission pour les alarmes exactes
         requestExactAlarmPermission()
-
-        // Appeler la méthode pour tester les notifications
-        testNotifications()
     }
 
     private fun onClickConnexion() {
@@ -92,82 +89,6 @@ class LoginActivity : AppCompatActivity() {
             builder.show()
         }
     }
-
-    private fun testNotifications() {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-
-        // Parcourir tous les rendez-vous de Constants.rdvList
-        Constants.rdvList.forEach { rendezVous ->
-            try {
-                val dateTimeString = "${rendezVous.daterdv} ${rendezVous.horaire}"
-                val timeInMillis = dateFormat.parse(dateTimeString)?.time ?: 0L
-
-                // Filtrer les rendez-vous passés
-                if (timeInMillis > System.currentTimeMillis()) {
-                    Log.d("NotificationTest", "Planification de la notification pour : ${rendezVous.intitule} à $dateTimeString")
-                    scheduleNotification(
-                        appointmentId = rendezVous.idRDV ?: 0,
-                        timeInMillis = timeInMillis,
-                        title = rendezVous.intitule
-                    )
-
-                } else {
-                    Log.d("NotificationTest", "Rendez-vous ignoré (passé) : ${rendezVous.intitule}")
-                }
-            } catch (e: Exception) {
-                Log.e("NotificationTest", "Erreur lors de la planification pour ${rendezVous.intitule} : ${e.message}")
-            }
-        }
-    }
-
-    private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
-        val intent = Intent(this, NotificationReceiver::class.java).apply {
-            putExtra("appointmentId", appointmentId)
-            putExtra("notificationTitle", title)
-            putExtra("notificationType", "default") // Par défaut, type simple
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            appointmentId,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            timeInMillis,
-            pendingIntent
-        )
-
-        Log.d("Notification", "Notification planifiée : ID=$appointmentId, Heure=$timeInMillis")
-    }
-
-
-    private fun scheduleQuestionNotification() {
-        val notificationTime = System.currentTimeMillis() + 10_000 // 10 secondes après le lancement
-        val intent = Intent(this, NotificationReceiver::class.java).apply {
-            putExtra("appointmentId", 12345) // Identifiant unique
-            putExtra("notificationTitle", "Confirmation")
-            putExtra("notificationType", "question") // Spécifie le type
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            12345,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            notificationTime,
-            pendingIntent
-        )
-    }
-
 
     private fun requestExactAlarmPermission() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {

@@ -11,12 +11,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
         when (intent?.action) {
             "ACTION_YES" -> {
                 Log.d("NotificationAction", "L'utilisateur a cliqué sur Oui.")
-                Toast.makeText(context, "Vous avez répondu Oui.", Toast.LENGTH_SHORT).show()
+                // TODO: Ajouter un comportement pour l'action "Oui"
             }
             "ACTION_NO" -> {
                 Log.d("NotificationAction", "L'utilisateur a cliqué sur Non.")
-                Toast.makeText(context, "Vous avez répondu Non.", Toast.LENGTH_SHORT).show()
+                // TODO: Ajouter un comportement pour l'action "Non"
             }
         }
     }
+
 }
