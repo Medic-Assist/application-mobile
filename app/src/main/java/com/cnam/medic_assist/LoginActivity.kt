@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ale.infra.rest.listeners.RainbowError
@@ -16,6 +15,8 @@ import com.ale.rainbowsdk.Connection
 import com.ale.rainbowsdk.RainbowSdk
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.models.RendezVous
+import com.cnam.medic_assist.datas.models.Utilisateur
+import com.cnam.medic_assist.datas.models.UtilisateurRequete
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -56,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginWithRainbow(username: String, password: String) {
-        // Vérification de l'état de connexion
         if (RainbowSdk.instance().connection().state != Connection.ConnectionState.DISCONNECTED) {
             Log.d("RainbowSDK", "Connexion déjà établie ou en cours.")
             return
@@ -65,12 +65,16 @@ class LoginActivity : AppCompatActivity() {
         RainbowSdk.instance().connection().signIn(
             login = username,
             password = password,
-            host = "sandbox.openrainbow.com", // Ou "openrainbow.com" pour la production
+            host = "sandbox.openrainbow.com", // Utilisez "openrainbow.com" pour la production
             listener = object : Connection.ISignInListener {
                 override fun onSignInSucceeded() {
-                    Log.d("RainbowSDK", "Connexion réussie pour l'utilisateur : $username")
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    finish()
+                    val user = RainbowSdk().user().getConnectedUser()
+                    Log.d("RainbowSDK", "Connexion Rainbow réussie pour l'utilisateur : $username")
+                        user.firstName?.let { user.lastName?.let { it1 ->
+                            sendUserDataToServer(username, it,
+                                it1
+                            )
+                        } }
                 }
 
                 override fun onSignInFailed(errorCode: Connection.ErrorCode, error: RainbowError<Unit>) {
@@ -81,13 +85,134 @@ class LoginActivity : AppCompatActivity() {
         )
     }
 
+    private fun sendUserDataToServer(email: String, firstname: String, lastname: String) {
+        val userData = UtilisateurRequete(
+            email = email,
+            nom = lastname,
+            prenom = firstname
+        )
+
+        Log.d("RequestBody", "Envoyé : $userData")
+
+        RetrofitClient.instance.callUser(userData).enqueue(object : Callback<Utilisateur> {
+            override fun onResponse(call: Call<Utilisateur>, response: Response<Utilisateur>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val user = response.body()!!
+                    // enregistrer email en cache
+                    val sharedPref = getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        user.iduser?.let { putInt("id", it) }
+                        apply()
+                    }
+                    Log.d("SendUserData", "Email enregistré en cache : $email")
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                    Log.d("SendUserData", "Utilisateur envoyé avec succès : ${user.prenom} ${user.nom}")
+                } else {
+                    Log.e("SendUserData", "Erreur serveur : ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Utilisateur>, t: Throwable) {
+                Log.e("SendUserData", "Échec de la requête : ${t.message}")
+            }
+        })
+    }
+
+    private fun fetchUserAppointments(userId: Int) {
+        RetrofitClient.instance.getRendezvousByUserId(userId).enqueue(object : Callback<List<RendezVous>> {
+            override fun onResponse(call: Call<List<RendezVous>>, response: Response<List<RendezVous>>) {
+                if (response.isSuccessful && response.body() != null) {
+                    Constants.rdvList = response.body()!!
+                    Log.d("FetchAppointments", "Rendez-vous récupérés : ${Constants.rdvList.size}")
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                } else {
+                    Log.e("FetchAppointments", "Erreur lors de la récupération des rendez-vous.")
+                    showAlertDialog("Data Error", "Impossible de récupérer les rendez-vous.")
+                }
+            }
+
+            override fun onFailure(call: Call<List<RendezVous>>, t: Throwable) {
+                Log.e("FetchAppointments", "Échec de la requête : ${t.message}")
+                showAlertDialog("Network Error", "Erreur de connexion au serveur.")
+            }
+        })
+    }
+
     private fun showAlertDialog(title: String, message: String) {
         runOnUiThread {
             val builder = AlertDialog.Builder(this)
             builder.setTitle(title)
             builder.setMessage(message)
+            builder.setPositiveButton("OK", null)
             builder.show()
         }
+    }
+
+    private fun testNotifications() {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
+        // Parcourir tous les rendez-vous de Constants.rdvList
+        Constants.rdvList.forEach { rendezVous ->
+            try {
+                val dateTimeString = "${rendezVous.daterdv} ${rendezVous.horaire}"
+                val timeInMillis = dateFormat.parse(dateTimeString)?.time ?: 0L
+
+                // Filtrer les rendez-vous passés
+                if (timeInMillis > System.currentTimeMillis()) {
+                    Log.d("NotificationTest", "Planification de la notification pour : ${rendezVous.intitule} à $dateTimeString")
+                    scheduleNotification(
+                        appointmentId = rendezVous.idrdv ?: 0,
+                        timeInMillis = timeInMillis,
+                        title = rendezVous.intitule
+                    )
+                } else {
+                    Log.d("NotificationTest", "Rendez-vous ignoré (passé) : ${rendezVous.intitule}")
+                }
+            } catch (e: Exception) {
+                Log.e("NotificationTest", "Erreur lors de la planification pour ${rendezVous.intitule} : ${e.message}")
+            }
+        }
+    }
+
+    private fun convertToMillis(date: String, time: String): Long {
+        return try {
+            val dateTimeString = "$date $time" // Combine la date et l'heure
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            dateFormat.parse(dateTimeString)?.time ?: 0L // Retourne 0L en cas d'erreur
+        } catch (e: Exception) {
+            Log.e("Date Conversion", "Erreur lors de la conversion : ${e.message}")
+            0L
+        }
+    }
+
+    private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
+        val adjustedTimeInMillis = timeInMillis - 3600000 // Soustraire 1 heure (3600000 ms)
+
+        val intent = Intent(this, NotificationReceiver::class.java).apply {
+            putExtra("appointmentId", appointmentId)
+            putExtra("notificationTitle", title)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            appointmentId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            adjustedTimeInMillis,
+            pendingIntent
+        )
+
+        Log.d(
+            "NotificationTest",
+            "Notification planifiée : [ID: $appointmentId, Titre: $title, Temps (ms): $adjustedTimeInMillis, Date/Heure : ${java.util.Date(adjustedTimeInMillis)}]"
+        )
     }
 
     private fun requestExactAlarmPermission() {

@@ -5,10 +5,40 @@
     android:background="@color/blue"
     tools:context=".ui.fragments.ProfileFragment.MesInformationsFragment">
 
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/header_infos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informations personnelles"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Consultez et modifiez vos informations"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="1dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="80dp"><!-- j'ajoute du padding à 72dp pour le haut -->
 
         <LinearLayout
             android:orientation="vertical"
@@ -45,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre nom"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080" />
 
@@ -64,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre prénom"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080" />
 
@@ -83,29 +113,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="dd/mm/yyyy"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080"
                 android:inputType="date" />
 
-            <!-- Champ Sexe -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sexe"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
-
-            <EditText
-                android:id="@+id/editTextSexe"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Sexe"
-                android:enabled="false"
-                android:padding="12dp"
-                android:backgroundTint="#808080" />
 
             <!-- Champ Adresse E-mail -->
             <TextView
@@ -122,7 +134,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Entrez votre e-mail"
-                android:enabled="false"
+                android:enabled="true"
                 android:padding="12dp"
                 android:backgroundTint="#808080"
                 android:inputType="textEmailAddress" />
@@ -149,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:hint="+33"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="12dp"
                     android:backgroundTint="#808080"
                     android:inputType="phone" />
@@ -161,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="Numéro de téléphone"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="12dp"
                     android:backgroundTint="#808080"
                     android:inputType="phone" />
@@ -183,8 +195,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enregistrer"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black"
+                android:backgroundTint="@color/modern_blue"
+                android:textColor="@color/white"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
     </ScrollView>

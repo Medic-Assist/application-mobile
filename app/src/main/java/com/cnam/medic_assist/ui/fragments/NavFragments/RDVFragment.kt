@@ -25,6 +25,7 @@ import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.network.MapsRetrofitClient
 import com.cnam.medic_assist.datas.network.RouteResponse
+import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -43,6 +44,7 @@ class RDVFragment : Fragment() {
     private lateinit var adapter: ArrayAdapter<String>
     private var rdvList: List<RendezVous> = listOf()
     private lateinit var calendarHelper: ICalendarHelper
+    private var etatRdv : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +67,8 @@ class RDVFragment : Fragment() {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val rdv = rdvList[position]
-            showRdvDetailsDialog(rdv)
+            //showRdvDetailsDialog(rdv)
+            loadStatusRdv(rdv)
         }
 
         val searchView: SearchView = view.findViewById(R.id.searchView)
@@ -87,7 +90,15 @@ class RDVFragment : Fragment() {
     }
 
     private fun fetchData() {
-        RetrofitClient.instance.getRendezvousByUserId(1).enqueue(object : Callback<List<RendezVous>> {
+        // recuperer l'id en cache
+        val sharedPref = requireContext().getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+        val id = sharedPref.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
+        if (id != null) {
+            Log.d("UserCache", "Email récupéré depuis le cache : $id")
+        } else {
+            Log.d("UserCache", "Aucune valeur trouvée dans le cache.")
+        }
+        RetrofitClient.instance.getRendezvousByUserId(id).enqueue(object : Callback<List<RendezVous>> {
             override fun onResponse(call: Call<List<RendezVous>>, response: Response<List<RendezVous>>) {
                 if (isAdded) {
                     if (response.isSuccessful && response.body() != null) {
@@ -140,8 +151,11 @@ class RDVFragment : Fragment() {
         val tvIntitule = dialog.findViewById<TextView>(R.id.dialog_intitule)
         val tvDate = dialog.findViewById<TextView>(R.id.dialog_date)
         val tvHeure = dialog.findViewById<TextView>(R.id.dialog_heure)
+        val tvTitreAdresse = dialog.findViewById<TextView>(R.id.titre_adresse)
         val tvAdresse = dialog.findViewById<TextView>(R.id.dialog_adresse)
         val tvTempsAdress = dialog.findViewById<TextView>(R.id.dialog_adresse_Temps)
+        val tvTitreEtatRdv = dialog.findViewById<TextView>(R.id.titre_etatRdv)
+        val tvEtatRdv = dialog.findViewById<TextView>(R.id.etatRdv)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
 
@@ -151,6 +165,21 @@ class RDVFragment : Fragment() {
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
         searchRoute(tvAdresse.text.toString(), tvTempsAdress, rdv)
+
+        if(tvAdresse.text == ""){
+            tvTitreAdresse.text = "";
+        }else{
+            tvTitreAdresse.text = "Centre Médical :";
+        }
+
+        tvEtatRdv.text = etatRdv
+
+        if(tvEtatRdv.text == ""){
+            tvTitreEtatRdv.text = "";
+        }else{
+            tvTitreEtatRdv.text = "Etat du RDV :";
+        }
+
 
         closeButton.setOnClickListener { dialog.dismiss() }
 
@@ -210,20 +239,41 @@ class RDVFragment : Fragment() {
 
                                     textResult.text = displayText
                                     saveRdvToPreferences(rdv, displayText)
+
+                                    // Enregistrer les résultats dans SharedPreferences
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", displayText)
+                                        apply()
+                                    }
+
                                 } else {
-                                    Log.e("searchRoute", "Erreur API Maps : ${response.errorBody()?.string()}")
-                                    textResult.text = "Erreur lors de la récupération du trajet."
+                                    val errorMessage = "Erreur lors de la récupération du trajet."
+                                    textResult.text = errorMessage
+                                    with(sharedPreferences.edit()) {
+                                        putString("tempsdetrajet", errorMessage)
+                                        apply()
+                                    }
                                 }
                             }
 
                             override fun onFailure(call: Call<RouteResponse>, t: Throwable) {
-                                Log.e("searchRoute", "Erreur réseau lors de la récupération du trajet : ${t.message}")
-                                textResult.text = "Erreur réseau : ${t.message}"
+                                val errorMessage = "Erreur réseau : ${t.message}"
+                                textResult.text = errorMessage
+                                with(sharedPreferences.edit()) {
+                                    putString("tempsdetrajet", errorMessage)
+                                    apply()
+                                }
+                                Log.d("DEBUGNICO", "Erreur réseau pour ${rdv.intitule} (ID: ${rdv.idrdv}): $errorMessage")
                             }
                         })
                     } else {
-                        Log.w("searchRoute", "Adresse de destination introuvable.")
-                        textResult.text = "Adresse non trouvée."
+                        val errorMessage = "Adresse non trouvée."
+                        textResult.text = errorMessage
+                        with(sharedPreferences.edit()) {
+                            putString("tempsdetrajet", errorMessage)
+                            apply()
+                        }
+                        Log.d("DEBUGNICO", "Adresse non trouvée pour ${rdv.intitule} (ID: ${rdv.idrdv}): $errorMessage")
                     }
                 }
             }
@@ -381,6 +431,7 @@ class RDVFragment : Fragment() {
         }
     }
 
+
     private fun formatageDate(date: String): String {
         val inputFormats = listOf(
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()),
@@ -399,6 +450,7 @@ class RDVFragment : Fragment() {
 
         return "Date invalide"
     }
+
 
     private fun formatageTime(time: String): String {
         return try {
@@ -423,6 +475,35 @@ class RDVFragment : Fragment() {
                 Toast.makeText(requireContext(), "Aucune donnée par défaut disponible.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun loadStatusRdv(rdv : RendezVous) {
+
+        RetrofitClient.instance.getStatusRDV(rdv.idrdv!!).enqueue(object :
+            Callback<EtatRdv> {
+            override fun onResponse(call: Call<EtatRdv>, response: Response<EtatRdv>) {
+                if (isAdded) {
+                    if (response.isSuccessful) {
+                        etatRdv = response.body()!!.intitule
+                        showRdvDetailsDialog(rdv)
+                        Toast.makeText(requireContext(), "Chargement de l'etat reussi.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        etatRdv = ""
+                        Toast.makeText(requireContext(), "Aucun etat enregistré pour ce RDV.", Toast.LENGTH_SHORT).show()
+
+                        showRdvDetailsDialog(rdv)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<EtatRdv>, t: Throwable) {
+                if (isAdded) {
+                    showRdvDetailsDialog(rdv)
+                    Toast.makeText(requireContext(), "Erreur réseau : ${t.message}. Aucun etat chargé..", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        })
     }
 
     companion object {
