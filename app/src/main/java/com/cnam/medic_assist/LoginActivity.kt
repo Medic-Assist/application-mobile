@@ -43,9 +43,6 @@ class LoginActivity : AppCompatActivity() {
 
         // Vérifiez la permission pour les alarmes exactes
         requestExactAlarmPermission()
-
-        // Appeler la méthode pour tester les notifications
-        testNotifications()
     }
 
     private fun onClickConnexion() {
