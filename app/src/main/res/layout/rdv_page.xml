@@ -1,76 +1,121 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".MainActivity">
 
-    <!-- Title and Notification Icon -->
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/header_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
 
         <TextView
-            android:id="@+id/tv_question"
-            android:layout_width="0dp"
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_weight="1"
-            android:gravity="start"
-            android:text="@string/mes_rdv"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:text="Mes Rendez-vous"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/notif" />
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Consultez vos rendez-vous programmés."
+            android:textSize="14sp"
+            android:textColor="@color/white" />
     </LinearLayout>
 
-    <!-- Search View and Filter Button -->
-    <LinearLayout
-        android:id="@+id/ll_progressbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:queryHint="Search here" />
-
-    </LinearLayout>
-
-    <!-- Scrollable List of Buttons -->
+    <!-- Scrollable Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header_section"
+        android:layout_marginBottom="60dp"
         android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/buttonContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <ListView
-                android:id="@+id/list_view"
+            <!-- Bouton Retour -->
+            <Button
+                android:id="@+id/btn_back_to_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retour"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Title and Notification Icon -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_question"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:layout_weight="1"
+                    android:gravity="start"
+                    android:text="@string/mes_rdv"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/notif" />
+            </LinearLayout>
+
+            <!-- Search View and Filter Button -->
+            <LinearLayout
+                android:id="@+id/ll_progressbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:queryHint="Recherche"
+                    android:background="@color/white"
+                    android:elevation="4dp" />
+            </LinearLayout>
+
+
+            <!-- Liste des RDV -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <ListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>

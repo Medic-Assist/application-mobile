@@ -195,7 +195,7 @@ class RDVFragment : Fragment() {
 
     private fun searchRoute(destination: String, textResult: TextView, rdv: RendezVous) {
         Log.d("searchRoute", "Recherche de l'itinéraire pour la destination : $destination")
-
+        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -289,8 +289,8 @@ class RDVFragment : Fragment() {
     private fun saveRdvToPreferences(rdv: RendezVous, travelTime: String) {
         if (rdv.daterdv.isNotEmpty() && rdv.horaire.isNotEmpty() && rdv.idCentreMedical != null && travelTime.isNotEmpty()) {
             val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
-            val key = rdv.idRDV.toString()
-            val newData = "${rdv.idRDV}|${rdv.idCentreMedical}|$travelTime|${rdv.nom}|${rdv.intitule}|${rdv.daterdv}|${rdv.horaire}"
+            val key = rdv.idrdv.toString()
+            val newData = "${rdv.idrdv}|${rdv.idCentreMedical}|$travelTime|${rdv.nom}|${rdv.intitule}|${rdv.daterdv}|${rdv.horaire}"
 
             val existingData = sharedPreferences.getString(key, null)
             if (existingData != null && existingData == newData) {
@@ -304,7 +304,7 @@ class RDVFragment : Fragment() {
                 scheduleNotificationsFromSavedData()
             }
         } else {
-            Log.w("saveRdvToPreferences", "Données incomplètes pour le rendez-vous ID: ${rdv.idRDV}")
+            Log.w("saveRdvToPreferences", "Données incomplètes pour le rendez-vous ID: ${rdv.idrdv}")
         }
     }
 

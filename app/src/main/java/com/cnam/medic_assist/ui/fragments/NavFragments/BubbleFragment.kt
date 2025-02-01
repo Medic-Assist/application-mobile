@@ -1,11 +1,13 @@
 package com.cnam.medic_assist.ui.fragments.NavFragments
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +20,9 @@ import com.cnam.medic_assist.MainActivity
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.ui.adapters.BubblesAdapter
 import com.cnam.medic_assist.ui.fragments.ConversationFragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import android.graphics.drawable.InsetDrawable
+
 
 class BubbleFragment : Fragment() {
 
@@ -34,6 +39,15 @@ class BubbleFragment : Fragment() {
 
         recyclerView.layoutManager = LinearLayoutManager(context)
 
+
+        // séparateurs entre les lignes
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            (recyclerView.layoutManager as LinearLayoutManager).orientation
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
+
+        // chargement des bulles
         listBubbles()
 
         //createBubbleButton.setOnClickListener { createBubble() }
