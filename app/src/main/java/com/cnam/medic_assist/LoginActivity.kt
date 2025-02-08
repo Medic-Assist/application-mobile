@@ -110,11 +110,14 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("SendUserData", "Utilisateur envoyé avec succès : ${user.prenom} ${user.nom}")
                 } else {
                     Log.e("SendUserData", "Erreur serveur : ${response.code()}")
+                    // deconnecte l'utilisateur
+                    RainbowSdk.instance().connection().signOut()
                 }
             }
 
             override fun onFailure(call: Call<Utilisateur>, t: Throwable) {
                 Log.e("SendUserData", "Échec de la requête : ${t.message}")
+                RainbowSdk.instance().connection().signOut()
             }
         })
     }

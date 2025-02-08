@@ -5,6 +5,7 @@ data class RendezVous(
     var intitule: String,
     var horaire : String,
     var daterdv: String,
+    var idbullerainbow: String,
     val idUser : Int,
     val idCentreMedical: Int,
     var isADRPrincipale : Boolean,

@@ -1,6 +1,8 @@
 package com.cnam.medic_assist.ui.fragments.NavFragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,8 +34,14 @@ class ProfilFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        fetchData()
+        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+        val id = sharedPreferences.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
+        if (id != null) {
+            Log.d("UserCache", "Email récupéré depuis le cache : $id")
+        } else {
+            Log.d("UserCache", "Aucune valeur trouvée dans le cache.")
+        }
+        fetchData(id)
 
         val mesInformations: TextView = view.findViewById(R.id.mes_informations)
         val mesProches: TextView = view.findViewById(R.id.mes_proches)
@@ -73,8 +81,9 @@ class ProfilFragment : Fragment() {
         }
     }
 
-    public fun fetchData() {
-        RetrofitClient.instance.getPatientById(1).enqueue(object :
+    public fun fetchData(id : Int) {
+
+        RetrofitClient.instance.getPatientById(id).enqueue(object :
             Callback<Patient> {
             override fun onResponse(call: Call<Patient>, response: Response<Patient>) {
                 if (isAdded) {

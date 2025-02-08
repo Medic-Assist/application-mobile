@@ -62,42 +62,42 @@ object Constants {
 
     var rdvList = listOf(
         // Rendez-vous pour Alice
-        RendezVous(1, "Radio Hanche Droite", "10:00:00", "2024-09-20", 1, 7, true,"Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", "67600", "Sélestat"),
-        RendezVous(2, "Osthéopathie", "11:30:00", "2024-09-25", 1, 3, true),
+        RendezVous(1, "Radio Hanche Droite", "10:00:00", "2024-09-20", "",1, 7, true,"Radiologie Clemenceau Sélestat", "4A", "Rue Georges Clemenceau", "67600", "Sélestat"),
+        RendezVous(2, "Osthéopathie", "11:30:00", "2024-09-25", "",1, 3, true),
 
         // Rendez-vous pour Bob
-        RendezVous(3, "Dévitalisation Dent", "14:30:00", "2024-09-21", 2, 2, true),
-        RendezVous(4, "Controle Dent dévitalisé", "09:00:00","2024-09-26", 2, 2, true),
+        RendezVous(3, "Dévitalisation Dent", "14:30:00", "2024-09-21", "",2, 2, true),
+        RendezVous(4, "Controle Dent dévitalisé", "09:00:00","2024-09-26", "",2, 2, true),
 
         // Rendez-vous pour Claire
-        RendezVous(5, "Ophtalmo", "09:00:00", "2024-09-22", 3, 4, true),
-        RendezVous(6, "Médecin généraliste", "10:30:00", "2024-09-27", 3, 6, true),
+        RendezVous(5, "Ophtalmo", "09:00:00", "2024-09-22", "",3, 4, true),
+        RendezVous(6, "Médecin généraliste", "10:30:00", "2024-09-27","", 3, 6, true),
 
         // Rendez-vous pour David
-        RendezVous(7, "Dentiste", "11:00:00", "2024-09-23", 4, 2, true),
-        RendezVous(8, "Ophtalmo", "08:30:00", "2024-09-28", 4, 4, true),
+        RendezVous(7, "Dentiste", "11:00:00", "2024-09-23", "",4, 2, true),
+        RendezVous(8, "Ophtalmo", "08:30:00", "2024-09-28", "",4, 4, true),
 
         // Rendez-vous pour Eve
-        RendezVous(9, "RDV Anestésiste", "08:30:00", "2024-09-24", 5, 5, true),
-        RendezVous(10, "Opération", "09:45:00", "2024-09-29", 5, 5, true),
+        RendezVous(9, "RDV Anestésiste", "08:30:00", "2024-09-24","", 5, 5, true),
+        RendezVous(10, "Opération", "09:45:00", "2024-09-29","", 5, 5, true),
 
         // Rendez-vous pour Frank
-        RendezVous(11, "Médecin Généraliste", "10:00:00", "2024-09-30", 6, 6, true),
+        RendezVous(11, "Médecin Généraliste", "10:00:00", "2024-09-30","", 6, 6, true),
 
         // Rendez-vous pour Grace
-        RendezVous(12, "Radio épaule gauche", "14:00:00", "2024-10-01", 7, 7, true),
+        RendezVous(12, "Radio épaule gauche", "14:00:00", "2024-10-01", "",7, 7, true),
 
         // Rendez-vous pour Hugo
-        RendezVous(13, "Controle après opération", "09:30:00", "2024-10-02", 8, 1, true),
+        RendezVous(13, "Controle après opération", "09:30:00", "2024-10-02", "",8, 1, true),
 
         // Rendez-vous pour Isabelle
-        RendezVous(14, "RDV Sage femme", "11:00:00", "2024-10-03", 9, 5, true),
+        RendezVous(14, "RDV Sage femme", "11:00:00", "2024-10-03","", 9, 5, true),
 
         // Rendez-vous pour Jack
-        RendezVous(15, "Radio mâchoire", "15:30:00", "2024-10-04", 10, 7, true) ,
+        RendezVous(15, "Radio mâchoire", "15:30:00", "2024-10-04", "",10, 7, true) ,
 
-        RendezVous(15, "TEST NOTIF", "21:30:00", "2024-11-27", 10, 7, true),
-        RendezVous(16, "TEST NOTIF !!!!!!!!!!", "14:35:00", "2024-11-29", 10, 7, true)
+        RendezVous(15, "TEST NOTIF", "21:30:00", "2024-11-27","", 10, 7, true),
+        RendezVous(16, "TEST NOTIF !!!!!!!!!!", "14:35:00", "2024-11-29", "", 10, 7, true)
     )
 
     val modes_transports = listOf(ModeTransport("Voiture"),
