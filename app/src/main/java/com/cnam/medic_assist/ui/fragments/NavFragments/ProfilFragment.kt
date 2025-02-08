@@ -34,7 +34,7 @@ class ProfilFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("UserCache", Context.MODE_PRIVATE)
         val id = sharedPreferences.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
         if (id != null) {
             Log.d("UserCache", "Email récupéré depuis le cache : $id")

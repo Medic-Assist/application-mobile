@@ -100,6 +100,7 @@ class LoginActivity : AppCompatActivity() {
                     val user = response.body()!!
                     // enregistrer email en cache
                     val sharedPref = getSharedPreferences("UserCache", Context.MODE_PRIVATE)
+                    Log.d("UserCache", sharedPref.toString())
                     with(sharedPref.edit()) {
                         user.iduser?.let { putInt("id", it) }
                         apply()
