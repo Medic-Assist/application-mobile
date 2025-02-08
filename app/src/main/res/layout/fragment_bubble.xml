@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue"
     tools:context=".ui.fragments.NavFragments.BubbleFragment">
 
+    <!-- Header Section -->
     <LinearLayout
+        android:id="@+id/header_section"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!--Button
-            android:id="@+id/createBubbleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#42A5F5"
-            android:textColor="#FFFFFF"
-            android:text="TBD - Créer une bulle" /-->
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
 
         <TextView
-            android:id="@+id/titleTextView"
-            android:layout_width="match_parent"
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:gravity="center"
-            android:text="Vos Bulles Rainbow:"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:text="Bulles Rainbow"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bubblesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible" /> <!-- Toujours visible -->
-
-        <FrameLayout
-            android:id="@+id/fragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gérez vos bulles de manière intuitive."
+            android:textSize="14sp"
+            android:textColor="@color/white" />
     </LinearLayout>
-</FrameLayout>
+
+    <!-- Bouton Retour -->
+    <Button
+        android:id="@+id/btn_back_to_bubble_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retour"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/black"
+        android:layout_below="@id/header_section"
+        android:layout_margin="16dp" />
+
+    <!-- RecyclerView avec séparation correcte -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bubblesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_back_to_bubble_list"
+        android:layout_margin="16dp"
+        android:background="@color/white" />
+</RelativeLayout>
