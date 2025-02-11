@@ -324,7 +324,7 @@ class RDVFragment : Fragment() {
                     val rdvDate = data[5]
                     val rdvTime = data[6]
 
-                    // Convertir les dates et heures en millisecondes
+                    // Convertir la date du RDV en millisecondes
                     val dateTimeString = "$rdvDate $rdvTime"
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
                     val rdvMillis = dateFormat.parse(dateTimeString)?.time ?: return@forEach
@@ -333,26 +333,35 @@ class RDVFragment : Fragment() {
                     val travelMinutes = travelTime.filter { it.isDigit() }.toIntOrNull() ?: 0
                     val travelMillis = travelMinutes * 60 * 1000 // Conversion en millisecondes
 
-                    // Calcul des horaires
-                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000) // RDV - Temps de trajet - 1h
-                    val departureTime = rdvMillis - travelMillis // RDV - Temps de trajet
+                    // Calcul des horaires des notifications
+                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000) // RDV - Temps trajet - 1h
+                    val departureTime = rdvMillis - travelMillis // RDV - Temps trajet
+                    val rdvTimeMillis = rdvMillis // Heure du RDV
 
                     Log.d("scheduleNotifications", "Planification des notifications pour le rendez-vous ID: $idRdv.")
                     Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)} (Rendez-vous - Temps trajet - 1h)")
                     Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)} (Rendez-vous - Temps trajet)")
+                    Log.d("scheduleNotifications", "Confirmation RDV prévue à : ${Date(rdvTimeMillis)} (Heure du RDV)")
 
-                    // Notification simple (rappel)
+                    // Notification 1h avant le départ
                     scheduleNotification(
                         idRdv * 10,
                         reminderTime,
                         "Rappel : Rendez-vous ($rdvName)\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
-                    // Notification avec actions (oui/non)
+                    // Notification de départ avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 1,
                         departureTime,
                         "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
+                    )
+
+                    // Notification à l'heure du rendez-vous avec action
+                    scheduleNotificationWithAction(
+                        idRdv * 10 + 2,
+                        rdvTimeMillis,
+                        "Êtes-vous arrivé ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime"
                     )
 
                 } catch (e: Exception) {
@@ -363,9 +372,6 @@ class RDVFragment : Fragment() {
             }
         }
     }
-
-
-
 
 
     private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
