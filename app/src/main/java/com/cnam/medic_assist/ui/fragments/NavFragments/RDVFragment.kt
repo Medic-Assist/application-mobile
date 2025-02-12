@@ -26,6 +26,7 @@ import com.cnam.medic_assist.datas.Constants
 import com.cnam.medic_assist.datas.network.MapsRetrofitClient
 import com.cnam.medic_assist.datas.network.RouteResponse
 import com.cnam.medic_assist.datas.models.EtatRdv
+import com.cnam.medic_assist.ui.fragments.ConversationFragment
 import com.cnam.medic_assist.utils.CalendarHelper
 import com.cnam.medic_assist.utils.ICalendarHelper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -158,7 +159,7 @@ class RDVFragment : Fragment() {
         val tvEtatRdv = dialog.findViewById<TextView>(R.id.etatRdv)
         val closeButton = dialog.findViewById<ImageView>(R.id.close_button)
         val addToCalendarButton = dialog.findViewById<Button>(R.id.add_to_calendar_button)
-
+        val btnOpenConversation = dialog.findViewById<Button>(R.id.btn_open_conversation)
         tvIntitule.text = rdv.intitule
         tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
@@ -189,8 +190,24 @@ class RDVFragment : Fragment() {
             dialog.dismiss()
         }
 
+        btnOpenConversation.setOnClickListener {
+            dialog.dismiss()
+            if (!rdv.idbullerainbow.isEmpty()) {
+                openBubbleChat(rdv.idbullerainbow)
+            } else {
+                Toast.makeText(requireContext(), "Aucun Bubble ID associé au RDV", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         dialog.setCanceledOnTouchOutside(true)
         dialog.show()
+    }
+    private fun openBubbleChat(bubbleId: String) {
+        val conversationFragment = ConversationFragment.newInstance(bubbleId)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, conversationFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun searchRoute(destination: String, textResult: TextView, rdv: RendezVous) {

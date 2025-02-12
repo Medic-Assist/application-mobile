@@ -86,7 +86,7 @@ class BubbleFragment : Fragment() {
 
     private fun openBubbleChat(bubble: IRainbowRoom) {
         val conversationFragment = ConversationFragment.newInstance(bubble.id)
-
+        Log.d("bubbleid", bubble.id)
         // Remplacer le fragment actuel par ConversationFragment
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, conversationFragment)
