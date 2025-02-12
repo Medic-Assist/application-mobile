@@ -1,17 +1,13 @@
 package com.cnam.medic_assist.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.ale.infra.contact.IRainbowContact
 import com.ale.infra.list.IItemListChangeListener
 import com.ale.infra.manager.IMMessage
@@ -21,17 +17,29 @@ import com.ale.rainbowsdk.Im
 import com.ale.rainbowsdk.RainbowSdk
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.ui.adapters.MessagesAdapter
+import com.google.android.material.textfield.TextInputEditText
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 
 class ConversationFragment : Fragment() {
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: MessagesAdapter
     private lateinit var conversation: IRainbowConversation
-    private lateinit var inputMessage: EditText
-    private lateinit var sendButton: ImageButton
+
+    // Vues du layout
+    private lateinit var inputMessage: TextInputEditText
+    private lateinit var sendButton: ImageView
+    private lateinit var typingContainer: LinearLayout
+    private lateinit var typingAvatar: ImageView
+    private lateinit var typingTextView: TextView
+    private lateinit var swipeRefresh: SwipeRefreshLayout
+
+    // En-tête bulle
+    private lateinit var bubblePhoto: ImageView
+    private lateinit var bubbleTitle: TextView
+
     private var isLoadingMessages = false
 
-    // Listener pour détecter les changements dans la liste des messages
     private val messagesChangeListener = IItemListChangeListener {
         requireActivity().runOnUiThread {
             adapter.updateMessages(conversation.messages.copyOfDataList)
@@ -45,24 +53,40 @@ class ConversationFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_conversation, container, false)
 
+        // 1) Récupérer les vues
+        bubblePhoto = view.findViewById(R.id.bubble_photo)
+        bubbleTitle = view.findViewById(R.id.bubble_title)
+        typingContainer = view.findViewById(R.id.typing_container)
+        typingAvatar = view.findViewById(R.id.typing_avatar)
+        typingTextView = view.findViewById(R.id.typing_text)
+
+        swipeRefresh = view.findViewById(R.id.swipe_messages)
         recyclerView = view.findViewById(R.id.messagesRecyclerView)
         inputMessage = view.findViewById(R.id.inputMessage)
         sendButton = view.findViewById(R.id.sendButton)
 
+        // 2) Configurer RecyclerView + Adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = MessagesAdapter(emptyList())
         recyclerView.adapter = adapter
 
-        val bubbleId = arguments?.getString(ARG_BUBBLE_ID)
-        if (bubbleId != null) {
-            openConversation(bubbleId)
+        // 3) SwipeRefresh pour charger plus de messages
+        swipeRefresh.setOnRefreshListener {
+            loadMoreMessages()
         }
 
+        // 4) Bouton d’envoi
         sendButton.setOnClickListener {
             val message = inputMessage.text.toString()
             if (message.isNotEmpty()) {
                 sendMessage(message)
             }
+        }
+
+        // 5) Ouvrir la conversation via l’ID bulle passé en argument
+        val bubbleId = arguments?.getString(ARG_BUBBLE_ID)
+        bubbleId?.let {
+            openConversation(it)
         }
 
         return view
@@ -71,17 +95,34 @@ class ConversationFragment : Fragment() {
     private fun openConversation(bubbleId: String) {
         val bubble = getBubbleById(bubbleId)
         if (bubble != null) {
-            val conversation = RainbowSdk.instance().im().getConversationFromRoom(bubble)
-            if (conversation != null) {
-                this.conversation = conversation
+            // Afficher le nom de la bulle
+            bubbleTitle.text = bubble.name
 
-                // Enregistrer le listener pour détecter les changements de messages
+            // Charger la photo de la bulle si vous avez un URL ou un moyen via Rainbow
+            // Ex: Glide, Picasso...
+            // bubble.photoURL => si Rainbow le fournit
+            // Sinon, placeholder déjà mis dans le layout
+            /*
+            val url = bubble.photoUrl
+            if (!url.isNullOrEmpty()) {
+                Glide.with(this)
+                    .load(url)
+                    .placeholder(R.drawable.ic_user_placeholder)
+                    .into(bubblePhoto)
+            }
+            */
+
+            // Récup conversation
+            val conv = RainbowSdk.instance().im().getConversationFromRoom(bubble)
+            if (conv != null) {
+                this.conversation = conv
                 conversation.messages.registerChangeListener(messagesChangeListener)
-
                 loadMessages()
             } else {
                 showToast("Impossible d'ouvrir la conversation.")
             }
+        } else {
+            showToast("Bubble introuvable.")
         }
     }
 
@@ -98,10 +139,16 @@ class ConversationFragment : Fragment() {
         }
     }
 
+    private fun loadMoreMessages() {
+        // Logique éventuelle pour charger plus d’historique
+        // ...
+        swipeRefresh.isRefreshing = false
+    }
+
     private fun sendMessage(message: String) {
         if (::conversation.isInitialized) {
             RainbowSdk.instance().im().sendMessageToConversation(conversation, message)
-            inputMessage.text.clear()
+            inputMessage.text?.clear()
         } else {
             showToast("Conversation non initialisée.")
         }
@@ -113,25 +160,26 @@ class ConversationFragment : Fragment() {
     }
 
     private fun showToast(message: String) {
-        requireActivity().runOnUiThread {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
+    // **********************************
+    // Listener IM pour mettre à jour l'UI
+    // **********************************
     private val imListener = object : Im.IRainbowImListener {
-        override fun onImReceived(conversation: IRainbowConversation, message: IMMessage?) {
-            if (::conversation.isInitialized && this@ConversationFragment.conversation.id == conversation.id) {
+        override fun onImReceived(conv: IRainbowConversation, message: IMMessage?) {
+            if (::conversation.isInitialized && conversation.id == conv.id) {
                 requireActivity().runOnUiThread {
-                    adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
+                    adapter.updateMessages(conversation.messages.copyOfDataList)
                     recyclerView.scrollToPosition(adapter.itemCount - 1)
                 }
             }
         }
 
-        override fun onImSent(conversation: IRainbowConversation, message: IMMessage) {
-            if (::conversation.isInitialized && this@ConversationFragment.conversation.id == conversation.id) {
+        override fun onImSent(conv: IRainbowConversation, message: IMMessage) {
+            if (::conversation.isInitialized && conversation.id == conv.id) {
                 requireActivity().runOnUiThread {
-                    adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
+                    adapter.updateMessages(conversation.messages.copyOfDataList)
                     recyclerView.scrollToPosition(adapter.itemCount - 1)
                 }
             }
@@ -142,14 +190,23 @@ class ConversationFragment : Fragment() {
             isTyping: Boolean,
             roomJid: String?
         ) {
+            // Affichage "X est en train d'écrire..." + photo
             if (::conversation.isInitialized && conversation.room?.jid == roomJid) {
                 requireActivity().runOnUiThread {
-                    val isTypingTextView = view?.findViewById<TextView>(R.id.isTypingTextView)
                     if (isTyping) {
-                        isTypingTextView?.text = "${contact.firstName} est en train d'écrire..."
-                        isTypingTextView?.visibility = View.VISIBLE
+                        typingContainer.visibility = View.VISIBLE
+                        typingTextView.text = "${contact.firstName} est en train d'écrire..."
+                        // Charger la photo du contact s’il y en a une
+                        // Ex : Glide / Rainbow contact avatar
+                        /*
+                        val contactPhotoUrl = contact.photoURL
+                        Glide.with(requireContext())
+                            .load(contactPhotoUrl)
+                            .placeholder(R.drawable.ic_user_placeholder)
+                            .into(typingAvatar)
+                        */
                     } else {
-                        isTypingTextView?.visibility = View.GONE
+                        typingContainer.visibility = View.GONE
                     }
                 }
             }
@@ -157,24 +214,24 @@ class ConversationFragment : Fragment() {
 
         override fun onMessagesListUpdated(
             status: Int,
-            conversation: IRainbowConversation?,
+            conv: IRainbowConversation?,
             messages: List<IMMessage>?
         ) {
-            if (::conversation.isInitialized && this@ConversationFragment.conversation.id == conversation?.id) {
+            if (::conversation.isInitialized && conversation.id == conv?.id) {
                 requireActivity().runOnUiThread {
-                    adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
+                    adapter.updateMessages(conversation.messages.copyOfDataList)
                 }
             }
         }
 
         override fun onMoreMessagesListUpdated(
             status: Int,
-            conversation: IRainbowConversation?,
+            conv: IRainbowConversation?,
             messages: List<IMMessage?>?
         ) {
-            if (::conversation.isInitialized && this@ConversationFragment.conversation.id == conversation?.id) {
+            if (::conversation.isInitialized && conversation.id == conv?.id) {
                 requireActivity().runOnUiThread {
-                    adapter.updateMessages(this@ConversationFragment.conversation.messages.copyOfDataList)
+                    adapter.updateMessages(conversation.messages.copyOfDataList)
                 }
             }
         }
@@ -209,4 +266,3 @@ class ConversationFragment : Fragment() {
         }
     }
 }
-
