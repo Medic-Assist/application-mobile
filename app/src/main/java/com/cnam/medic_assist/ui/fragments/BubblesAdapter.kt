@@ -9,9 +9,11 @@ import com.ale.infra.manager.room.IRainbowRoom
 import com.cnam.medic_assist.R
 
 class BubblesAdapter(
-    private val bubbles: List<IRainbowRoom>,
+    bubbles: List<IRainbowRoom>,
     private val onBubbleClick: (IRainbowRoom) -> Unit
 ) : RecyclerView.Adapter<BubblesAdapter.BubbleViewHolder>() {
+
+    private val filteredBubbles = bubbles.filter { it.name.startsWith("Bubble", ignoreCase = true) } //à remplacer per rvd
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BubbleViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -20,12 +22,12 @@ class BubblesAdapter(
     }
 
     override fun onBindViewHolder(holder: BubbleViewHolder, position: Int) {
-        val bubble = bubbles[position]
+        val bubble = filteredBubbles[position]
         holder.bind(bubble)
         holder.itemView.setOnClickListener { onBubbleClick(bubble) }
     }
 
-    override fun getItemCount(): Int = bubbles.size
+    override fun getItemCount(): Int = filteredBubbles.size
 
     class BubbleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bubbleNameTextView: TextView = itemView.findViewById(R.id.bubbleNameTextView)
@@ -35,3 +37,5 @@ class BubblesAdapter(
         }
     }
 }
+
+
