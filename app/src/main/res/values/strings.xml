@@ -1,7 +1,47 @@
 <resources>
-    <string name="app_name">Medic Assist</string>
+    <string name="mot_de_passe_oubli">Mot de passe oublié ?</string>
+    <string name="connexion">CONNEXION</string>
+    <string name="pas_encore_inscrit">Pas encore inscrit ?</string>
+    <string name="cr_er_un_compte">Créer un compte</string>
+    <string name="connectez_vous_pour_continuer">Connectez-vous pour continuer</string>
+    <string name="login_title_text">Connexion</string>
+    <string name="mot_de_passe">Mot de passe</string>
+    <string name="pseudo_ou_email">Pseudo ou email</string>
+    <string name="app_name">medic-assist</string>
+    <string name="mes_rdv">Mes RDV</string>
+    <string name="nomrdv">nomRDV</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- Home page -->
+    <string name="welcome">Bienvenue dans MedicAssist</string>
+    <string name="homepage_subtitle">Gérez facilement votre santé et vos services médicaux.</string>
+    <string name="title_doctors">Mes professionnels de santé</string>
+    <string name="patient_journey">Parcours patient</string>
+    <string name="title_route_planning">Organisation des trajets</string>
+
+    <!-- Others -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_home">Home</string>
     <string name="title_suivi">Suivi</string>
     <string name="title_gps">GPS</string>
     <string name="title_profil">Profil</string>
+    <string name="profil">Profil</string>
+    <string name="nom_utilisateur">Nom utilisateur</string>
+    <string name="mes_informations">Mes informations</string>
+    <string name="mes_proches">Mes proches</string>
+    <string name="mon_adresse">Mon adresse</string>
+    <string name="moyen_locomotion">Moyen de locomotion préféré</string>
+    <string name="nom">Nom</string>
+    <string name="prenom">Prénom</string>
+    <string name="date_naissance">Date de naissance</string>
+    <string name="sexe">Sexe</string>
+    <string name="email">Adresse e-mail</string>
+    <string name="telephone">Numéro de téléphone</string>
+    <string name="entrez_votre_nom">Entrez votre nom</string>
+    <string name="title_bubble">Bulle</string>
+    <string name="time_estimation">Estimation du temps de trajet</string>
+    <string name="hint">Type a message</string>
+    <string name="send">Send</string>
+    <string name="contact_profil_icon">Profil icon for contacts</string>
+    <string name="contact_rainbow">Contact Rainbow :</string>
 </resources>

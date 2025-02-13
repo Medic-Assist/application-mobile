@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Bouton pour fermer le dialogue -->
+    <ImageView
+        android:id="@+id/close_button"
+        android:layout_width="25dp"
+        android:layout_height="22dp"
+        android:layout_gravity="end"
+        android:contentDescription="Close"
+        android:src="@drawable/ic_close" />
+
+    <!-- Intitulé du rendez-vous -->
+    <TextView
+        android:id="@+id/dialog_intitule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Intitulé du RDV"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Date du rendez-vous -->
+    <TextView
+        android:id="@+id/dialog_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date du RDV"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Heure du rendez-vous -->
+    <TextView
+        android:id="@+id/dialog_heure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Heure du RDV"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/titre_adresse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Centre Médical :"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+    <!-- Adresse du rendez-vous -->
+    <TextView
+        android:id="@+id/dialog_adresse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Adresse du RDV"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/titre_etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="16sp" />
+    <!-- Adresse du rendez-vous -->
+    <TextView
+        android:id="@+id/etatRdv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp" />
+
+    <!-- Bouton pour ajouter le rendez-vous au calendrier -->
+    <TextView
+        android:id="@+id/dialog_adresse_Temps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Encours de calcul de Trajet..."
+        android:textSize="16sp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="15dp"
+    >
+    <Button
+        android:id="@+id/add_to_calendar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajouter au calendrier"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="5dp"
+        android:layout_gravity="center_horizontal" />
+    <Button
+        android:id="@+id/btn_open_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Afficher conversation"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>
+
+</LinearLayout>

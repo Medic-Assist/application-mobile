@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.NavFragments.BubbleFragment">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/header_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bulles Rainbow"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gérez vos bulles de manière intuitive."
+            android:textSize="14sp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Texte d'indication -->
+    <TextView
+        android:id="@+id/text_indication"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Retrouvez ici la liste de toutes vos bulles Rainbow"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_below="@id/header_section"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bubblesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/createBubbleButton"
+        android:layout_below="@id/text_indication"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="2dp"
+        android:background="@color/white" />
+
+    <Button
+        android:id="@+id/createBubbleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/modern_blue"
+        android:layout_marginBottom="85dp"
+        android:text="Créer une Bulle"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

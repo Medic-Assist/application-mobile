@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    tools:context=".ui.fragments.ProfileFragment.MonAdresseFragment">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:id="@+id/header_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mon Adresse"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gérez et mettez à jour votre adresse."
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Conteneur principal -->
+    <LinearLayout
+        android:id="@+id/main_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_below="@id/header_section">
+
+        <!-- Bouton Retour -->
+        <Button
+            android:id="@+id/btn_back_to_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retour"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/black"
+            android:layout_gravity="start" />
+
+        <!-- Sous-titre -->
+        <TextView
+            android:id="@+id/subtitle_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Consultez et modifiez ici les informations relatives à votre adresse"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:gravity="start"
+            android:lineSpacingExtra="2dp"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Input Numéro (de rue) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Numéro"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_numero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le numéro"
+            android:enabled="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white"
+            android:backgroundTint="@color/white" />
+
+        <!-- Input Rue -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rue"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_rue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez la rue"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:enabled="false"
+            android:background="@color/white"
+            android:backgroundTint="@color/white" />
+
+        <!-- Input Code Postal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Code Postal"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_code_postal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Entrez le code postal"
+            android:inputType="number"
+            android:enabled="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white"
+            android:backgroundTint="@color/white" />
+
+        <!-- Input Ville -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ville"
+            android:textColor="@color/black"
+            android:paddingTop="16dp" />
+
+        <EditText
+            android:id="@+id/input_ville"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:hint="Entrez la ville"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:background="@color/white"
+            android:backgroundTint="@color/white" />
+
+        <!-- Espacement -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+
+        <!-- Boutons Modifier et Enregistrer -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="2">
+
+            <!-- Bouton Modifier -->
+            <Button
+                android:id="@+id/btn_modifier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Modifier"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/black"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Bouton Enregistrer -->
+            <Button
+                android:id="@+id/btn_enregistrer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Enregistrer"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/modern_blue" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
