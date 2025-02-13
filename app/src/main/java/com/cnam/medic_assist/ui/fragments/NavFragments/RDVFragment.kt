@@ -292,21 +292,26 @@ class RDVFragment : Fragment() {
             val key = rdv.idrdv.toString()
             val newData = "${rdv.idrdv}|${rdv.idCentreMedical}|$travelTime|${rdv.nom}|${rdv.intitule}|${rdv.daterdv}|${rdv.horaire}"
 
+            // 🔹 1. SUPPRIMER toutes les anciennes données avant d'écrire les nouvelles
+            sharedPreferences.edit().clear().apply()
+
+            // 🔹 2. Vérifier si l'entrée est déjà la même pour éviter une écriture inutile
             val existingData = sharedPreferences.getString(key, null)
             if (existingData != null && existingData == newData) {
-                Log.d("saveRdvToPreferences", "Données existantes identiques pour le rendez-vous ID: $key. Aucune mise à jour nécessaire.")
+                Log.d("saveRdvToPreferences", "✅ Données identiques déjà enregistrées pour le RDV ID: $key. Aucune mise à jour nécessaire.")
             } else {
                 with(sharedPreferences.edit()) {
                     putString(key, newData)
                     apply()
                 }
-                Log.d("saveRdvToPreferences", "Données mises à jour pour le rendez-vous ID: $key : $newData")
+                Log.d("saveRdvToPreferences", "🔄 Mise à jour des données pour le RDV ID: $key : $newData")
                 scheduleNotificationsFromSavedData()
             }
         } else {
-            Log.w("saveRdvToPreferences", "Données incomplètes pour le rendez-vous ID: ${rdv.idrdv}")
+            Log.w("saveRdvToPreferences", "⚠️ Données incomplètes pour le RDV ID: ${rdv.idrdv}")
         }
     }
+
 
     private fun scheduleNotificationsFromSavedData() {
         val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
@@ -324,71 +329,93 @@ class RDVFragment : Fragment() {
                     val rdvDate = data[5]
                     val rdvTime = data[6]
 
-                    // Convertir la date du RDV en millisecondes
-                    // 🔹 1. Convertir rdvDate (format ISO 8601) en format local "yyyy-MM-dd"
+                    // 🔹 1. Convertir la date du RDV en millisecondes
                     val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                    inputDateFormat.timeZone = TimeZone.getTimeZone("UTC") // ⚠️ Important, l'ISO 8601 est en UTC
+                    inputDateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
                     val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                     val formattedDate = outputDateFormat.format(inputDateFormat.parse(rdvDate)!!)
 
-// 🔹 2. Fusionner date et heure dans un format lisible "yyyy-MM-dd HH:mm:ss"
                     val dateTimeString = "$formattedDate $rdvTime"
                     Log.d("scheduleNotifications", "📅 Date convertie : $dateTimeString")
 
-// 🔹 3. Convertir la date en millisecondes
                     val finalDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                     val rdvMillis = finalDateFormat.parse(dateTimeString)?.time ?: return@forEach
 
-                    // Extraire le temps de trajet en minutes
+                    // 🔹 2. Vérifier si le rendez-vous est déjà passé
+                    val currentTimeMillis = System.currentTimeMillis()
+                    if (rdvMillis < currentTimeMillis) {
+                        Log.w("scheduleNotifications", "❌ RDV déjà passé. Pas de notification pour ID: $idRdv")
+                        return@forEach
+                    }
+
+                    // 🔹 3. Supprimer les notifications existantes AVANT de les recréer
+                    cancelScheduledNotification(idRdv * 10)
+                    cancelScheduledNotification(idRdv * 10 + 1)
+                    cancelScheduledNotification(idRdv * 10 + 2)
+
+                    // 🔹 4. Extraire le temps de trajet en minutes
                     val travelMinutes = travelTime.filter { it.isDigit() }.toIntOrNull() ?: 0
-                    val travelMillis = travelMinutes * 60 * 1000 // Conversion en millisecondes
+                    val travelMillis = travelMinutes * 60 * 1000
 
-                    // Calcul des horaires des notifications
-                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000) // RDV - Temps trajet - 1h
-                    val departureTime = rdvMillis - travelMillis // RDV - Temps trajet
-                    val rdvTimeMillis = rdvMillis // Heure du RDV
+                    // 🔹 5. Calcul des horaires des notifications
+                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000)
+                    val departureTime = rdvMillis - travelMillis
+                    val rdvTimeMillis = rdvMillis
 
-                    Log.d("scheduleNotifications", "Planification des notifications pour le rendez-vous ID: $idRdv.")
-                    Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)} (Rendez-vous - Temps trajet - 1h)")
-                    Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)} (Rendez-vous - Temps trajet)")
-                    Log.d("scheduleNotifications", "Confirmation RDV prévue à : ${Date(rdvTimeMillis)} (Heure du RDV)")
+                    Log.d("scheduleNotifications", "📌 Planification des notifications pour ID RDV: $idRdv")
+                    Log.d("scheduleNotifications", "⏳ Rappel prévu à : ${Date(reminderTime)}")
+                    Log.d("scheduleNotifications", "🚗 Départ prévu à : ${Date(departureTime)}")
+                    Log.d("scheduleNotifications", "🏥 RDV prévu à : ${Date(rdvTimeMillis)}")
 
-                    // Notification 1h avant le départ
+                    // 🔹 6. Replanifier les notifications
                     scheduleNotification(
                         idRdv * 10,
-                        idRdv, // Ajout de l'ID du rendez-vous
+                        idRdv,
                         reminderTime,
                         "Rappel : Rendez-vous ($rdvName)\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
-
-                    // Notification de départ avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 1,
-                        idRdv, // Ajout de l'ID du rendez-vous
+                        idRdv,
                         departureTime,
                         "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
-
-                    // Notification à l'heure du rendez-vous avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 2,
-                        idRdv, // Ajout de l'ID du rendez-vous
-                        departureTime,
-                        "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
+                        idRdv,
+                        rdvTimeMillis,
+                        "Êtes-vous arrivé ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime"
                     )
 
-
                 } catch (e: Exception) {
-                    Log.e("scheduleNotifications", "Erreur lors de la planification pour la clé $key : ${e.message}")
+                    Log.e("scheduleNotifications", "❌ Erreur lors de la planification pour la clé $key : ${e.message}")
                 }
             } else {
-                Log.w("scheduleNotifications", "Données mal formatées pour la clé $key : $value")
+                Log.w("scheduleNotifications", "⚠️ Données mal formatées pour la clé $key : $value")
             }
         }
     }
+
+
+    private fun cancelScheduledNotification(appointmentId: Int) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), NotificationReceiver::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            appointmentId,
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.cancel(pendingIntent)
+        Log.d("scheduleNotifications", "🚫 Annulation de la notification ID: $appointmentId")
+    }
+
+
 
 
     private fun scheduleNotification(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
