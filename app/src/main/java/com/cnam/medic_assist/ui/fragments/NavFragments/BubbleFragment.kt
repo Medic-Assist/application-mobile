@@ -22,11 +22,13 @@ import com.cnam.medic_assist.ui.adapters.BubblesAdapter
 import com.cnam.medic_assist.ui.fragments.ConversationFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import android.graphics.drawable.InsetDrawable
+import com.cnam.medic_assist.ui.fragments.ProfileFragment.CreateBubbleDialogFragment
 
 
 class BubbleFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var createBubbleButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +36,7 @@ class BubbleFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_bubble, container, false)
 
-        //val createBubbleButton: Button = view.findViewById(R.id.createBubbleButton)
+        val createBubbleButton: Button = view.findViewById(R.id.createBubbleButton)
         recyclerView = view.findViewById(R.id.bubblesRecyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -51,7 +53,10 @@ class BubbleFragment : Fragment() {
         listBubbles()
 
         //createBubbleButton.setOnClickListener { createBubble() }
-
+        createBubbleButton.setOnClickListener {
+            val dialog = CreateBubbleDialogFragment()
+            dialog.show(parentFragmentManager, "CreateBubbleDialogFragment")
+        }
         return view
     }
 
@@ -75,7 +80,7 @@ class BubbleFragment : Fragment() {
         })
     }*/
 
-    private fun listBubbles() {
+    public fun listBubbles() {
         val bubbles = RainbowSdk.instance().bubbles().getAllBubbles().copyOfDataList
 
         val adapter = BubblesAdapter(bubbles) { bubble ->

@@ -48,12 +48,28 @@
         android:layout_marginEnd="16dp"
         android:layout_below="@id/header_section"/>
 
-    <!-- RecyclerView avec séparation correcte -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bubblesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/text_indication"
         android:layout_margin="16dp"
+        android:layout_marginTop="-67dp"
+        android:layout_marginBottom="16dp"
         android:background="@color/white" />
+
+    <Button
+        android:id="@+id/createBubbleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="80dp"
+        android:backgroundTint="@color/modern_blue"
+        android:text="Créer une Bulle"
+        android:textColor="@color/white" />
+
 </RelativeLayout>
