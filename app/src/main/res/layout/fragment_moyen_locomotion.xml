@@ -1,15 +1,47 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
     tools:context=".ui.fragments.ProfileFragment.MoyenLocomotionFragment">
 
+    <!-- Header Section -->
     <LinearLayout
+        android:id="@+id/header_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/modern_blue">
+
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Moyen de locomotion préféré"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/header_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Définissez votre moyen de transport favori."
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <!-- Conteneur principal -->
+    <LinearLayout
+        android:id="@+id/main_content"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_below="@id/header_section">
 
         <!-- Bouton Retour -->
         <Button
@@ -84,9 +116,4 @@
         </LinearLayout>
 
     </LinearLayout>
-</FrameLayout>
-
-<!-- TO DO pour plus tard
-    mettre les champs en disabled
-    Il faudra appuyer sur "Modifier" pour activer les champs
--->
+</RelativeLayout>
