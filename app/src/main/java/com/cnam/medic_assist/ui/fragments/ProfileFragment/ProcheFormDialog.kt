@@ -10,6 +10,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.DialogFragment
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.Proche
+import com.cnam.medic_assist.utils.ContactManager
 
 /**
  * Creer un formulaire de modification des informations d'un proche
@@ -17,7 +18,8 @@ import com.cnam.medic_assist.datas.models.Proche
 class ProcheFormDialog(
     private val proche: Proche?,
     private val onProcheSaved: (Proche) -> Unit,
-    private val onProcheDeleted: ((Int) -> Unit)? = null
+    private val onProcheDeleted: ((Int) -> Unit)? = null,
+    private val contactManager: ContactManager
 ) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -56,6 +58,7 @@ class ProcheFormDialog(
                     mail = inputEmail.text.toString()
                 )
 
+                contactManager.inviteUserByEmail(inputEmail.text.toString(), requireContext())
                 onProcheSaved(newProche) // Retourner les données au parent
             }
             .setNegativeButton("Annuler") { dialog, _ ->

@@ -16,9 +16,12 @@ import com.cnam.medic_assist.datas.models.Proche
 import com.cnam.medic_assist.datas.models.RoleUser
 import com.cnam.medic_assist.datas.models.Utilisateur
 import com.cnam.medic_assist.datas.network.RetrofitClient
+import com.cnam.medic_assist.utils.ContactManager
+import com.cnam.medic_assist.utils.ContactsAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 private const val ARG_PATIENT = "arg_patient"
 
@@ -26,6 +29,10 @@ class MesProchesFragment(patient : Patient) : Fragment() {
     private lateinit var patient: Patient
     private var proches = mutableListOf<Proche>()
     private lateinit var adapter: ProcheAdapter
+
+    private val contactManager = ContactManager()
+    private lateinit var contactsRecyclerView: RecyclerView
+    private lateinit var contactsAdapter: ContactsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +56,11 @@ class MesProchesFragment(patient : Patient) : Fragment() {
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView_proches)
         val btnAddProche: Button = view.findViewById(R.id.btn_add_proche)
+
+        contactsRecyclerView = view.findViewById(R.id.contacts_recycler_view)
+        contactsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        contactsAdapter = ContactsAdapter(emptyList())
+        contactsRecyclerView.adapter = contactsAdapter
 
         adapter = ProcheAdapter(proches) { proche ->
             showProcheFormDialog(proche) // Modifier un proche
@@ -77,6 +89,8 @@ class MesProchesFragment(patient : Patient) : Fragment() {
 //        btnEnregistrer.setOnClickListener {
 //            // TODO : logique pour enregister les modifs
 //        }
+
+        loadContacts()
     }
 
     private fun showProcheFormDialog(proche: Proche?) {
@@ -92,7 +106,8 @@ class MesProchesFragment(patient : Patient) : Fragment() {
             },
             onProcheDeleted = { idUser ->
                 deleteProche(idUser)
-            }
+            },
+            contactManager
         )
         dialog.show(parentFragmentManager, "ProcheFormDialog")
     }
@@ -267,5 +282,11 @@ class MesProchesFragment(patient : Patient) : Fragment() {
                     putParcelable(ARG_PATIENT, patient)
                 }
             }
+    }
+
+    private fun loadContacts() {
+        contactManager.loadContacts { contacts ->
+            contactsAdapter.updateContacts(contacts)
+        }
     }
 }
