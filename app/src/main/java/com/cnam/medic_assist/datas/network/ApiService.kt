@@ -5,6 +5,7 @@ import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
 import com.cnam.medic_assist.datas.models.Proche
+import com.cnam.medic_assist.datas.models.RDVSend
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.models.Utilisateur
 import com.cnam.medic_assist.datas.models.UtilisateurRequete
@@ -12,7 +13,10 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiService {
+    @POST("rendezvous")
+    fun addRendezvous(@Body rdv: RDVSend): Call<RDVSend>
     /** Requêtes pour les utilisateurs **/
+
     // Obtenir tous les utilisateurs
     @GET("utilisateurs")
     fun getAllUsers(): Call<List<Utilisateur>>
@@ -64,6 +68,9 @@ interface ApiService {
     @GET("utilisateurs/personnelMed/{id}")
     fun getPersonnelMedById(@Path("id") id: Int): Call<Utilisateur>
 
+
+    @GET("utilisateurs/patient")
+    fun getAllPatients(): Call<List<Patient>>
     // Ajouter un personnel médical
     @POST("utilisateurs/personnelMed")
     fun addPersonnelMed(@Body personnelMedData: Map<String, Int>): Call<Void>
@@ -90,6 +97,7 @@ interface ApiService {
     // Mettre à jour un procpatienthe
     @PUT("utilisateurs/patient/{id}")
     fun updatePatient(@Path("id") id: Int, @Body updatedData: Patient): Call<Void>
+
 
     /** Requêtes pour les rendez-vous **/
     // Liste des rendez-vous associés à un patient donné

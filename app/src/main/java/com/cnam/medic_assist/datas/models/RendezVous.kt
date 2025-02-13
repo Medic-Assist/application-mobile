@@ -14,5 +14,6 @@ data class RendezVous(
     val numero_rue : String? = "",
     val rue : String? = "",
     val codepostal : String? = "",
-    val ville : String? = ""
+    val ville : String? = "",
+    val idDoctor : Int? = null,
     )
