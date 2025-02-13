@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown"
-            android:backgroundTint="@color/black" />
+            android:background="@color/white"/>
 
         <!-- Espacement -->
         <View
