@@ -104,6 +104,9 @@ interface ApiService {
     @GET("rendezvous/statusTrajet/{id}")
     fun getStatusRDV(@Path("id") id: Int): Call<EtatRdv>
 
+    @PUT("rendezvous/statusTrajet/{id}")
+    fun updateStatusRDV(@Path("id") id: Int, @Body body: Map<String, String>): Call<Void>
+
     /** Requêtes pour les centres médicaux **/
     // Liste des centres médicaux
     @GET("centres")

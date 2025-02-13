@@ -9,6 +9,11 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import com.cnam.medic_assist.datas.network.ApiService
+import com.cnam.medic_assist.datas.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Date
 
 class NotificationActionReceiver : BroadcastReceiver() {
@@ -27,59 +32,90 @@ class NotificationActionReceiver : BroadcastReceiver() {
         when (intent.action) {
             "ACTION_YES" -> {
                 Log.d("NotificationAction", "L'utilisateur a confirmé la notification : ID=$appointmentId")
-                sharedPreferences.edit().remove("refus_$appointmentId").apply()
+
+                val status = if (notificationTitle.contains("Êtes-vous en route ?")) {
+                    "Patient parti"
+                } else {
+                    "Patient arrivé au RDV"
+                }
+
+                updateStatusToAPI(context, appointmentId, status)
                 notificationManager.cancel(appointmentId) // Supprime la notification
             }
 
             "ACTION_NO" -> {
-                Log.d("NotificationAction", "L'utilisateur a cliqué sur Non. Tentative $refusCount/3")
+                Log.d("NotificationAction", "L'utilisateur a refusé la notification : ID=$appointmentId")
+
+                val status = if (notificationTitle.contains("Êtes-vous en route ?")) {
+                    "Retard du patient possible"
+                } else {
+                    "Retard du RDV Possible"
+                }
+
+                updateStatusToAPI(context, appointmentId, status)
                 notificationManager.cancel(appointmentId) // Supprime la notification
 
-                if (refusCount >= 3) {
-                    Log.d("NotificationAction", "Nombre maximal de rappels atteint pour ID=$appointmentId. Arrêt des notifications.")
-                    return
-                }
+                // Relancer la notification dans 5 min si refusé
+                if (status == "Retard du patient possible" || status == "Retard du RDV Possible") {
+                    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val newTime = System.currentTimeMillis() + (5 * 60 * 1000) // 5 minutes après
 
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val newTime = System.currentTimeMillis() + (5 * 60 * 1000) // Ajout de 5 minutes
-
-                val newIntent = Intent(context, NotificationReceiver::class.java).apply {
-                    putExtra("appointmentId", appointmentId)
-                    putExtra("notificationTitle", notificationTitle)
-                    putExtra("notificationType", notificationType)
-                }
-
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    appointmentId,
-                    newIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-
-                try {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        if (!alarmManager.canScheduleExactAlarms()) {
-                            Log.w("AlarmPermission", "Permission SCHEDULE_EXACT_ALARM non accordée, redirection vers les paramètres.")
-                            val settingsIntent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                            settingsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(settingsIntent)
-                            return
-                        }
+                    val newIntent = Intent(context, NotificationReceiver::class.java).apply {
+                        putExtra("appointmentId", appointmentId)
+                        putExtra("notificationTitle", notificationTitle)
+                        putExtra("notificationType", notificationType)
                     }
 
-                    alarmManager.setExactAndAllowWhileIdle(
-                        AlarmManager.RTC_WAKEUP,
-                        newTime,
-                        pendingIntent
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        context,
+                        appointmentId + 1000, // ID différent pour éviter les conflits
+                        newIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                     )
 
-                    sharedPreferences.edit().putInt("refus_$appointmentId", refusCount + 1).apply()
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                            if (!alarmManager.canScheduleExactAlarms()) {
+                                Log.w("AlarmPermission", "Permission SCHEDULE_EXACT_ALARM non accordée, redirection vers les paramètres.")
+                                val settingsIntent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                                settingsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                context.startActivity(settingsIntent)
+                                return
+                            }
+                        }
 
-                    Log.d("NotificationAction", "Nouvelle notification prévue à : ${Date(newTime)}. Nombre de rappels : ${refusCount + 1}/3")
-                } catch (e: SecurityException) {
-                    Log.e("AlarmPermission", "Erreur : ${e.message}")
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            newTime,
+                            pendingIntent
+                        )
+
+                        sharedPreferences.edit().putInt("refus_$appointmentId", refusCount + 1).apply()
+                        Log.d("NotificationAction", "Nouvelle notification prévue à : ${Date(newTime)}. Nombre de rappels : ${refusCount + 1}/3")
+                    } catch (e: SecurityException) {
+                        Log.e("AlarmPermission", "Erreur : ${e.message}")
+                    }
                 }
             }
         }
+    }
+
+    private fun updateStatusToAPI(context: Context, idRDV: Int, status: String) {
+        val apiService = RetrofitClient.instance
+        val requestBody = mapOf("intituleEtat" to status)
+
+        apiService.updateStatusRDV(idRDV, requestBody).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Log.d("API", "Statut du RDV $idRDV mis à jour avec succès : $status")
+                } else {
+                    Log.e("API", "Erreur mise à jour statut du RDV $idRDV : ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                Log.e("API", "Erreur réseau mise à jour statut du RDV $idRDV : ${t.message}")
+            }
+        })
     }
 }
