@@ -52,10 +52,10 @@
         android:id="@+id/bubblesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/createBubbleButton"
         android:layout_below="@id/text_indication"
-        android:layout_margin="16dp"
-        android:layout_marginTop="-67dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="2dp"
         android:background="@color/white" />
 
     <Button
@@ -64,11 +64,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="75dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="80dp"
         android:backgroundTint="@color/modern_blue"
+        android:layout_marginBottom="85dp"
         android:text="Créer une Bulle"
         android:textColor="@color/white" />
 

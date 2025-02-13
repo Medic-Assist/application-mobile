@@ -67,6 +67,21 @@
         android:textColor="#42A5F5"
         android:textSize="14sp" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:elevation="10dp"
+            style="@android:style/Widget.Material.ProgressBar.Large"/>
+    </FrameLayout>
+
     <Button
         android:id="@+id/loginButton"
         android:layout_width="match_parent"

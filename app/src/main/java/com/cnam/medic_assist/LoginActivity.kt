@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ale.infra.rest.listeners.RainbowError
@@ -30,10 +32,13 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var editTextNewPassword: EditText
     private lateinit var btnRegister: Button
     private val sandboxHost = "openrainbow.com"
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        progressBar = findViewById(R.id.progressBar)
 
         editTextNewUsername = findViewById(R.id.usernameEditText)
         editTextNewPassword = findViewById(R.id.passwordEditText)
@@ -51,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (inputUsername.isNotBlank() && inputPassword.isNotBlank()) {
             loginWithRainbow(inputUsername, inputPassword)
+            progressBar.visibility = View.VISIBLE  // Afficher la barre de chargement
         } else {
             showAlertDialog("Connection Failed", "Username or password was not filled")
         }
@@ -78,6 +84,9 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onSignInFailed(errorCode: Connection.ErrorCode, error: RainbowError<Unit>) {
+                    runOnUiThread {
+                        progressBar.visibility = View.GONE  // Cacher la barre de chargement
+                    }
                     Log.e("RainbowSDK", "Échec de la connexion : Code erreur - ${errorCode.name}, Détails - ${error.errorMsg}")
                     showAlertDialog("Login Failed", "Error Code: ${errorCode.name} - Details: ${error.errorMsg}")
                 }
@@ -96,6 +105,8 @@ class LoginActivity : AppCompatActivity() {
 
         RetrofitClient.instance.callUser(userData).enqueue(object : Callback<Utilisateur> {
             override fun onResponse(call: Call<Utilisateur>, response: Response<Utilisateur>) {
+                progressBar.visibility = View.GONE  // Cacher la barre de chargement
+
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
                     // enregistrer email en cache
@@ -117,6 +128,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Utilisateur>, t: Throwable) {
+                progressBar.visibility = View.GONE  // Cacher la barre de chargement
                 Log.e("SendUserData", "Échec de la requête : ${t.message}")
                 RainbowSdk.instance().connection().signOut()
             }

@@ -101,6 +101,7 @@
             android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:paddingTop="45dp"
                 android:id="@+id/messagesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -117,7 +118,8 @@
                 android:textSize="10sp"
                 android:textStyle="bold"
                 tools:layout_editor_absoluteX="-4dp"
-                tools:layout_editor_absoluteY="3dp" />
+                tools:layout_editor_absoluteY="3dp"
+                tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
