@@ -26,7 +26,7 @@ data class RendezVous(
                 val format = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
                 format.parse(daterdv)
             } catch (e: Exception) {
-                null  // Gestion des erreurs de parsing
+                null  // en cas d'erreur de parsing
             }
         }
 }
