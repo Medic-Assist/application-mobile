@@ -37,6 +37,16 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/warningMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_dark"
+            android:padding="8dp"
+            android:textSize="10sp"
+            android:gravity="center"
+            android:textStyle="bold"/>
     </LinearLayout>
 
     <!-- ****************** ZONE TYPING (PHOTO + NOM QUI ÉCRIT) ****************** -->

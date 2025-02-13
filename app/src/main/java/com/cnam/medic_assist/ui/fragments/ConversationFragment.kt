@@ -53,6 +53,10 @@ class ConversationFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_conversation, container, false)
 
+        // warning
+        val warningMessage: TextView = view.findViewById(R.id.warningMessage)
+        warningMessage.text = "⚠\uFE0F Merci de ne pas discuter ici d'informations médicales personnelles. Ce chat est uniquement destiné aux conversations administratives avec le secrétariat."
+
         // 1) Récupérer les vues
         bubblePhoto = view.findViewById(R.id.bubble_photo)
         bubbleTitle = view.findViewById(R.id.bubble_title)
@@ -266,3 +270,4 @@ class ConversationFragment : Fragment() {
         }
     }
 }
+
