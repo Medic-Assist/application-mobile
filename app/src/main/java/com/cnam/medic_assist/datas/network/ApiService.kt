@@ -4,6 +4,7 @@ import com.cnam.medic_assist.datas.models.CentreMedical
 import com.cnam.medic_assist.datas.models.EtatRdv
 import com.cnam.medic_assist.datas.models.ModeTransport
 import com.cnam.medic_assist.datas.models.Patient
+import com.cnam.medic_assist.datas.models.PatientAPI
 import com.cnam.medic_assist.datas.models.Proche
 import com.cnam.medic_assist.datas.models.RDVSend
 import com.cnam.medic_assist.datas.models.RendezVous
@@ -70,7 +71,7 @@ interface ApiService {
 
 
     @GET("utilisateurs/patient")
-    fun getAllPatients(): Call<List<Patient>>
+    fun getAllPatients(): Call<List<PatientAPI>>
     // Ajouter un personnel médical
     @POST("utilisateurs/personnelMed")
     fun addPersonnelMed(@Body personnelMedData: Map<String, Int>): Call<Void>

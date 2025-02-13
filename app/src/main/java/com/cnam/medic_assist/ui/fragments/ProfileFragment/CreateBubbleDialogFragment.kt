@@ -27,6 +27,7 @@ import com.ale.rainbowsdk.RainbowSdk
 import com.cnam.medic_assist.R
 import com.cnam.medic_assist.datas.models.CentreMedical
 import com.cnam.medic_assist.datas.models.Patient
+import com.cnam.medic_assist.datas.models.PatientAPI
 import com.cnam.medic_assist.datas.models.RDVSend
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
@@ -49,7 +50,7 @@ class CreateBubbleDialogFragment : DialogFragment() {
     private lateinit var editTextTime: EditText
 
     private var centresMedicaux: List<CentreMedical> = listOf()
-    private var utilisateurs: List<Patient> = listOf()
+    private var utilisateurs: List<PatientAPI> = listOf()
 
     override fun onStart() {
         super.onStart()
@@ -129,14 +130,17 @@ class CreateBubbleDialogFragment : DialogFragment() {
     }
 
     private fun loadUtilisateurs() {
-        RetrofitClient.instance.getAllPatients().enqueue(object : Callback<List<Patient>> {
-            override fun onResponse(call: Call<List<Patient>>, response: Response<List<Patient>>) {
+        RetrofitClient.instance.getAllPatients().enqueue(object : Callback<List<PatientAPI>> {
+            override fun onResponse(call: Call<List<PatientAPI>>, response: Response<List<PatientAPI>>) {
                 if (response.isSuccessful) {
+                    val patients = response.body()
+                    Log.d("API_RESPONSE", "Patients reçus: ${Gson().toJson(patients)}") // 🔍 Vérification API
                     utilisateurs = response.body()?.map { patient ->
-                        Patient(
+                        PatientAPI(
                             iduser = patient.iduser ?: 0,
                             nom = patient.nom ?: "",
                             prenom = patient.prenom ?: "",
+                            idcontact = patient.idcontact,
                             mail = patient.mail ?: "",
                             date_naissance = patient.date_naissance ?: "",
                             numero_rue_principal = patient.numero_rue_principal ?: "",
@@ -146,14 +150,13 @@ class CreateBubbleDialogFragment : DialogFragment() {
 
                         )
                     } ?: listOf()
-
                     val patientNames = utilisateurs.map { "${it.nom} ${it.prenom}" }
                     val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, patientNames)
                     view?.findViewById<Spinner>(R.id.spinnerParticipants)?.adapter = adapter
                 }
             }
 
-            override fun onFailure(call: Call<List<Patient>>, t: Throwable) {
+            override fun onFailure(call: Call<List<PatientAPI>>, t: Throwable) {
                 Log.e("CreateBubbleDialog", "Erreur chargement utilisateurs: ${t.message}")
             }
         })
@@ -197,6 +200,9 @@ class CreateBubbleDialogFragment : DialogFragment() {
         RainbowSdk.instance().bubbles().createBubble(body, object : RainbowListener<IRainbowRoom, RoomRepository.CreateRoomError> {
             override fun onSuccess(bubble: IRainbowRoom) {
                 Log.d("RainbowSDK", "Bulle créée avec succès : ${bubble.name}")
+
+                // chercher le idcontact par rapport au selectedPatient
+                Log.d("rainbowsdk", selectedPatient.iduser.toString())
                 addParticipantToBubble(bubble, selectedPatient)
                 // 🔹 Création du RDV après avoir récupéré l'ID de la bulle
                 val rendezVous = RDVSend(
@@ -224,12 +230,12 @@ class CreateBubbleDialogFragment : DialogFragment() {
         })
     }
 
-    private fun addParticipantToBubble(bubble: IRainbowRoom, patient: Patient) {
+    private fun addParticipantToBubble(bubble: IRainbowRoom, patient: PatientAPI) {
         // Rechercher le contact par son nom (asynchrone)
  //       val  contactsR  = RainbowSdk.instance().contacts().rainbowContacts.toArray()
         //       Log.d("RainbowSDK", "Contacts trouvés : ${contactsR.size}")
-
-        val contact = RainbowSdk.instance().contacts().getContactFromId ("6746e9cae6d1354b9a9e9624");
+        Log.d("rainbowsdk", patient.toString())
+        val contact = RainbowSdk.instance().contacts().getContactFromId (patient.idcontact);
 
          if (contact != null ) {
              // Ajouter le participant à la bulle avec la bonne interface RainbowListener

@@ -6,6 +6,7 @@ class Patient (
     iduser: Int? = null,
     prenom : String,
     nom : String,
+    idcontact: String? = null,
     var mail : String?=null,
     var date_naissance : String,
     var numero_rue_principal : String,
@@ -18,7 +19,7 @@ class Patient (
     var modetransport : String?="Voiture"
 
 
-    ) : Utilisateur(iduser,prenom, nom, RoleUser.Patient), Parcelable
+    ) : Utilisateur(iduser,prenom, nom, RoleUser.Patient, idcontact), Parcelable
 {
 
 }

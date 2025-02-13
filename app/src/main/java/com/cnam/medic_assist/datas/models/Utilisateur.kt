@@ -1,6 +1,7 @@
 package com.cnam.medic_assist.datas.models
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 
@@ -16,7 +17,8 @@ open class Utilisateur (
     var prenom : String,
     var nom : String,
     var role : RoleUser,
-    var numero_tel : String?= null
+    var numero_tel : String?= null,
+    @SerializedName("idcontact") var idcontact: String?=null
 ): Parcelable{
     fun afficherDetailsUtilisateur() {
         println("Utilisateur: $prenom $nom ($role)")
