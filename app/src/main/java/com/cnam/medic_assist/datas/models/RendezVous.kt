@@ -1,10 +1,15 @@
 package com.cnam.medic_assist.datas.models
 
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
+
 data class RendezVous(
     var idrdv: Int? = null,
     var intitule: String,
     var horaire : String,
-    var daterdv: String,
+    var daterdv : String,
     val idUser : Int,
     val idCentreMedical: Int,
     var isADRPrincipale : Boolean,
@@ -14,4 +19,14 @@ data class RendezVous(
     val rue : String? = "",
     val codepostal : String? = "",
     val ville : String? = ""
-    )
+    ) {
+    val dateFormatted: Date?
+        get() {
+            return try {
+                val format = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
+                format.parse(daterdv)
+            } catch (e: Exception) {
+                null  // Gestion des erreurs de parsing
+            }
+        }
+}

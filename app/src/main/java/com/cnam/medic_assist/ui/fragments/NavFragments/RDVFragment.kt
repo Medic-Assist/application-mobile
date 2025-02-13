@@ -122,7 +122,18 @@ class RDVFragment : Fragment() {
 
     private fun reloadData() {
         if (!isAdded) return
-        val rdvStrings = rdvList.map { "${it.intitule} - ${formatageDate(it.daterdv)}" }
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
+
+        val rdvSortedList = rdvList.sortedBy { rdv ->
+            try {
+                dateFormat.parse(rdv.daterdv) // Convertir en Date pour le tri
+            } catch (e: Exception) {
+                Date(Long.MAX_VALUE)  // Place les dates invalides en fin de liste
+            }
+        }
+
+        val rdvStrings = rdvSortedList.map { "${it.intitule} - ${formatageDate(it.daterdv)}" }
         adapter.clear()
         adapter.addAll(rdvStrings)
         adapter.notifyDataSetChanged()
