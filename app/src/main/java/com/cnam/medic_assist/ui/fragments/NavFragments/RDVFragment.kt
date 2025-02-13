@@ -325,9 +325,20 @@ class RDVFragment : Fragment() {
                     val rdvTime = data[6]
 
                     // Convertir la date du RDV en millisecondes
-                    val dateTimeString = "$rdvDate $rdvTime"
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                    val rdvMillis = dateFormat.parse(dateTimeString)?.time ?: return@forEach
+                    // 🔹 1. Convertir rdvDate (format ISO 8601) en format local "yyyy-MM-dd"
+                    val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    inputDateFormat.timeZone = TimeZone.getTimeZone("UTC") // ⚠️ Important, l'ISO 8601 est en UTC
+
+                    val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val formattedDate = outputDateFormat.format(inputDateFormat.parse(rdvDate)!!)
+
+// 🔹 2. Fusionner date et heure dans un format lisible "yyyy-MM-dd HH:mm:ss"
+                    val dateTimeString = "$formattedDate $rdvTime"
+                    Log.d("scheduleNotifications", "📅 Date convertie : $dateTimeString")
+
+// 🔹 3. Convertir la date en millisecondes
+                    val finalDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    val rdvMillis = finalDateFormat.parse(dateTimeString)?.time ?: return@forEach
 
                     // Extraire le temps de trajet en minutes
                     val travelMinutes = travelTime.filter { it.isDigit() }.toIntOrNull() ?: 0
@@ -346,23 +357,29 @@ class RDVFragment : Fragment() {
                     // Notification 1h avant le départ
                     scheduleNotification(
                         idRdv * 10,
+                        idRdv, // Ajout de l'ID du rendez-vous
                         reminderTime,
                         "Rappel : Rendez-vous ($rdvName)\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
+
                     // Notification de départ avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 1,
+                        idRdv, // Ajout de l'ID du rendez-vous
                         departureTime,
                         "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
+
                     // Notification à l'heure du rendez-vous avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 2,
-                        rdvTimeMillis,
-                        "Êtes-vous arrivé ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime"
+                        idRdv, // Ajout de l'ID du rendez-vous
+                        departureTime,
+                        "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
+
 
                 } catch (e: Exception) {
                     Log.e("scheduleNotifications", "Erreur lors de la planification pour la clé $key : ${e.message}")
@@ -374,7 +391,7 @@ class RDVFragment : Fragment() {
     }
 
 
-    private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
+    private fun scheduleNotification(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
@@ -387,9 +404,11 @@ class RDVFragment : Fragment() {
 
         val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
+            putExtra("idRdv", idRdv) // 🔹 Ajout de l'ID du rendez-vous
             putExtra("notificationTitle", title)
-            putExtra("notificationType", "default") // Type "default"
+            putExtra("notificationType", "default")
         }
+
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),
@@ -410,12 +429,15 @@ class RDVFragment : Fragment() {
         }
     }
 
-    private fun scheduleNotificationWithAction(appointmentId: Int, timeInMillis: Long, title: String) {
+    private fun scheduleNotificationWithAction(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
         val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
+            putExtra("idRdv", idRdv) // 🔹 Ajout de l'ID du rendez-vous
             putExtra("notificationTitle", title)
-            putExtra("notificationType", "action") // Type "action"
+            putExtra("notificationType", "action")
         }
+
+
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),

@@ -21,6 +21,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         if (context == null || intent == null) return
 
         val appointmentId = intent.getIntExtra("appointmentId", -1)
+        val idRdv = intent.getIntExtra("idRdv", -1) // ✅ Utilisation de l'ID du rendez-vous
         val notificationTitle = intent.getStringExtra("notificationTitle") ?: "Notification"
         val notificationType = intent.getStringExtra("notificationType") ?: "default"
 
@@ -31,7 +32,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
         when (intent.action) {
             "ACTION_YES" -> {
-                Log.d("NotificationAction", "L'utilisateur a confirmé la notification : ID=$appointmentId")
+                Log.d("NotificationAction", "L'utilisateur a confirmé la notification : ID=$appointmentId idRdv=$idRdv")
 
                 val status = if (notificationTitle.contains("Êtes-vous en route ?")) {
                     "Patient parti"
@@ -39,7 +40,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                     "Patient arrivé au RDV"
                 }
 
-                updateStatusToAPI(context, appointmentId, status)
+                updateStatusToAPI(context, idRdv, status) // ✅ Modification avec `idRdv`
                 notificationManager.cancel(appointmentId) // Supprime la notification
             }
 
@@ -52,7 +53,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                     "Retard du RDV Possible"
                 }
 
-                updateStatusToAPI(context, appointmentId, status)
+                updateStatusToAPI(context, idRdv, status) // ✅ Modification avec `idRdv`
                 notificationManager.cancel(appointmentId) // Supprime la notification
 
                 // Relancer la notification dans 5 min si refusé
@@ -62,6 +63,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                     val newIntent = Intent(context, NotificationReceiver::class.java).apply {
                         putExtra("appointmentId", appointmentId)
+                        putExtra("idRdv", idRdv) // ✅ Ajout de l'ID du RDV pour la relance
                         putExtra("notificationTitle", notificationTitle)
                         putExtra("notificationType", notificationType)
                     }
