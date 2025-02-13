@@ -33,161 +33,162 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <!-- Section avec les cartes -->
-    <ScrollView
-        android:id="@+id/content_scroll"
+    <!-- Section contenant les cartes -->
+    <LinearLayout
+        android:id="@+id/content_section"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/header_section"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:orientation="vertical">
 
+        <!-- Carte "Mes professionnels de santé" -->
         <LinearLayout
+            android:id="@+id/card_doctors"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/rounded_card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp">
 
-            <!-- Carte "Mes professionnels de santé" -->
+            <ImageView
+                android:id="@+id/image_doctors"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/doctor_image"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_image_background"
+                android:layout_marginEnd="16dp" />
+
             <LinearLayout
-                android:id="@+id/card_doctors"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_card_background"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="4dp">
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
 
-                <ImageView
-                    android:id="@+id/image_doctors"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/doctor_image"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_image_background"
-                    android:layout_marginEnd="16dp" />
+                <TextView
+                    android:id="@+id/title_doctors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_doctors"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/title_doctors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title_doctors"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/description_doctors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="Grâce à MedicAssist, effectuez vos démarches médicales en ligne ! C'est simple et rapide !"
-                        android:textSize="14sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/description_doctors"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grâce à MedicAssist, effectuez vos démarches médicales en ligne ! C'est simple et rapide !"
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
             </LinearLayout>
-
-            <!-- Carte "Mon parcours patient" -->
-            <LinearLayout
-                android:id="@+id/card_patient"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_card_background"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="4dp">
-
-                <ImageView
-                    android:id="@+id/image_patient"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/patient"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_image_background"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/title_patient"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/patient_journey"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/description_patient"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="Suivez vos rendez-vous, résultats, et interactions médicales."
-                        android:textSize="14sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Carte "Suivi des déplacements" -->
-            <LinearLayout
-                android:id="@+id/card_trajets"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_card_background"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="4dp">
-
-                <ImageView
-                    android:id="@+id/image_voiture"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/vehicule_toyota"
-                    android:scaleType="centerCrop"
-                    android:background="@drawable/rounded_image_background"
-                    android:layout_marginEnd="16dp" />
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/title_section_patient"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/title_route_planning"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/description_trajets"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="Grâce à MedicAssist, organisez vos trajets de votre domicile jusqu'à vos lieux de rendez-vous."
-                        android:textSize="14sp"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-            </LinearLayout>
-
         </LinearLayout>
-    </ScrollView>
+
+        <!-- Carte "Mon parcours patient" -->
+        <LinearLayout
+            android:id="@+id/card_patient"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp">
+
+            <ImageView
+                android:id="@+id/image_patient"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/patient"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_image_background"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/title_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/patient_journey"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/description_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Suivez vos rendez-vous, résultats, et interactions médicales."
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Carte "Suivi des déplacements" avec marge en bas de 80dp -->
+        <LinearLayout
+            android:id="@+id/card_trajets"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="80dp"
+            android:elevation="4dp">
+
+            <ImageView
+                android:id="@+id/image_voiture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/vehicule_toyota"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_image_background"
+                android:layout_marginEnd="16dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/title_section_patient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_route_planning"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/description_trajets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Grâce à MedicAssist, organisez vos trajets de votre domicile jusqu'à vos lieux de rendez-vous."
+                    android:textSize="14sp"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>
