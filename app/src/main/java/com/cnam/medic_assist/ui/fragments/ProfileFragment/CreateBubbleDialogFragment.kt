@@ -219,6 +219,7 @@ class CreateBubbleDialogFragment : DialogFragment() {
                 Log.d("RendezVous_JSON", Gson().toJson(rendezVous)) // Vérifier que l'ID est bien envoyé
                 sendRendezvousToServer(rendezVous)
                 requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "Bulle créée avec succès !", Toast.LENGTH_SHORT).show()
                     (parentFragment as? BubbleFragment)?.listBubbles()
                     dismiss()
                 }

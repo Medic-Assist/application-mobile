@@ -13,7 +13,7 @@ class BubblesAdapter(
     private val onBubbleClick: (IRainbowRoom) -> Unit
 ) : RecyclerView.Adapter<BubblesAdapter.BubbleViewHolder>() {
 
-    private val filteredBubbles = bubbles.filter { it.name.startsWith("RDV", ignoreCase = true) } //à remplacer per rvd
+    private val allBubbles  = bubbles
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BubbleViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,12 +22,12 @@ class BubblesAdapter(
     }
 
     override fun onBindViewHolder(holder: BubbleViewHolder, position: Int) {
-        val bubble = filteredBubbles[position]
+        val bubble = allBubbles[position]
         holder.bind(bubble)
         holder.itemView.setOnClickListener { onBubbleClick(bubble) }
     }
 
-    override fun getItemCount(): Int = filteredBubbles.size
+    override fun getItemCount(): Int = allBubbles.size
 
     class BubbleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val bubbleNameTextView: TextView = itemView.findViewById(R.id.bubbleNameTextView)

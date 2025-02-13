@@ -82,11 +82,12 @@ class BubbleFragment : Fragment() {
 
     public fun listBubbles() {
         val bubbles = RainbowSdk.instance().bubbles().getAllBubbles().copyOfDataList
-
+        Log.d("bubble", bubbles.count().toString())
         val adapter = BubblesAdapter(bubbles) { bubble ->
             openBubbleChat(bubble)
         }
         recyclerView.adapter = adapter
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun openBubbleChat(bubble: IRainbowRoom) {
