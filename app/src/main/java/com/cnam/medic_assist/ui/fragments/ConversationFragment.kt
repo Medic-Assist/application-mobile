@@ -1,6 +1,8 @@
 package com.cnam.medic_assist.ui.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -151,11 +153,49 @@ class ConversationFragment : Fragment() {
 
     private fun sendMessage(message: String) {
         if (::conversation.isInitialized) {
+            val blockedWords = getBlockedWordsFromFile("BlockList.txt")
+            if (containsBlockedWords(message, blockedWords)) {
+                showBlockedWordsPopup()
+                return
+            }
+
             RainbowSdk.instance().im().sendMessageToConversation(conversation, message)
             inputMessage.text?.clear()
         } else {
             showToast("Conversation non initialisée.")
         }
+    }
+
+    private fun getBlockedWordsFromFile(fileName: String): List<String> {
+        return try {
+            val inputStream = requireContext().assets.open(fileName)
+            val fileContent = inputStream.bufferedReader().use { it.readText() }
+            Log.d("BlockedWords", "File Content: $fileContent") // Log the file content for debugging
+            fileContent.split(",").map { it.trim() }
+        } catch (e: Exception) {
+            Log.e("BlockedWords", "Error reading file", e) // Log any error if the file can't be opened
+            emptyList()
+        }
+    }
+
+    private fun containsBlockedWords(message: String, blockedWords: List<String>): Boolean {
+        val wordsInMessage = message.split(Regex("\\W+")).map { it.lowercase() }
+        Log.d("BlockedWords", "Message: $message")
+        Log.d("BlockedWords", "Blocked Words: $blockedWords")
+        Log.d("BlockedWords", "Words in Message: $wordsInMessage")
+        return blockedWords.any { blockedWord ->
+            Log.d("BlockedWords", "Checking if '$blockedWord' is in message words")
+            blockedWord.lowercase().trim() in wordsInMessage
+        }
+    }
+
+
+    private fun showBlockedWordsPopup() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Message bloqué")
+            .setMessage("Votre message contient des mots interdits et ne peut pas être envoyé.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     private fun getBubbleById(bubbleId: String): Room? {
