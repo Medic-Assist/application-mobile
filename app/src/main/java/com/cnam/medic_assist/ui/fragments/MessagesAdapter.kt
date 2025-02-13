@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ale.infra.manager.IMMessage
 import com.cnam.medic_assist.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class MessagesAdapter(private var messages: List<IMMessage>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -61,7 +63,7 @@ class MessagesAdapter(private var messages: List<IMMessage>) :
         fun bind(message: IMMessage) {
             contentTextView.text = message.messageContent
             // Exemple d’affichage d’une heure "HH:mm"
-            // timeTextView.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(message.sendDate)
+            timeTextView.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(message.messageDate)
             // Gérer l’état (envoyé, lu, etc.) si votre message le permet
             // stateImageView.setImageResource(...)
         }
@@ -71,11 +73,10 @@ class MessagesAdapter(private var messages: List<IMMessage>) :
     class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val contentTextView: TextView = itemView.findViewById(R.id.message_content)
         private val timeTextView: TextView = itemView.findViewById(R.id.message_time)
-        private val stateImageView: ImageView = itemView.findViewById(R.id.message_state)
 
         fun bind(message: IMMessage) {
             contentTextView.text = message.messageContent
-            // timeTextView.text = ...
+            timeTextView.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(message.messageDate)
             // stateImageView.setImageResource(...) ou setTint(...)
         }
     }

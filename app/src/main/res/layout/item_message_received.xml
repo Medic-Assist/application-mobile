@@ -13,17 +13,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- Avatar de l'expéditeur -->
-        <ImageView
-            android:id="@+id/contact_avatar_message"
+        <TextView
+            android:id="@+id/contact_initials"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_user_placeholder_foreground"
+            android:background="@drawable/rounded_background"
+            android:gravity="center"
+            android:text="CD"
+            android:textColor="@color/modern_blue"
+            android:textStyle="bold"
+            android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
-
         <!-- Contenu du message -->
+
         <TextView
             android:id="@+id/message_content"
             android:layout_width="wrap_content"
@@ -35,7 +39,7 @@
 
             android:textColor="@android:color/white"
             android:text="Message reçu"
-            app:layout_constraintStart_toEndOf="@id/contact_avatar_message"
+            app:layout_constraintStart_toEndOf="@id/contact_initials"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 

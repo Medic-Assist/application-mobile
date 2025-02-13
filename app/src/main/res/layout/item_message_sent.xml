@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:textSize="12sp"
-            android:text="21:37"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
