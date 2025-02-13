@@ -13,7 +13,7 @@ class BubblesAdapter(
     private val onBubbleClick: (IRainbowRoom) -> Unit
 ) : RecyclerView.Adapter<BubblesAdapter.BubbleViewHolder>() {
 
-    private val filteredBubbles = bubbles.filter { it.name.startsWith("Bubble", ignoreCase = true) } //à remplacer per rvd
+    private val filteredBubbles = bubbles.filter { it.name.startsWith("RDV", ignoreCase = true) } //à remplacer per rvd
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BubbleViewHolder {
         val view = LayoutInflater.from(parent.context)
