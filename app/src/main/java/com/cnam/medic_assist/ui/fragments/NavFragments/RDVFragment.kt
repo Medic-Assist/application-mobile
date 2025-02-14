@@ -50,6 +50,7 @@ class RDVFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         calendarHelper = CalendarHelper(requireContext())
+        fetchData()
     }
 
     override fun onCreateView(
@@ -90,7 +91,7 @@ class RDVFragment : Fragment() {
 
     }
 
-    private fun fetchData() {
+    public fun fetchData() {
         // recuperer l'id en cache
         val sharedPref = requireContext().getSharedPreferences("UserCache", Context.MODE_PRIVATE)
         val id = sharedPref.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
@@ -164,6 +165,7 @@ class RDVFragment : Fragment() {
         tvDate.text = "Date : ${formatageDate(rdv.daterdv)}"
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
+
 
         searchRoute(tvAdresse.text.toString(), tvTempsAdress, rdv)
 
@@ -309,21 +311,26 @@ class RDVFragment : Fragment() {
             val key = rdv.idrdv.toString()
             val newData = "${rdv.idrdv}|${rdv.idCentreMedical}|$travelTime|${rdv.nom}|${rdv.intitule}|${rdv.daterdv}|${rdv.horaire}"
 
+            // 🔹 1. SUPPRIMER toutes les anciennes données avant d'écrire les nouvelles
+            sharedPreferences.edit().clear().apply()
+
+            // 🔹 2. Vérifier si l'entrée est déjà la même pour éviter une écriture inutile
             val existingData = sharedPreferences.getString(key, null)
             if (existingData != null && existingData == newData) {
-                Log.d("saveRdvToPreferences", "Données existantes identiques pour le rendez-vous ID: $key. Aucune mise à jour nécessaire.")
+                Log.d("saveRdvToPreferences", "✅ Données identiques déjà enregistrées pour le RDV ID: $key. Aucune mise à jour nécessaire.")
             } else {
                 with(sharedPreferences.edit()) {
                     putString(key, newData)
                     apply()
                 }
-                Log.d("saveRdvToPreferences", "Données mises à jour pour le rendez-vous ID: $key : $newData")
+                Log.d("saveRdvToPreferences", "🔄 Mise à jour des données pour le RDV ID: $key : $newData")
                 scheduleNotificationsFromSavedData()
             }
         } else {
-            Log.w("saveRdvToPreferences", "Données incomplètes pour le rendez-vous ID: ${rdv.idrdv}")
+            Log.w("saveRdvToPreferences", "⚠️ Données incomplètes pour le RDV ID: ${rdv.idrdv}")
         }
     }
+
 
     private fun scheduleNotificationsFromSavedData() {
         val sharedPreferences = requireContext().getSharedPreferences("medic-assist-sauv", Context.MODE_PRIVATE)
@@ -341,57 +348,96 @@ class RDVFragment : Fragment() {
                     val rdvDate = data[5]
                     val rdvTime = data[6]
 
-                    // Convertir la date du RDV en millisecondes
-                    val dateTimeString = "$rdvDate $rdvTime"
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                    val rdvMillis = dateFormat.parse(dateTimeString)?.time ?: return@forEach
+                    // 🔹 1. Convertir la date du RDV en millisecondes
+                    val inputDateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                    inputDateFormat.timeZone = TimeZone.getTimeZone("UTC")
 
-                    // Extraire le temps de trajet en minutes
+                    val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val formattedDate = outputDateFormat.format(inputDateFormat.parse(rdvDate)!!)
+
+                    val dateTimeString = "$formattedDate $rdvTime"
+                    Log.d("scheduleNotifications", "📅 Date convertie : $dateTimeString")
+
+                    val finalDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    val rdvMillis = finalDateFormat.parse(dateTimeString)?.time ?: return@forEach
+
+                    // 🔹 2. Vérifier si le rendez-vous est déjà passé
+                    val currentTimeMillis = System.currentTimeMillis()
+                    if (rdvMillis < currentTimeMillis) {
+                        Log.w("scheduleNotifications", "❌ RDV déjà passé. Pas de notification pour ID: $idRdv")
+                        return@forEach
+                    }
+
+                    // 🔹 3. Supprimer les notifications existantes AVANT de les recréer
+                    cancelScheduledNotification(idRdv * 10)
+                    cancelScheduledNotification(idRdv * 10 + 1)
+                    cancelScheduledNotification(idRdv * 10 + 2)
+
+                    // 🔹 4. Extraire le temps de trajet en minutes
                     val travelMinutes = travelTime.filter { it.isDigit() }.toIntOrNull() ?: 0
-                    val travelMillis = travelMinutes * 60 * 1000 // Conversion en millisecondes
+                    val travelMillis = travelMinutes * 60 * 1000
 
-                    // Calcul des horaires des notifications
-                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000) // RDV - Temps trajet - 1h
-                    val departureTime = rdvMillis - travelMillis // RDV - Temps trajet
-                    val rdvTimeMillis = rdvMillis // Heure du RDV
+                    // 🔹 5. Calcul des horaires des notifications
+                    val reminderTime = rdvMillis - travelMillis - (60 * 60 * 1000)
+                    val departureTime = rdvMillis - travelMillis
+                    val rdvTimeMillis = rdvMillis
 
-                    Log.d("scheduleNotifications", "Planification des notifications pour le rendez-vous ID: $idRdv.")
-                    Log.d("scheduleNotifications", "Rappel prévu à : ${Date(reminderTime)} (Rendez-vous - Temps trajet - 1h)")
-                    Log.d("scheduleNotifications", "Question 'Êtes-vous en route ?' prévue à : ${Date(departureTime)} (Rendez-vous - Temps trajet)")
-                    Log.d("scheduleNotifications", "Confirmation RDV prévue à : ${Date(rdvTimeMillis)} (Heure du RDV)")
+                    Log.d("scheduleNotifications", "📌 Planification des notifications pour ID RDV: $idRdv")
+                    Log.d("scheduleNotifications", "⏳ Rappel prévu à : ${Date(reminderTime)}")
+                    Log.d("scheduleNotifications", "🚗 Départ prévu à : ${Date(departureTime)}")
+                    Log.d("scheduleNotifications", "🏥 RDV prévu à : ${Date(rdvTimeMillis)}")
 
-                    // Notification 1h avant le départ
+                    // 🔹 6. Replanifier les notifications
                     scheduleNotification(
                         idRdv * 10,
+                        idRdv,
                         reminderTime,
                         "Rappel : Rendez-vous ($rdvName)\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
-                    // Notification de départ avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 1,
+                        idRdv,
                         departureTime,
                         "Êtes-vous en route ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime\nTemps trajet : $travelTime"
                     )
 
-                    // Notification à l'heure du rendez-vous avec action
                     scheduleNotificationWithAction(
                         idRdv * 10 + 2,
+                        idRdv,
                         rdvTimeMillis,
                         "Êtes-vous arrivé ?\nRendez-vous : $rdvName\nDate : $rdvDate\nHeure : $rdvTime"
                     )
 
                 } catch (e: Exception) {
-                    Log.e("scheduleNotifications", "Erreur lors de la planification pour la clé $key : ${e.message}")
+                    Log.e("scheduleNotifications", "❌ Erreur lors de la planification pour la clé $key : ${e.message}")
                 }
             } else {
-                Log.w("scheduleNotifications", "Données mal formatées pour la clé $key : $value")
+                Log.w("scheduleNotifications", "⚠️ Données mal formatées pour la clé $key : $value")
             }
         }
     }
 
 
-    private fun scheduleNotification(appointmentId: Int, timeInMillis: Long, title: String) {
+    private fun cancelScheduledNotification(appointmentId: Int) {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(requireContext(), NotificationReceiver::class.java)
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            requireContext(),
+            appointmentId,
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.cancel(pendingIntent)
+        Log.d("scheduleNotifications", "🚫 Annulation de la notification ID: $appointmentId")
+    }
+
+
+
+
+    private fun scheduleNotification(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
         val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
@@ -404,9 +450,11 @@ class RDVFragment : Fragment() {
 
         val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
+            putExtra("idRdv", idRdv) // 🔹 Ajout de l'ID du rendez-vous
             putExtra("notificationTitle", title)
-            putExtra("notificationType", "default") // Type "default"
+            putExtra("notificationType", "default")
         }
+
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),
@@ -427,12 +475,15 @@ class RDVFragment : Fragment() {
         }
     }
 
-    private fun scheduleNotificationWithAction(appointmentId: Int, timeInMillis: Long, title: String) {
+    private fun scheduleNotificationWithAction(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
         val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
+            putExtra("idRdv", idRdv)
             putExtra("notificationTitle", title)
-            putExtra("notificationType", "action") // Type "action"
+            putExtra("notificationType", "action")
         }
+
+
 
         val pendingIntent = PendingIntent.getBroadcast(
             requireContext(),
@@ -508,6 +559,13 @@ class RDVFragment : Fragment() {
                 if (isAdded) {
                     if (response.isSuccessful) {
                         etatRdv = response.body()!!.intitule
+                        // sharedPref du bubble id();
+                        val sharedPref = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putString("bubble_id", rdv.idbullerainbow)
+                        editor.apply()
+
+
                         showRdvDetailsDialog(rdv)
                         Toast.makeText(requireContext(), "Chargement de l'etat reussi.", Toast.LENGTH_SHORT).show()
                     } else {

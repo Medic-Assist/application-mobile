@@ -32,6 +32,7 @@ import com.cnam.medic_assist.datas.models.RDVSend
 import com.cnam.medic_assist.datas.models.RendezVous
 import com.cnam.medic_assist.datas.network.RetrofitClient
 import com.cnam.medic_assist.ui.fragments.NavFragments.BubbleFragment
+import com.cnam.medic_assist.ui.fragments.NavFragments.RDVFragment
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -272,6 +273,7 @@ class CreateBubbleDialogFragment : DialogFragment() {
                 if (response.isSuccessful) {
                     if (isAdded && context != null) { // 🔹 Vérifier si le fragment est attaché
                         Toast.makeText(requireContext(), "Rendez-vous créé avec succès !", Toast.LENGTH_SHORT).show()
+                        refreshBubblesAndAppointments()
                     }
                 } else {
                     if (isAdded && context != null) {
@@ -290,6 +292,15 @@ class CreateBubbleDialogFragment : DialogFragment() {
         })
     }
 
+    private fun refreshBubblesAndAppointments() {
+        // Rafraîchir la liste des bulles
+        val bubbleFragment = parentFragmentManager.findFragmentByTag("BubbleFragment") as? BubbleFragment
+        bubbleFragment?.listBubbles()
+
+        // Rafraîchir la liste des rendez-vous
+        val rdvFragment = parentFragmentManager.findFragmentByTag("RDVFragment") as? RDVFragment
+        rdvFragment?.fetchData()
+    }
 
 
 }
