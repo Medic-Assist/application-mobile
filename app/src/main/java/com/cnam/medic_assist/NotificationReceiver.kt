@@ -17,11 +17,12 @@ class NotificationReceiver : BroadcastReceiver() {
             return
         }
 
-        val appointmentId = intent.getIntExtra("appointmentId", -1)
+        val appointmentId = intent.getIntExtra("appointmentId", -1) // ID de la notification
+        val idRdv = intent.getIntExtra("idRdv", -1) // ✅ ID du rendez-vous
         val notificationTitle = intent.getStringExtra("notificationTitle") ?: "Notification"
         val notificationType = intent.getStringExtra("notificationType") ?: "default"
 
-        Log.d("NotificationReceiver", "Notification reçue : ID=$appointmentId, Type=$notificationType, Titre=$notificationTitle")
+        Log.d("NotificationReceiver", "📩 Notification reçue : ID Notif = $appointmentId, ID RDV = $idRdv, Type=$notificationType, Titre=$notificationTitle")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -47,9 +48,11 @@ class NotificationReceiver : BroadcastReceiver() {
             }
 
             "action" -> {
+                // ✅ Inclure l'ID du RDV dans les intents pour que `NotificationActionReceiver` puisse l'utiliser
                 val yesIntent = Intent(context, NotificationActionReceiver::class.java).apply {
                     action = "ACTION_YES"
-                    putExtra("appointmentId", appointmentId)
+                    putExtra("appointmentId", appointmentId) // ID de la notification
+                    putExtra("idRdv", idRdv) // ✅ ID du RDV
                     putExtra("notificationTitle", notificationTitle)
                     putExtra("notificationType", notificationType)
                 }
@@ -59,7 +62,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
                 val noIntent = Intent(context, NotificationActionReceiver::class.java).apply {
                     action = "ACTION_NO"
-                    putExtra("appointmentId", appointmentId)
+                    putExtra("appointmentId", appointmentId) // ID de la notification
+                    putExtra("idRdv", idRdv) // ✅ ID du RDV
                     putExtra("notificationTitle", notificationTitle)
                     putExtra("notificationType", notificationType)
                 }
