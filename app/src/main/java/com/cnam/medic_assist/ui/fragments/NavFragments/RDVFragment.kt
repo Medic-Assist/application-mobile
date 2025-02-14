@@ -50,6 +50,7 @@ class RDVFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         calendarHelper = CalendarHelper(requireContext())
+        fetchData()
     }
 
     override fun onCreateView(
@@ -90,7 +91,7 @@ class RDVFragment : Fragment() {
 
     }
 
-    private fun fetchData() {
+    public fun fetchData() {
         // recuperer l'id en cache
         val sharedPref = requireContext().getSharedPreferences("UserCache", Context.MODE_PRIVATE)
         val id = sharedPref.getInt("id", 1) // null est la valeur par défaut si aucune valeur n'est trouvée
