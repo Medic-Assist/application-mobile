@@ -165,6 +165,7 @@ class RDVFragment : Fragment() {
         tvHeure.text = "Horaire : ${formatageTime(rdv.horaire)}"
         tvAdresse.text = "${rdv.nom} \n${rdv.numero_rue} ${rdv.rue}\n${rdv.codepostal} ${rdv.ville}"
 
+
         searchRoute(tvAdresse.text.toString(), tvTempsAdress, rdv)
 
         if(tvAdresse.text == ""){
@@ -476,7 +477,7 @@ class RDVFragment : Fragment() {
     private fun scheduleNotificationWithAction(appointmentId: Int, idRdv: Int, timeInMillis: Long, title: String) {
         val intent = Intent(requireContext(), NotificationReceiver::class.java).apply {
             putExtra("appointmentId", appointmentId)
-            putExtra("idRdv", idRdv) // 🔹 Ajout de l'ID du rendez-vous
+            putExtra("idRdv", idRdv)
             putExtra("notificationTitle", title)
             putExtra("notificationType", "action")
         }
@@ -557,6 +558,13 @@ class RDVFragment : Fragment() {
                 if (isAdded) {
                     if (response.isSuccessful) {
                         etatRdv = response.body()!!.intitule
+                        // sharedPref du bubble id();
+                        val sharedPref = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putString("bubble_id", rdv.idbullerainbow)
+                        editor.apply()
+
+
                         showRdvDetailsDialog(rdv)
                         Toast.makeText(requireContext(), "Chargement de l'etat reussi.", Toast.LENGTH_SHORT).show()
                     } else {
